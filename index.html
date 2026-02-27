@@ -14,11 +14,14 @@
     input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:16px}
     textarea{min-height:90px}
     .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .btn{margin-top:14px;width:100%;padding:12px;border:0;border-radius:10px;font-size:16px;background:#7b3a52;color:#fff}
+    .btn{margin-top:14px;width:100%;padding:12px;border:0;border-radius:10px;font-size:16px;background:#7b3a52;color:#fff;cursor:pointer}
+    .btn2{margin-top:10px;width:100%;padding:12px;border:1px solid #cfe7df;border-radius:10px;font-size:16px;background:#2f8f7b;color:#fff;cursor:pointer}
+    .btnGhost{margin-top:10px;width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:16px;background:#fff;color:#333;cursor:pointer}
     .ok{color:#0a7a3c;font-weight:800}
     .err{color:#b00020;font-weight:800}
     .tag{display:inline-block;background:#f2e7ea;border:1px solid #ead6dc;color:#7b3a52;
          padding:4px 10px;border-radius:999px;font-size:12px;margin-left:8px}
+    .hr{height:1px;background:#eee;margin:14px 0}
   </style>
 </head>
 <body>
@@ -26,7 +29,7 @@
     <div class="card">
       <h1>柚子樂器｜成果展報名 <span id="modeTag" class="tag" style="display:none;"></span></h1>
       <p class="muted">
-        可先填一半離開，下次回來會自動帶回（同裝置）。送出後也會寄「修改連結」到你的信箱（可跨裝置修改）。
+        可先填一半離開，下次回來會自動帶回（同裝置）。送出後會寄「修改連結」到你的信箱，可跨裝置修改與補上傳音檔。
       </p>
 
       <form id="f">
@@ -85,23 +88,31 @@
         <label>老師一起的方式（沒有就留空）</label>
         <input name="老師一起的方式" placeholder="例：鋼琴伴奏 / 四手聯彈">
 
-        <label>伴奏/表演音樂連結（建議貼 YouTube / Drive 分享連結）</label>
-        <input name="伴奏/表演音樂連結" placeholder="貼連結在這裡">
-
         <label>老師姓名(代報填)</label>
         <input name="老師姓名(代報填)" placeholder="例：黃明廷">
 
         <label>需求/備註</label>
         <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
 
+        <!-- 修改模式才顯示：音檔上傳 -->
+        <div id="uploadArea" style="display:none;">
+          <div class="hr"></div>
+          <div class="muted"><b>音檔上傳（選填）</b>：支援 MP3/WAV；MP3 ≤ 15MB、WAV ≤ 80MB</div>
+          <button type="button" id="btnUpload" class="btn2">上傳音檔（MP3/WAV）</button>
+          <div id="uploadHint" class="muted"></div>
+        </div>
+
         <button class="btn" type="submit" id="btn">送出報名</button>
         <p id="msg" class="muted"></p>
+
+        <!-- （之後我們會加取消按鈕在這裡：只在修改模式顯示） -->
+        <div id="cancelArea" style="display:none;"></div>
       </form>
     </div>
   </div>
 
 <script>
-  // ✅ 你提供的 Apps Script Web App URL
+  // ✅ 改成你的 Apps Script Web App URL（你之前貼的那串）
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyIrw2PjHkWhlMytY9BmCnXVRsIFOTp3iPAp_2C0rP6gQxe19FvTDSwm7kphUmDjZo_/exec";
 
   const f = document.getElementById('f');
@@ -110,7 +121,7 @@
   const modeTag = document.getElementById('modeTag');
 
   // A：草稿（同裝置回來可續填）
-  const DRAFT_KEY = "yuzu_signup_draft_v1";
+  const DRAFT_KEY = "yuzu_signup_draft_v2";
   function saveDraft(){
     const data = Object.fromEntries(new FormData(f).entries());
     localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
@@ -137,6 +148,7 @@
 
   async function loadExisting(){
     if(!regId || !token) return;
+
     mode = "update";
     modeTag.style.display = "";
     modeTag.textContent = "修改模式";
@@ -145,17 +157,48 @@
     try{
       const r = await fetch(`${SCRIPT_URL}?regId=${encodeURIComponent(regId)}&token=${encodeURIComponent(token)}`);
       const j = await r.json();
+
       if(j.ok && j.data){
+        // 若已取消，鎖住表單
+        const status = (j.data["狀態"] || "").toString().trim();
+        if(status === "已取消"){
+          msg.className = "err";
+          msg.textContent = "此報名已取消。若需重新報名，請回到首頁重新填寫。";
+          btn.disabled = true;
+          Array.from(f.elements).forEach(el => el.disabled = true);
+          return;
+        }
+
         for(const [k,v] of Object.entries(j.data)){
           const el = f.elements[k];
           if(el) el.value = v;
         }
         saveDraft();
-        msg.textContent = "已載入完成，你可以修改後按「送出報名」來更新。";
+
+        msg.className = "muted";
+        msg.textContent = "已載入完成，你可以修改後按「更新資料」。若要補音檔，請按下方上傳按鈕。";
         btn.textContent = "更新資料";
+
+        // 顯示上傳音檔區塊
+        const uploadArea = document.getElementById("uploadArea");
+        uploadArea.style.display = "";
+        document.getElementById("btnUpload").onclick = () => {
+          const url = `${SCRIPT_URL}?page=upload&regId=${encodeURIComponent(regId)}&token=${encodeURIComponent(token)}`;
+          window.open(url, "_blank");
+        };
+
+        const link = (j.data["音檔連結"] || "").toString().trim();
+        const fname = (j.data["音檔檔名"] || "").toString().trim();
+        const hint = document.getElementById("uploadHint");
+        if(link){
+          hint.innerHTML = `目前已上傳：<a href="${link}" target="_blank">${fname || "開啟音檔"}</a>`;
+        }else{
+          hint.textContent = "目前尚未上傳音檔（可之後再補）。";
+        }
+
       }else{
         msg.className = "err";
-        msg.textContent = "載入失敗：修改連結可能無效或已被更換。";
+        msg.textContent = "載入失敗：修改連結可能無效。";
       }
     }catch(e){
       msg.className = "err";
@@ -172,6 +215,7 @@
 
     const data = Object.fromEntries(new FormData(f).entries());
     data.mode = mode;
+
     if(mode === "update"){
       data.regId = regId;
       data.token = token;
@@ -180,20 +224,19 @@
     try{
       const r = await fetch(SCRIPT_URL, {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" }, // 避免預檢
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(data),
       });
-      const j = await r.json();
 
+      const j = await r.json();
       if(j.ok){
         msg.className = "ok";
         msg.textContent = (mode==="create")
-          ? "送出成功！請到你的 Email 收「可修改連結」。"
+          ? "送出成功！請到你的 Email 收「修改連結」（可後續補音檔）。"
           : "更新成功！";
 
         localStorage.removeItem(DRAFT_KEY);
-
-        if(mode === "create"){
+        if(mode==="create"){
           f.reset();
         }
       }else{
