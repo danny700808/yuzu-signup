@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>柚子樂器｜成果展報名</title>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;background:#faf7f8;color:#222}
+    .wrap{max-width:760px;margin:24px auto;padding:16px}
+    .card{background:#fff;border:1px solid #eee;border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+    h1{margin:0 0 10px;font-size:22px}
+    .muted{color:#666;font-size:13px;line-height:1.6}
+    label{display:block;margin:12px 0 6px;font-weight:700}
+    input,select,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:16px}
+    textarea{min-height:90px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .btn{margin-top:14px;width:100%;padding:12px;border:0;border-radius:10px;font-size:16px;background:#7b3a52;color:#fff}
+    .ok{color:#0a7a3c;font-weight:800}
+    .err{color:#b00020;font-weight:800}
+    .tag{display:inline-block;background:#f2e7ea;border:1px solid #ead6dc;color:#7b3a52;
+         padding:4px 10px;border-radius:999px;font-size:12px;margin-left:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>柚子樂器｜成果展報名 <span id="modeTag" class="tag" style="display:none;"></span></h1>
+      <p class="muted">
+        可先填一半離開，下次回來會自動帶回（同裝置）。送出後也會寄「修改連結」到你的信箱（可跨裝置修改）。
+      </p>
+
+      <form id="f">
+        <label>場次 *</label>
+        <select name="場次" required>
+          <option value="">請選擇</option>
+          <option>下午場 13:00~16:00</option>
+          <option>晚上場 17:30~20:30</option>
+        </select>
+
+        <label>表演項目 *</label>
+        <select name="表演項目" required>
+          <option value="">請選擇</option>
+          <option>熱音樂團</option>
+          <option>輕音樂團</option>
+          <option>吉他彈唱</option>
+          <option>鋼琴獨奏</option>
+          <option>鋼琴雙人</option>
+          <option>小提琴</option>
+          <option>中國笛</option>
+          <option>長笛木笛直笛</option>
+          <option>爵士鼓獨奏</option>
+          <option>鋼琴彈唱</option>
+          <option>二胡</option>
+          <option>琵琶</option>
+          <option>其他</option>
+        </select>
+
+        <label>表演者姓名 / 團名 *</label>
+        <input name="表演者姓名/團名" required placeholder="例：@@吉他社 / @@小提琴中心">
+
+        <div class="row">
+          <div>
+            <label>舞台總表演人數 *</label>
+            <input name="舞台總表演人數" required inputmode="numeric" placeholder="例：2 / 4">
+          </div>
+          <div>
+            <label>聯絡電話 *</label>
+            <input name="聯絡電話" required inputmode="tel" placeholder="例：0952-010146">
+          </div>
+        </div>
+
+        <label>表演歌名/名稱 *</label>
+        <input name="表演歌名/名稱" required placeholder="例：小蜜蜂 / 浪流連">
+
+        <label>聯絡人信箱 *</label>
+        <input name="聯絡人信箱" type="email" required placeholder="example@example.com">
+
+        <label>老師是否一同表演</label>
+        <select name="老師是否一同表演">
+          <option value="">請選擇</option>
+          <option>是</option>
+          <option>否</option>
+        </select>
+
+        <label>老師一起的方式（沒有就留空）</label>
+        <input name="老師一起的方式" placeholder="例：鋼琴伴奏 / 四手聯彈">
+
+        <label>伴奏/表演音樂連結（建議貼 YouTube / Drive 分享連結）</label>
+        <input name="伴奏/表演音樂連結" placeholder="貼連結在這裡">
+
+        <label>老師姓名(代報填)</label>
+        <input name="老師姓名(代報填)" placeholder="例：黃明廷">
+
+        <label>需求/備註</label>
+        <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
+
+        <button class="btn" type="submit" id="btn">送出報名</button>
+        <p id="msg" class="muted"></p>
+      </form>
+    </div>
+  </div>
+
+<script>
+  // ✅ 你提供的 Apps Script Web App URL
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyIrw2PjHkWhlMytY9BmCnXVRsIFOTp3iPAp_2C0rP6gQxe19FvTDSwm7kphUmDjZo_/exec";
+
+  const f = document.getElementById('f');
+  const msg = document.getElementById('msg');
+  const btn = document.getElementById('btn');
+  const modeTag = document.getElementById('modeTag');
+
+  // A：草稿（同裝置回來可續填）
+  const DRAFT_KEY = "yuzu_signup_draft_v1";
+  function saveDraft(){
+    const data = Object.fromEntries(new FormData(f).entries());
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+  }
+  function loadDraft(){
+    const s = localStorage.getItem(DRAFT_KEY);
+    if(!s) return;
+    try{
+      const data = JSON.parse(s);
+      for(const [k,v] of Object.entries(data)){
+        const el = f.elements[k];
+        if(el) el.value = v;
+      }
+    }catch(e){}
+  }
+  f.addEventListener('input', saveDraft);
+  loadDraft();
+
+  // B：修改連結（跨裝置）載入既有資料
+  const qs = new URLSearchParams(location.search);
+  const regId = qs.get("regId");
+  const token = qs.get("token");
+  let mode = "create";
+
+  async function loadExisting(){
+    if(!regId || !token) return;
+    mode = "update";
+    modeTag.style.display = "";
+    modeTag.textContent = "修改模式";
+    msg.textContent = "載入你的資料中…";
+
+    try{
+      const r = await fetch(`${SCRIPT_URL}?regId=${encodeURIComponent(regId)}&token=${encodeURIComponent(token)}`);
+      const j = await r.json();
+      if(j.ok && j.data){
+        for(const [k,v] of Object.entries(j.data)){
+          const el = f.elements[k];
+          if(el) el.value = v;
+        }
+        saveDraft();
+        msg.textContent = "已載入完成，你可以修改後按「送出報名」來更新。";
+        btn.textContent = "更新資料";
+      }else{
+        msg.className = "err";
+        msg.textContent = "載入失敗：修改連結可能無效或已被更換。";
+      }
+    }catch(e){
+      msg.className = "err";
+      msg.textContent = "載入失敗：" + e.message;
+    }
+  }
+  loadExisting();
+
+  f.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    msg.className = "muted";
+    msg.textContent = (mode==="create") ? "送出中…" : "更新中…";
+    btn.disabled = true;
+
+    const data = Object.fromEntries(new FormData(f).entries());
+    data.mode = mode;
+    if(mode === "update"){
+      data.regId = regId;
+      data.token = token;
+    }
+
+    try{
+      const r = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" }, // 避免預檢
+        body: JSON.stringify(data),
+      });
+      const j = await r.json();
+
+      if(j.ok){
+        msg.className = "ok";
+        msg.textContent = (mode==="create")
+          ? "送出成功！請到你的 Email 收「可修改連結」。"
+          : "更新成功！";
+
+        localStorage.removeItem(DRAFT_KEY);
+
+        if(mode === "create"){
+          f.reset();
+        }
+      }else{
+        msg.className = "err";
+        msg.textContent = "失敗：" + (j.error || "unknown");
+      }
+    }catch(e){
+      msg.className = "err";
+      msg.textContent = "送出失敗：" + e.message;
+    }finally{
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
