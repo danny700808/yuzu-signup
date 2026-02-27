@@ -7,7 +7,6 @@
   <style>
     *{ box-sizing:border-box; }
     html, body{ width:100%; overflow-x:hidden; }
-
     body{
       margin:0;
       font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;
@@ -18,6 +17,7 @@
     .card{background:#fff;border:1px solid #eee;border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
     h1{margin:0 0 10px;font-size:22px}
     .muted{color:#666;font-size:13px;line-height:1.6}
+    .notice{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;padding:10px;border-radius:10px;font-size:13px;line-height:1.6}
     label{display:block;margin:12px 0 6px;font-weight:700}
 
     input,select,textarea{
@@ -56,16 +56,13 @@
       padding:12px;border:1px solid #ddd;border-radius:10px;
       font-size:16px;background:#fff;color:#333;cursor:pointer
     }
-
     .ok{color:#0a7a3c;font-weight:800}
     .err{color:#b00020;font-weight:800}
-
     .tag{
       display:inline-block;background:#f2e7ea;border:1px solid #ead6dc;color:#7b3a52;
       padding:4px 10px;border-radius:999px;font-size:12px;margin-left:8px
     }
     .hr{height:1px;background:#eee;margin:14px 0}
-    .notice{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;padding:10px;border-radius:10px;font-size:13px;line-height:1.6}
   </style>
 </head>
 
@@ -75,8 +72,8 @@
       <h1>柚子樂器｜成果展報名 <span id="modeTag" class="tag" style="display:none;"></span></h1>
 
       <div class="notice" style="margin:10px 0 14px;">
-        音檔上傳（選填）：支援 <b>MP3/WAV</b>；<b>MP3 ≤ 15MB、WAV ≤ 80MB</b>。<br>
-        送出後會寄「修改連結」，也可用修改連結補上傳或更新資料。
+        <b>* 為必填欄位。</b> 音檔上傳為選填，可先完成報名，之後再用 Email 的修改連結補上傳。<br>
+        音檔規格（建議）：MP3 ≤ 15MB、WAV ≤ 80MB
       </div>
 
       <form id="f">
@@ -105,12 +102,11 @@
           <option>其他</option>
         </select>
 
-        <!-- ✅ 新增：學生姓名（必填） -->
         <label>學生姓名 *</label>
         <input name="學生姓名" required placeholder="例：王小明">
 
         <label>表演者姓名 / 團名 *</label>
-        <input name="表演者姓名/團名" required placeholder="例：@@吉他社 / @@小提琴中心">
+        <input name="表演者姓名/團名" required placeholder="例：王小明 / @@吉他社">
 
         <div class="row">
           <div>
@@ -127,40 +123,41 @@
         <input name="表演歌名/名稱" required placeholder="例：小蜜蜂 / 浪流連">
 
         <label>聯絡人信箱 *</label>
-        <input name="聯絡人信箱" type="email" required placeholder="example@example.com">
+        <input name="聯絡人信箱" type="email" required placeholder="老師或聯絡人 Email">
 
-        <label>老師是否一同表演</label>
+        <label>老師是否一同表演（選填）</label>
         <select name="老師是否一同表演">
           <option value="">請選擇</option>
           <option>是</option>
           <option>否</option>
         </select>
 
-        <label>老師一起的方式（沒有就留空）</label>
+        <label>老師一起的方式（選填）</label>
         <input name="老師一起的方式" placeholder="例：鋼琴伴奏 / 四手聯彈">
 
-        <label>老師姓名(代報填)</label>
-        <input name="老師姓名(代報填)" placeholder="例：黃明廷">
+        <label>老師姓名(代報填)（選填）</label>
+        <input name="老師姓名(代報填)" placeholder="例：黃老師">
 
-        <label>需求/備註</label>
+        <label>需求/備註（選填）</label>
         <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
 
-        <!-- 修改模式：顯示上傳按鈕與音檔狀態 -->
+        <!-- 修改模式：顯示音檔狀態 -->
         <div id="uploadArea" style="display:none;">
           <div class="hr"></div>
-          <button type="button" id="btnUpload" class="btn2">上傳音檔（MP3/WAV）</button>
+          <div class="muted"><b>音檔上傳（選填）</b>：點按鈕前往上傳表單（系統會自動帶入報名編號）。</div>
+          <button type="button" id="btnUpload" class="btn2">前往上傳音檔</button>
           <div id="uploadHint" class="muted"></div>
         </div>
 
-        <button class="btn" type="submit" id="btn">送出報名</button>
+        <button class="btn" type="submit" id="btn">繼續下一步</button>
         <p id="msg" class="muted"></p>
 
-        <!-- ✅ 兩階段完成嚮導：送出成功後才顯示 -->
+        <!-- 第二步 -->
         <div id="step2" style="display:none;">
           <div class="hr"></div>
           <div class="notice">
             <b>下一步：上傳音檔（選填）</b><br>
-            你可以現在立刻上傳，也可以稍後用 Email 的修改連結補上傳。
+            你可以現在上傳，也可以稍後用 Email 的修改連結補上傳。
           </div>
           <button type="button" class="btn2" id="btnGoUpload">現在上傳音檔</button>
           <button type="button" class="btnGhost" id="btnSkipUpload">我先不上傳（完成）</button>
@@ -171,7 +168,7 @@
   </div>
 
 <script>
-  // ✅ 你的 Apps Script Web App URL（你之前貼的那串）
+  // ✅ 你的 Apps Script Web App URL（保持你目前那串）
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyIrw2PjHkWhlMytY9BmCnXVRsIFOTp3iPAp_2C0rP6gQxe19FvTDSwm7kphUmDjZo_/exec";
 
   const f = document.getElementById('f');
@@ -180,7 +177,7 @@
   const modeTag = document.getElementById('modeTag');
 
   // 草稿（同裝置回來可續填）
-  const DRAFT_KEY = "yuzu_signup_draft_v4";
+  const DRAFT_KEY = "yuzu_signup_draft_v6";
   function saveDraft(){
     const data = Object.fromEntries(new FormData(f).entries());
     localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
@@ -205,21 +202,23 @@
   const token = qs.get("token");
   let mode = "create";
 
-  function showUploadControls_(rid, tok, data){
+  function showUploadControls_(data){
     const uploadArea = document.getElementById("uploadArea");
     uploadArea.style.display = "";
+
+    const uploadUrl = (data && data["音檔上傳連結"] ? String(data["音檔上傳連結"]).trim() : "");
     document.getElementById("btnUpload").onclick = () => {
-      const url = `${SCRIPT_URL}?page=upload&regId=${encodeURIComponent(rid)}&token=${encodeURIComponent(tok)}`;
-      window.open(url, "_blank");
+      if(uploadUrl) window.open(uploadUrl, "_blank");
+      else alert("尚未取得上傳連結，請稍後再試或使用 Email 內的上傳連結。");
     };
 
     const link = (data && data["音檔連結"] ? String(data["音檔連結"]).trim() : "");
     const fname = (data && data["音檔檔名"] ? String(data["音檔檔名"]).trim() : "");
     const hint = document.getElementById("uploadHint");
     if(link){
-      hint.innerHTML = `目前已上傳：<a href="${link}" target="_blank">${fname || "開啟音檔"}</a>`;
+      hint.innerHTML = `目前已整理的音檔：<a href="${link}" target="_blank">${fname || "開啟音檔"}</a>`;
     }else{
-      hint.textContent = "目前尚未上傳音檔（可之後再補）。";
+      hint.textContent = "目前尚未整理到音檔（系統每 1 小時整理一次；若剛上傳請稍後再回來看）。";
     }
   }
 
@@ -252,10 +251,10 @@
         saveDraft();
 
         msg.className = "muted";
-        msg.textContent = "已載入完成，你可以修改後按「更新資料」。更新後也會寄一張「修改確認單 PDF」到信箱。";
+        msg.textContent = "已載入完成，可修改後按「更新資料」。";
         btn.textContent = "更新資料";
 
-        showUploadControls_(regId, token, j.data);
+        showUploadControls_(j.data);
       }else{
         msg.className = "err";
         msg.textContent = "載入失敗：修改連結可能無效。";
@@ -294,38 +293,38 @@
 
         if(mode === "create"){
           msg.innerHTML =
-            "✅ 基本資料已送出！我們已寄出「報名確認單 PDF」到你的信箱。<br>" +
-            "接下來你可以選擇是否上傳音檔（選填）。";
+            "✅ 基本資料已完成！我們已寄出確認信到你的信箱。<br>" +
+            "接下來可選擇是否上傳音檔（選填）。";
 
-          // 切換成修改模式（不必等信）
+          // 切成修改模式（不必等信）
           mode = "update";
           modeTag.style.display = "";
           modeTag.textContent = "修改模式";
           btn.textContent = "更新資料";
 
-          // 更新網址，避免重新整理丟 regId/token
+          // 更新 URL
           const newUrl = `${location.pathname}?regId=${encodeURIComponent(j.regId)}&token=${encodeURIComponent(j.token)}`;
           history.replaceState(null, "", newUrl);
 
-          // 顯示上傳控制（此時音檔可能還沒有）
-          showUploadControls_(j.regId, j.token, {});
-
-          // 顯示第二步（你選的 A：下一步上傳）
+          // 顯示第二步
           const step2 = document.getElementById("step2");
           const step2Hint = document.getElementById("step2Hint");
           step2.style.display = "";
-          step2Hint.textContent = "如果你現在不上傳，也可以之後用 Email 的修改連結補上傳。";
+          step2Hint.textContent = "你也可以稍後用 Email 內的連結補上傳。";
 
           document.getElementById("btnGoUpload").onclick = () => {
-            const upUrl = `${SCRIPT_URL}?page=upload&regId=${encodeURIComponent(j.regId)}&token=${encodeURIComponent(j.token)}`;
-            window.open(upUrl, "_blank");
+            if(j.audio_upload_url) window.open(j.audio_upload_url, "_blank");
+            else alert("尚未取得上傳連結，請稍後再試或使用 Email 內的上傳連結。");
           };
           document.getElementById("btnSkipUpload").onclick = () => {
-            step2Hint.innerHTML = "✅ 已完成報名。你之後仍可用 Email 的修改連結補上傳音檔。";
+            step2Hint.innerHTML = "✅ 已完成報名。之後仍可用 Email 的修改連結補上傳音檔。";
           };
 
+          // 讓修改模式也能看到上傳入口
+          showUploadControls_({ "音檔上傳連結": j.audio_upload_url || "" });
+
         } else {
-          msg.textContent = "✅ 更新成功！我們也已寄出「修改確認單 PDF」到信箱。";
+          msg.textContent = "✅ 更新成功！";
         }
 
         localStorage.removeItem(DRAFT_KEY);
