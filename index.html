@@ -1,566 +1,580 @@
-<!doctype html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>柚子樂器成果展｜報名</title>
-  <style>
-    *{ box-sizing:border-box; }
-    html,body{ width:100%; overflow-x:hidden; }
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;
-      background:#faf7f8;
-      color:#222;
-    }
-    .wrap{ max-width:860px; margin:24px auto; padding:16px; }
-    .card{
-      background:#fff;
-      border:1px solid #eee;
-      border-radius:16px;
-      padding:18px;
-      box-shadow:0 8px 22px rgba(0,0,0,.06);
-    }
-    h1{ margin:0 0 10px; font-size:22px; }
-    .muted{ color:#666; font-size:13px; line-height:1.6; white-space:pre-wrap; }
-    label{ display:block; margin:12px 0 6px; font-weight:800; }
-    input,select,textarea{
-      width:100%;
-      max-width:100%;
-      display:block;
-      padding:12px;
-      border:1px solid #ddd;
-      border-radius:12px;
-      font-size:16px;
-      background:#fff;
-      outline:none;
-    }
-    input:focus,select:focus,textarea:focus{ border-color:#caa0ae; box-shadow:0 0 0 3px rgba(202,160,174,.25); }
-    textarea{ min-height:90px; resize:vertical; }
-    .row{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-      gap:12px;
-    }
-    @media (max-width:640px){ .row{ grid-template-columns:1fr; } }
+/********************
+ * 柚子樂器成果展｜報名後台（Web App）
+ * modes:
+ * - create（新建一筆）
+ * - get（信箱連結回來讀資料）
+ * - update（覆蓋同一筆）
+ * - startUpload / uploadChunk（音檔分段上傳）
+ *
+ * ✅ PDF：不放 Logo（依你要求）
+ * ✅ 信件/ PDF 內的修改連結：用「點此回到修改頁」短連結文字，不顯示長 URL
+ ********************/
 
-    .btn{
-      margin-top:14px;
-      width:100%;
-      padding:12px;
-      border:0;
-      border-radius:12px;
-      font-size:16px;
-      background:#7b3a52;
-      color:#fff;
-      cursor:pointer;
-    }
-    .btn:disabled{ opacity:.6; cursor:not-allowed; }
+var VERSION = "YUZU-WEBAPP-2026-02-28-02";
 
-    .btn2{
-      margin-top:10px;
-      width:100%;
-      padding:12px;
-      border:0;
-      border-radius:12px;
-      font-size:16px;
-      background:#2f8f7b;
-      color:#fff;
-      cursor:pointer;
-    }
-    .btn2:disabled{ opacity:.6; cursor:not-allowed; }
+var SPREADSHEET_ID = "1FML5k129dClw3oCPcmobdUEnseQ0xwQrsyAXeZY7GpU";
+var SHEET_NAME = "柚子樂器成果展報名表";
+var SITE_BASE_URL = "https://danny700808.github.io/yuzu-signup/";
+var TZ = "Asia/Taipei";
 
-    .btnGhost{
-      margin-top:10px;
-      width:100%;
-      padding:12px;
-      border:1px solid #ddd;
-      border-radius:12px;
-      font-size:16px;
-      background:#fff;
-      color:#333;
-      cursor:pointer;
-    }
+var SAFE_AUDIO_FOLDER_ID = "1BYKuHkxhPaw0Z_k2AWUQTlk54JvEygRy";
+var OLD_BACKUP_FOLDER_ID = "1uDC-l2WCh5rgKlJDRJklaD9IKXwjPm2P";
+var CANCEL_BACKUP_FOLDER_ID = "18BNFKNS6aHUJ8uoLfesSOfH48xfwA8dc";
 
-    .ok{ color:#0a7a3c; font-weight:900; }
-    .err{ color:#b00020; font-weight:900; }
+var ADMIN_NOTIFY_EMAIL = ""; // 可留空
 
-    .box{
-      background:#f6fbf9;
-      border:1px solid #d7efe7;
-      border-radius:12px;
-      padding:12px;
-      margin-top:14px;
-    }
-    .hr{ height:1px; background:#eee; margin:14px 0; }
-    .bar{ width:100%; height:14px; }
-    code{ background:#f6f6f6; padding:2px 6px; border-radius:8px; }
+// 店家資訊（依你提供）
+var STORE_NAME = "柚子樂器";
+var STORE_ADDR = "台中市豐原區圓環東路347號";
+var STORE_TEL  = "04-25227893";
+var STORE_LINE = "@love12345（官方Line）";
 
-    /* ✅ 完成彈窗 */
-    .modalMask{
-      position:fixed; inset:0;
-      background:rgba(0,0,0,.45);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-      z-index:9999;
-    }
-    .modal{
-      width:min(520px, 100%);
-      background:#fff;
-      border-radius:16px;
-      border:1px solid #eee;
-      box-shadow:0 18px 40px rgba(0,0,0,.25);
-      padding:16px;
-    }
-    .modal h3{ margin:0 0 8px; font-size:18px; }
-    .modal .actions{ display:flex; gap:10px; margin-top:12px; }
-    .modal .actions button{ flex:1; }
-  </style>
-</head>
-
-<body>
-<div class="wrap">
-  <div class="card">
-    <h1>柚子樂器成果展｜報名</h1>
-    <p class="muted" id="topHint">
-      送出基本資料後，會直接出現「上傳 MP3」區塊（≤ 20MB）。\n
-      檔名會自動改成：學生姓名_歌名_報名編號.mp3（學生不用自己改檔名）。
-    </p>
-
-    <form id="f">
-      <label>場次 *</label>
-      <select name="場次" required>
-        <option value="">請選擇</option>
-        <option>下午場 13:00~16:00</option>
-        <option>晚上場 17:30~20:30</option>
-      </select>
-
-      <label>表演項目 *</label>
-      <select name="表演項目" required>
-        <option value="">請選擇</option>
-        <option>熱音樂團</option>
-        <option>輕音樂團</option>
-        <option>吉他彈唱</option>
-        <option>鋼琴獨奏</option>
-        <option>鋼琴雙人</option>
-        <option>小提琴</option>
-        <option>中國笛</option>
-        <option>長笛木笛直笛</option>
-        <option>爵士鼓獨奏</option>
-        <option>鋼琴彈唱</option>
-        <option>二胡</option>
-        <option>琵琶</option>
-        <option>其他</option>
-      </select>
-
-      <label>學生姓名 *</label>
-      <input name="學生姓名" required placeholder="例：王小明">
-
-      <label>表演者姓名 / 團名 *</label>
-      <input name="表演者姓名/團名" required placeholder="例：@@吉他社 / @@小提琴中心">
-
-      <div class="row">
-        <div>
-          <label>舞台總表演人數 *</label>
-          <input name="舞台總表演人數" required inputmode="numeric" placeholder="例：2 / 4">
-        </div>
-        <div>
-          <label>聯絡電話 *</label>
-          <input name="聯絡電話" required inputmode="tel" placeholder="例：0952-010146">
-        </div>
-      </div>
-
-      <label>表演歌名/名稱 *</label>
-      <input name="表演歌名/名稱" required placeholder="例：浪流連">
-
-      <label>聯絡人信箱（老師代報也填老師信箱） *</label>
-      <input name="聯絡人信箱" type="email" required placeholder="example@example.com">
-
-      <label>老師是否一同表演</label>
-      <select name="老師是否一同表演">
-        <option value="">請選擇</option>
-        <option>是</option>
-        <option>否</option>
-      </select>
-
-      <label>老師一起的方式（沒有就留空）</label>
-      <input name="老師一起的方式" placeholder="例：鋼琴伴奏">
-
-      <label>老師姓名(代報填)</label>
-      <input name="老師姓名(代報填)" placeholder="例：黃明廷">
-
-      <label>需求/備註</label>
-      <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
-
-      <button class="btn" type="submit" id="btnSubmit">送出報名</button>
-      <p id="msg" class="muted"></p>
-
-      <!-- ✅ 上傳區（報名成功/修改模式都會顯示） -->
-      <div class="box" id="audioBox" style="display:none;">
-        <div class="muted" id="audioInfo"></div>
-        <div class="hr"></div>
-
-        <label style="margin-top:0;">上傳 MP3（≤ 20MB）</label>
-
-        <!-- ✅ 把選檔放更顯眼 -->
-        <input id="audioFile" type="file" accept="audio/mpeg,.mp3">
-        <div class="muted" id="fileMeta"></div>
-
-        <button type="button" class="btn2" id="btnUpload">上傳音檔</button>
-        <button type="button" class="btnGhost" id="btnSkip">先不上傳（完成）</button>
-
-        <div style="margin-top:10px;">
-          <progress id="prog" class="bar" value="0" max="100"></progress>
-          <div class="muted" id="progText">等待上傳…</div>
-        </div>
-
-        <p id="audioMsg" class="muted"></p>
-
-        <div class="hr"></div>
-        <p class="muted">
-          若檔案超過 20MB，請先轉檔/壓縮後再上傳。\n
-          你可以在 Google 搜尋「MP3 轉檔」快速找到工具。
-        </p>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- ✅ 完成彈窗 -->
-<div class="modalMask" id="doneMask">
-  <div class="modal">
-    <h3>✅ 音檔上傳完成</h3>
-    <div class="muted" id="doneText"></div>
-    <div class="actions">
-      <button class="btn2" id="btnDoneOpen" type="button">檢視音檔</button>
-      <button class="btnGhost" id="btnDoneClose" type="button">關閉</button>
-    </div>
-  </div>
-</div>
-
-<script>
-  // ✅ 換成你目前「有效」的 Web App /exec（你最新部署那條）
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyeOeFb5TpiWga7GecrRbUA9x3W-cMGdT5XA5vQetjZYKWAl0_RhrDYuFXOBxW2bXXP/exec";
-
-  const f = document.getElementById("f");
-  const msg = document.getElementById("msg");
-  const btnSubmit = document.getElementById("btnSubmit");
-
-  const audioBox = document.getElementById("audioBox");
-  const audioInfo = document.getElementById("audioInfo");
-  const audioFile = document.getElementById("audioFile");
-  const btnUpload = document.getElementById("btnUpload");
-  const btnSkip = document.getElementById("btnSkip");
-  const audioMsg = document.getElementById("audioMsg");
-  const fileMeta = document.getElementById("fileMeta");
-
-  const prog = document.getElementById("prog");
-  const progText = document.getElementById("progText");
-
-  const doneMask = document.getElementById("doneMask");
-  const doneText = document.getElementById("doneText");
-  const btnDoneOpen = document.getElementById("btnDoneOpen");
-  const btnDoneClose = document.getElementById("btnDoneClose");
-
-  let editMode = false;
-  let current = { regId:"", token:"", student:"", song:"", fileUrl:"" };
-
-  function setProg(pct, text){
-    prog.value = Math.max(0, Math.min(100, pct));
-    progText.textContent = text || `${prog.value}%`;
+function doGet(e){
+  if (e && e.parameter && e.parameter.debug === "1") {
+    return json_({
+      ok: true,
+      version: VERSION,
+      ts: new Date().toISOString(),
+      got: e.parameter || {}
+    });
   }
-
-  function resetUploadUI(){
-    setProg(0, "等待上傳…");
-    audioMsg.className = "muted";
-    audioMsg.textContent = "";
-    btnUpload.disabled = false;
+  if (e && e.parameter && e.parameter.auth === "1") {
+    var r = UrlFetchApp.fetch("https://www.googleapis.com/drive/v3/about?fields=user", {
+      headers: { Authorization: "Bearer " + ScriptApp.getOAuthToken() },
+      muteHttpExceptions: true
+    });
+    return json_({ ok:true, version: VERSION, auth:true, code:r.getResponseCode(), body:r.getContentText() });
   }
+  return json_({ ok:true, version: VERSION, ts:new Date().toISOString() });
+}
 
-  function mb(n){ return (n / (1024*1024)); }
-  function fmtMB(n){ return (Math.round(mb(n)*100)/100).toFixed(2); }
+function doPost(e){
+  try{
+    var body = JSON.parse((e && e.postData && e.postData.contents) || "{}");
+    var mode = String(body.mode || "").trim();
 
-  function showDoneModal(fileName, fileUrl){
-    current.fileUrl = fileUrl || "";
-    doneText.textContent = `檔名：${fileName || ""}\n報名編號：${current.regId}`;
-    btnDoneOpen.disabled = !current.fileUrl;
-    doneMask.style.display = "flex";
+    if(mode === "create") return json_(create_(body));
+    if(mode === "get") return json_(get_(body));
+    if(mode === "update") return json_(update_(body));
+    if(mode === "startUpload") return json_(startUpload_(body));
+    if(mode === "uploadChunk") return json_(uploadChunk_(body));
+
+    return json_({ ok:false, version: VERSION, error:"unsupported mode" });
+  }catch(err){
+    return json_({ ok:false, version: VERSION, error:String(err) });
   }
-  btnDoneClose.addEventListener("click", ()=> doneMask.style.display="none");
-  btnDoneOpen.addEventListener("click", ()=>{
-    if(current.fileUrl) window.open(current.fileUrl, "_blank", "noreferrer");
+}
+
+/************** create **************/
+function create_(body){
+  var sh = sheet_();
+  var header = getHeader_(sh);
+  var map = headerToMap_(header);
+
+  var studentName = String(body["學生姓名"]||"").trim();
+  var email = String(body["聯絡人信箱"]||"").trim();
+  var song = String(body["表演歌名/名稱"]||"").trim();
+  var session = String(body["場次"]||"").trim();
+
+  if(!studentName) return { ok:false, version: VERSION, error:"缺少：學生姓名" };
+  if(!email) return { ok:false, version: VERSION, error:"缺少：聯絡人信箱" };
+  if(!song) return { ok:false, version: VERSION, error:"缺少：表演歌名/名稱" };
+  if(!session) return { ok:false, version: VERSION, error:"缺少：場次" };
+
+  var regId = genRegId_();
+  var token = genToken_();
+  var now = new Date();
+
+  var row = new Array(header.length);
+  for (var i=0;i<row.length;i++) row[i] = "";
+
+  setByHeader_(row, map, "建立時間", now);
+  setByHeader_(row, map, "修改時間", "");
+  setByHeader_(row, map, "報名編號", regId);
+  setByHeader_(row, map, "修改金鑰", token);
+
+  writeFormToRow_(row, map, body);
+
+  setByHeader_(row, map, "狀態", "正常");
+  setByHeader_(row, map, "取消時間", "");
+
+  setByHeader_(row, map, "音檔連結", "");
+  setByHeader_(row, map, "音檔檔名", "");
+  setByHeader_(row, map, "音檔更新時間", "");
+
+  sh.appendRow(row);
+
+  // 寄信（主旨：學生+歌名最醒目）
+  sendMailWithPdf_({
+    type: "create",
+    regId: regId,
+    token: token,
+    to: email,
+    data: body
   });
 
-  function getQuery(){
-    const p = new URLSearchParams(location.search);
-    return {
-      regId: (p.get("regId") || "").trim(),
-      token: (p.get("token") || "").trim()
-    };
+  if(ADMIN_NOTIFY_EMAIL){
+    MailApp.sendEmail(
+      ADMIN_NOTIFY_EMAIL,
+      "【新報名】" + studentName + "｜" + song,
+      "編號：" + regId + "\n學生：" + studentName + "\n歌名：" + song + "\n場次：" + session
+    );
   }
 
-  async function initFromQuery(){
-    const q = getQuery();
-    if(!q.regId || !q.token) return;
+  return { ok:true, version: VERSION, regId: regId, token: token };
+}
 
-    editMode = true;
-    btnSubmit.textContent = "儲存修改（覆蓋）";
-    msg.className = "muted";
-    msg.textContent = "讀取已報名資料中…";
+/************** get（信箱回來載入） **************/
+function get_(body){
+  var regId = String(body.regId||"").trim();
+  var token = String(body.token||"").trim();
+  if(!regId || !token) return { ok:false, version: VERSION, error:"缺少 regId/token" };
 
+  var found = findRowByRegId_(regId);
+  if(!found.ok){ found.version = VERSION; return found; }
+
+  if(String(found.data["修改金鑰"]||"") !== token) return { ok:false, version: VERSION, error:"修改金鑰不正確" };
+
+  return {
+    ok:true,
+    version: VERSION,
+    regId: regId,
+    token: token,
+    data: pickFormFields_(found.data),
+    audio: {
+      fileUrl: String(found.data["音檔連結"]||"").trim(),
+      fileName: String(found.data["音檔檔名"]||"").trim(),
+      updatedAt: found.data["音檔更新時間"] || ""
+    }
+  };
+}
+
+/************** update（覆蓋同一筆） **************/
+function update_(body){
+  var regId = String(body.regId||"").trim();
+  var token = String(body.token||"").trim();
+  if(!regId || !token) return { ok:false, version: VERSION, error:"缺少 regId/token" };
+
+  var found = findRowByRegId_(regId);
+  if(!found.ok){ found.version = VERSION; return found; }
+  if(String(found.data["修改金鑰"]||"") !== token) return { ok:false, version: VERSION, error:"修改金鑰不正確" };
+
+  var sh = sheet_();
+  var header = found.header;
+
+  writeFormToSheetRow_(sh, found.rowNumber, header, body);
+  setRowCellByHeader_(sh, found.rowNumber, header, "修改時間", new Date());
+
+  // 更新後寄信（老師可快速辨識）
+  var updated = findRowByRegId_(regId);
+  var email = String(updated.data["聯絡人信箱"]||"").trim();
+
+  sendMailWithPdf_({
+    type: "update",
+    regId: regId,
+    token: token,
+    to: email,
+    data: pickFormFields_(updated.data)
+  });
+
+  return { ok:true, version: VERSION, regId: regId, token: token };
+}
+
+/************** startUpload **************/
+function startUpload_(body){
+  var regId = String(body.regId||"").trim();
+  var token = String(body.token||"").trim();
+  var totalBytes = Number(body.totalBytes||0);
+  var originalName = String(body.originalName||"").trim();
+
+  if(!regId || !token) return { ok:false, version: VERSION, error:"缺少 regId/token" };
+  if(!totalBytes || totalBytes <= 0) return { ok:false, version: VERSION, error:"缺少 totalBytes" };
+  if(totalBytes > 20*1024*1024) return { ok:false, version: VERSION, error:"檔案太大，MP3 請勿超過 20MB" };
+
+  var found = findRowByRegId_(regId);
+  if(!found.ok){ found.version = VERSION; return found; }
+
+  if(String(found.data["修改金鑰"]||"") !== token) return { ok:false, version: VERSION, error:"修改金鑰不正確" };
+  if(String(found.data["狀態"]||"") === "取消") return { ok:false, version: VERSION, error:"此報名已取消，不能上傳" };
+
+  var lower = originalName.toLowerCase();
+  if(lower.indexOf(".mp3", lower.length - 4) === -1) return { ok:false, version: VERSION, error:"只接受 MP3（.mp3）" };
+
+  var student = safeName_(found.data["學生姓名"] || "學生");
+  var song = safeName_(found.data["表演歌名/名稱"] || "曲名");
+  var finalName = (student + "_" + song + "_" + regId + ".mp3").replace(/\.+/g,".");
+
+  var url = "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true";
+  var meta = { name: finalName, parents: [SAFE_AUDIO_FOLDER_ID], mimeType:"audio/mpeg" };
+
+  var resp = UrlFetchApp.fetch(url, {
+    method: "post",
+    contentType: "application/json; charset=utf-8",
+    payload: JSON.stringify(meta),
+    headers: {
+      Authorization: "Bearer " + ScriptApp.getOAuthToken(),
+      "X-Upload-Content-Type": "audio/mpeg",
+      "X-Upload-Content-Length": String(totalBytes)
+    },
+    muteHttpExceptions: true
+  });
+
+  var code = resp.getResponseCode();
+  var headers = resp.getAllHeaders();
+  var uploadUrl = getHeaderCI_(headers, "Location");
+  var detail = resp.getContentText();
+
+  if(code !== 200 && code !== 201){
+    return { ok:false, version: VERSION, error:"建立上傳通道失敗（HTTP " + code + "）", detail: detail };
+  }
+  if(!uploadUrl){
+    return { ok:false, version: VERSION, error:"建立上傳通道失敗（找不到 Location）", detail: detail };
+  }
+
+  return { ok:true, version: VERSION, uploadUrl: uploadUrl, finalName: finalName, totalBytes: totalBytes };
+}
+
+/************** uploadChunk **************/
+function uploadChunk_(body){
+  var regId = String(body.regId||"").trim();
+  var token = String(body.token||"").trim();
+  var uploadUrl = String(body.uploadUrl||"").trim();
+
+  var start = Number(body.start);
+  var end = Number(body.end);
+  var total = Number(body.total);
+  var chunkB64 = String(body.chunkBase64||"");
+
+  if(!regId || !token) return { ok:false, version: VERSION, error:"缺少 regId/token" };
+  if(!uploadUrl) return { ok:false, version: VERSION, error:"缺少 uploadUrl" };
+  if(!chunkB64) return { ok:false, version: VERSION, error:"缺少 chunkBase64" };
+  if(!(start>=0) || !(end>=start) || !(total>0)) return { ok:false, version: VERSION, error:"chunk range 不正確" };
+
+  var found = findRowByRegId_(regId);
+  if(!found.ok){ found.version = VERSION; return found; }
+  if(String(found.data["修改金鑰"]||"") !== token) return { ok:false, version: VERSION, error:"修改金鑰不正確" };
+
+  var bytes = Utilities.base64Decode(chunkB64);
+  var expectedLen = (end - start + 1);
+  if(bytes.length !== expectedLen){
+    return { ok:false, version: VERSION, error:"chunk bytes 長度不符：got=" + bytes.length + " expected=" + expectedLen };
+  }
+
+  var contentRange = "bytes " + start + "-" + end + "/" + total;
+
+  var resp = UrlFetchApp.fetch(uploadUrl, {
+    method: "put",
+    payload: bytes,
+    headers: {
+      Authorization: "Bearer " + ScriptApp.getOAuthToken(),
+      "Content-Range": contentRange,
+      "Content-Type": "application/octet-stream"
+    },
+    muteHttpExceptions: true
+  });
+
+  var code = resp.getResponseCode();
+  var text = resp.getContentText();
+
+  if(code === 308){
+    return { ok:true, version: VERSION, done:false };
+  }
+
+  if(code === 200 || code === 201){
+    var fileObj = JSON.parse(text || "{}");
+    var fileId = fileObj.id;
+    var fileName = fileObj.name || "";
+
+    // 舊檔備份
+    var oldUrl = String(found.data["音檔連結"]||"").trim();
+    var oldId = extractDriveId_(oldUrl);
+    if(oldId){
+      try{
+        var oldFile = DriveApp.getFileById(oldId);
+        DriveApp.getFolderById(OLD_BACKUP_FOLDER_ID).addFile(oldFile);
+        try{ DriveApp.getFolderById(SAFE_AUDIO_FOLDER_ID).removeFile(oldFile); }catch(e){}
+      }catch(e){}
+    }
+
+    // 設公開可檢視
     try{
-      const j = await fetch(SCRIPT_URL, {
-        method:"POST",
-        headers:{ "Content-Type":"text/plain;charset=utf-8" },
-        body: JSON.stringify({ mode:"get", regId:q.regId, token:q.token })
-      }).then(r=>r.json());
+      var f = DriveApp.getFileById(fileId);
+      f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    }catch(e){}
 
-      if(!j.ok) throw new Error(j.error || "讀取失敗");
+    // 回寫 Sheet
+    var sh = sheet_();
+    var header = found.header;
+    var fileUrl = "https://drive.google.com/file/d/" + fileId + "/view";
 
-      const data = j.data || {};
-      for(const k in data){
-        const el = f.querySelector(`[name="${k}"]`);
-        if(el) el.value = data[k];
-      }
+    setRowCellByHeader_(sh, found.rowNumber, header, "音檔連結", fileUrl);
+    setRowCellByHeader_(sh, found.rowNumber, header, "音檔檔名", fileName);
+    setRowCellByHeader_(sh, found.rowNumber, header, "音檔更新時間", new Date());
 
-      current.regId = q.regId;
-      current.token = q.token;
-      current.student = (data["學生姓名"]||"").trim();
-      current.song = (data["表演歌名/名稱"]||"").trim();
-
-      audioBox.style.display = "";
-      audioInfo.innerHTML =
-        `（修改模式）報名編號：<b>${current.regId}</b><br>` +
-        `學生：<b>${current.student}</b>　歌名：<b>${current.song}</b><br>` +
-        `檔名會自動改成：<code>${current.student}_${current.song}_${current.regId}.mp3</code><br>` +
-        (j.audio && j.audio.fileUrl ? `目前音檔：<a href="${j.audio.fileUrl}" target="_blank" rel="noreferrer">點我檢視</a>` : `目前音檔：尚未上傳`);
-
-      msg.className = "ok";
-      msg.textContent = "✅ 已進入修改模式：可直接覆蓋資料，音檔也可重傳覆蓋。";
-      resetUploadUI();
-    }catch(e){
-      msg.className = "err";
-      msg.textContent = "讀取失敗：" + e.message;
-    }
+    return { ok:true, version: VERSION, done:true, fileId:fileId, fileName:fileName, fileUrl:fileUrl };
   }
 
-  // 送出 / 儲存修改（同一顆按鈕）
-  f.addEventListener("submit", async (ev) => {
-    ev.preventDefault();
-    msg.className = "muted";
-    msg.textContent = editMode ? "儲存修改中…" : "送出中…";
-    btnSubmit.disabled = true;
+  return { ok:false, version: VERSION, error:"上傳分段失敗（HTTP " + code + "）", detail:text };
+}
 
-    const data = Object.fromEntries(new FormData(f).entries());
+/************** 寄信 + PDF（短連結文字） **************/
+function sendMailWithPdf_(opt){
+  var regId = opt.regId;
+  var token = opt.token;
+  var to = opt.to;
 
-    if(editMode){
-      data.mode = "update";
-      data.regId = current.regId;
-      data.token = current.token;
-    }else{
-      data.mode = "create";
-    }
+  var student = String(opt.data["學生姓名"]||"").trim();
+  var song = String(opt.data["表演歌名/名稱"]||"").trim();
+  var session = String(opt.data["場次"]||"").trim();
 
-    try{
-      const j = await fetch(SCRIPT_URL, {
-        method:"POST",
-        headers:{ "Content-Type":"text/plain;charset=utf-8" },
-        body: JSON.stringify(data)
-      }).then(r=>r.json());
+  var editUrl = SITE_BASE_URL + "index.html?regId=" + encodeURIComponent(regId) + "&token=" + encodeURIComponent(token);
 
-      if(!j.ok) throw new Error(j.error || "unknown");
+  var subjectPrefix = (opt.type === "update") ? "【成果展資料已更新】" : "【成果展報名成功】";
+  var subject = subjectPrefix + student + "｜" + song + "｜" + session + "（" + regId + "）";
 
-      msg.className = "ok";
-      msg.textContent = editMode
-        ? "✅ 修改已儲存（已覆蓋原資料）。下面可重傳音檔覆蓋。"
-        : "✅ 基本資料已送出！下面可直接上傳 MP3。";
+  var html = "";
+  html += "<div style='font-family:system-ui,-apple-system,Segoe UI,Arial;line-height:1.7'>";
+  html += "<div style='padding:12px;border:1px solid #e5e7eb;border-radius:12px;background:#f8fafc'>";
+  html += "<div style='font-size:16px;font-weight:800'>學生：" + esc_(student) + "　｜　歌名：" + esc_(song) + "</div>";
+  html += "<div style='margin-top:4px;color:#475569'>場次：" + esc_(session) + "　｜　報名編號：" + esc_(regId) + "</div>";
+  html += "</div>";
 
-      // 建立 current（新建或更新後都要刷新）
-      current.regId = j.regId || current.regId;
-      current.token = j.token || current.token;
-      current.student = (data["學生姓名"]||"").trim();
-      current.song = (data["表演歌名/名稱"]||"").trim();
-
-      audioBox.style.display = "";
-      audioInfo.innerHTML =
-        `報名編號：<b>${current.regId}</b><br>` +
-        `學生：<b>${current.student}</b>　歌名：<b>${current.song}</b><br>` +
-        `檔名會自動改成：<code>${current.student}_${current.song}_${current.regId}.mp3</code>`;
-
-      resetUploadUI();
-
-      // 新建成功後：把按鈕淡出（避免不直覺）
-      if(!editMode){
-        btnSubmit.style.opacity = "0.35";
-        btnSubmit.disabled = true;
-      }
-
-      // 捲到上傳區
-      audioBox.scrollIntoView({ behavior:"smooth", block:"start" });
-
-    }catch(e){
-      msg.className = "err";
-      msg.textContent = (editMode ? "儲存失敗：" : "送出失敗：") + e.message;
-    }finally{
-      if(editMode) btnSubmit.disabled = false;
-    }
-  });
-
-  btnSkip.addEventListener("click", () => {
-    audioMsg.className = "ok";
-    audioMsg.textContent = "✅ 已完成（可之後再用信件連結回來補上傳/修改/重傳覆蓋）。";
-  });
-
-  // 選檔後顯示大小
-  audioFile.addEventListener("change", ()=>{
-    const file = audioFile.files && audioFile.files[0];
-    if(!file){ fileMeta.textContent=""; return; }
-
-    const sizeMB = fmtMB(file.size);
-    fileMeta.textContent = `已選擇：${file.name}（${sizeMB} MB）`;
-
-    if(file.size > 20*1024*1024){
-      fileMeta.textContent += `\n⚠️ 超過 20 MB，請先轉檔/壓縮後再上傳（可在 Google 搜尋「MP3 轉檔」）。`;
-    }
-  });
-
-  // ArrayBuffer -> base64（較穩）
-  function arrayBufferToBase64(buf){
-    const bytes = new Uint8Array(buf);
-    let bin = "";
-    const step = 0x8000; // 32KB
-    for(let i=0;i<bytes.length;i+=step){
-      bin += String.fromCharCode(...bytes.subarray(i, i+step));
-    }
-    return btoa(bin);
+  html += "<p style='margin:12px 0 6px;font-weight:800'>本次報名資料（摘要）</p>";
+  html += "<table style='width:100%;border-collapse:collapse;font-size:14px'>";
+  var fields = formFieldList_();
+  for (var i=0;i<fields.length;i++){
+    var k = fields[i];
+    var v = String(opt.data[k]||"");
+    html += "<tr>";
+    html += "<td style='width:36%;padding:8px;border:1px solid #e5e7eb;background:#f9fafb;font-weight:700'>" + esc_(k) + "</td>";
+    html += "<td style='padding:8px;border:1px solid #e5e7eb'>" + esc_(v) + "</td>";
+    html += "</tr>";
   }
+  html += "</table>";
 
-  btnUpload.addEventListener("click", async () => {
-    audioMsg.className = "muted";
-    audioMsg.textContent = "";
+  html += "<p style='margin:12px 0 0'>如需修改資料或重傳音檔（覆蓋舊資料），請點此：</p>";
+  html += "<p><a href='" + editUrl + "' style='font-weight:800'>點此回到修改頁</a></p>";
+  html += "<p style='color:#64748b'>附件為正式報名確認單 PDF（含完整資料與音檔狀態）。</p>";
+  html += "</div>";
 
-    if(!current.regId || !current.token){
-      audioMsg.className = "err";
-      audioMsg.textContent = "請先送出/讀取報名資料。";
-      return;
-    }
+  var pdfBlob = buildPdf_(regId, token);
 
-    const file = audioFile.files && audioFile.files[0];
-    if(!file){
-      audioMsg.className = "err";
-      audioMsg.textContent = "請先選擇 MP3 檔案。";
-      return;
-    }
-
-    const maxBytes = 20 * 1024 * 1024;
-    if(file.size > maxBytes){
-      audioMsg.className = "err";
-      audioMsg.textContent =
-        `檔案太大：目前 ${fmtMB(file.size)} MB，超過 20 MB，請先轉檔/壓縮後再上傳。\n` +
-        `你可以在 Google 搜尋「MP3 轉檔」。`;
-      return;
-    }
-
-    const lowerName = (file.name || "").toLowerCase();
-    const isMp3 = (file.type === "audio/mpeg") || lowerName.endsWith(".mp3");
-    if(!isMp3){
-      audioMsg.className = "err";
-      audioMsg.textContent = "只接受 MP3（.mp3）。";
-      return;
-    }
-
-    btnUpload.disabled = true;
-
-    try{
-      setProg(0, "建立上傳通道…");
-
-      const startRes = await fetch(SCRIPT_URL, {
-        method:"POST",
-        headers:{ "Content-Type":"text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          mode:"startUpload",
-          regId: current.regId,
-          token: current.token,
-          totalBytes: file.size,
-          originalName: file.name
-        })
-      }).then(r => r.json());
-
-      if(!startRes.ok){
-        throw new Error((startRes.error || "建立上傳通道失敗") + (startRes.detail ? ("\n" + startRes.detail) : ""));
-      }
-
-      const uploadUrl = startRes.uploadUrl;
-      const finalName = startRes.finalName;
-
-      const chunkSize = 1024 * 1024; // 1MB
-      let offset = 0;
-
-      while(offset < file.size){
-        const next = Math.min(offset + chunkSize, file.size);
-        const blob = file.slice(offset, next);
-        const buf = await blob.arrayBuffer();
-        const chunkB64 = arrayBufferToBase64(buf);
-
-        const start = offset;
-        const end = next - 1;
-
-        const pct = Math.round((next / file.size) * 100);
-        setProg(pct, `上傳中… ${pct}%`);
-
-        const chunkRes = await fetch(SCRIPT_URL, {
-          method:"POST",
-          headers:{ "Content-Type":"text/plain;charset=utf-8" },
-          body: JSON.stringify({
-            mode:"uploadChunk",
-            regId: current.regId,
-            token: current.token,
-            uploadUrl,
-            start,
-            end,
-            total: file.size,
-            chunkBase64: chunkB64
-          })
-        }).then(r => r.json());
-
-        if(!chunkRes.ok){
-          throw new Error((chunkRes.error || "分段上傳失敗") + (chunkRes.detail ? ("\n" + chunkRes.detail) : ""));
-        }
-
-        if(chunkRes.done){
-          setProg(100, "✅ 上傳完成");
-          audioMsg.className = "ok";
-          audioMsg.innerHTML =
-            `✅ 音檔已上傳完成<br>` +
-            `檔名：<b>${chunkRes.fileName || finalName}</b><br>` +
-            `連結：<a href="${chunkRes.fileUrl}" target="_blank" rel="noreferrer">點我檢視</a>`;
-
-          // ✅ 跳出完成框
-          showDoneModal(chunkRes.fileName || finalName, chunkRes.fileUrl);
-          return;
-        }
-
-        offset = next;
-      }
-
-      // 100% 但後台可能還在回寫
-      setProg(100, "上傳完成，正在處理與回寫資料…");
-      audioMsg.className = "muted";
-      audioMsg.textContent = "上傳完成，正在處理與回寫資料…";
-
-    }catch(e){
-      setProg(0, "上傳失敗");
-      audioMsg.className = "err";
-      audioMsg.textContent = "上傳失敗：" + e.message;
-    }finally{
-      btnUpload.disabled = false;
-    }
+  MailApp.sendEmail({
+    to: to,
+    subject: subject,
+    htmlBody: html,
+    attachments: [pdfBlob]
   });
+}
 
-  // 初始化（信箱連結回來會自動進修改模式）
-  initFromQuery();
-</script>
-</body>
-</html>
+/************** PDF（不放 Logo + 短連結） **************/
+function buildPdf_(regId, token){
+  var found = findRowByRegId_(regId);
+  var d = found.data || {};
+
+  var student = String(d["學生姓名"]||"").trim();
+  var song = String(d["表演歌名/名稱"]||"").trim();
+  var session = String(d["場次"]||"").trim();
+
+  var audioUrl = String(d["音檔連結"]||"").trim();
+  var audioName = String(d["音檔檔名"]||"").trim();
+  var audioAt = d["音檔更新時間"] ? new Date(d["音檔更新時間"]) : null;
+
+  var editUrl = SITE_BASE_URL + "index.html?regId=" + encodeURIComponent(regId) + "&token=" + encodeURIComponent(token);
+
+  var html = "";
+  html += "<html><head><meta charset='utf-8'/>";
+  html += "<style>";
+  html += "body{font-family:Arial,'Noto Sans TC',sans-serif;color:#111827;font-size:12px;}";
+  html += ".top{border-bottom:2px solid #e5e7eb;padding-bottom:10px;margin-bottom:12px;}";
+  html += ".title{font-size:18px;font-weight:900;margin:0;}";
+  html += ".sub{color:#6b7280;font-size:11px;margin-top:4px;}";
+  html += ".badge{border:1px solid #e5e7eb;border-radius:10px;padding:10px;background:#f9fafb;}";
+  html += ".grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}";
+  html += "table{width:100%;border-collapse:collapse;}";
+  html += "td{border:1px solid #e5e7eb;padding:6px;vertical-align:top;}";
+  html += "td.k{width:34%;background:#f3f4f6;font-weight:700;}";
+  html += ".foot{margin-top:12px;border-top:1px solid #e5e7eb;padding-top:10px;color:#374151;font-size:11px;}";
+  html += "a{color:#2563eb;text-decoration:none;}";
+  html += "</style></head><body>";
+
+  html += "<div class='top'>";
+  html += "<div class='title'>柚子樂器成果展｜報名確認單</div>";
+  html += "<div class='sub'>產生時間：" + esc_(Utilities.formatDate(new Date(), TZ, "yyyy/MM/dd HH:mm")) + "</div>";
+  html += "</div>";
+
+  html += "<div class='grid'>";
+  html += "<div class='badge'>";
+  html += "<div style='font-size:16px;font-weight:900'>學生姓名：" + esc_(student) + "</div>";
+  html += "<div style='font-size:16px;font-weight:900;margin-top:4px'>表演歌名：" + esc_(song) + "</div>";
+  html += "<div style='margin-top:6px'>場次：" + esc_(session) + "</div>";
+  html += "<div style='color:#6b7280;margin-top:2px'>報名編號：" + esc_(regId) + "</div>";
+  html += "</div>";
+
+  html += "<div class='badge'>";
+  html += "<div style='font-weight:900;margin-bottom:6px'>音檔資訊</div>";
+  html += "<div>狀態：" + (audioUrl ? "已上傳" : "尚未上傳") + "</div>";
+  html += "<div>檔名：" + esc_(audioName || "-") + "</div>";
+  html += "<div>連結：" + (audioUrl ? ("<a href='"+audioUrl+"'>點我檢視</a>") : "-") + "</div>";
+  html += "<div>更新時間：" + esc_(audioAt ? Utilities.formatDate(audioAt, TZ, "yyyy/MM/dd HH:mm") : "-") + "</div>";
+  html += "</div>";
+  html += "</div>";
+
+  html += "<div style='margin-top:10px'>";
+  html += "<table>";
+  var fields = formFieldList_();
+  for (var i=0;i<fields.length;i++){
+    var k = fields[i];
+    var v = String(d[k]||"");
+    html += "<tr><td class='k'>" + esc_(k) + "</td><td>" + esc_(v) + "</td></tr>";
+  }
+  html += "</table>";
+  html += "</div>";
+
+  html += "<div class='foot'>";
+  html += "<div style='font-weight:900;margin-bottom:4px'>修改/補件（可覆蓋原資料）</div>";
+  html += "<div><a href='"+editUrl+"' style='font-weight:900'>點此回到修改頁</a></div>";
+  html += "<div style='margin-top:8px;font-weight:900'>" + esc_(STORE_NAME) + "</div>";
+  html += "<div>地址：" + esc_(STORE_ADDR) + "</div>";
+  html += "<div>電話：" + esc_(STORE_TEL) + "</div>";
+  html += "<div>LINE：" + esc_(STORE_LINE) + "</div>";
+  html += "</div>";
+
+  html += "</body></html>";
+
+  var blob = HtmlService.createHtmlOutput(html).getBlob().getAs("application/pdf");
+  var pdfName = "報名確認單_" + safeName_(student) + "_" + safeName_(song) + "_" + regId + ".pdf";
+  blob.setName(pdfName);
+  return blob;
+}
+
+/************** 欄位清單 **************/
+function formFieldList_(){
+  return [
+    "場次","表演項目","學生姓名","表演者姓名/團名","舞台總表演人數","聯絡電話","表演歌名/名稱","聯絡人信箱",
+    "老師是否一同表演","老師一起的方式","老師姓名(代報填)","需求/備註"
+  ];
+}
+function pickFormFields_(obj){
+  var out = {};
+  var fields = formFieldList_();
+  for (var i=0;i<fields.length;i++){
+    var k = fields[i];
+    out[k] = String(obj[k]||"");
+  }
+  return out;
+}
+
+/************** 寫入/覆蓋 **************/
+function writeFormToRow_(row, map, body){
+  setByHeader_(row,map,"場次",body["場次"]);
+  setByHeader_(row,map,"表演項目",body["表演項目"]);
+  setByHeader_(row,map,"學生姓名",String(body["學生姓名"]||"").trim());
+  setByHeader_(row,map,"表演者姓名/團名",body["表演者姓名/團名"]);
+  setByHeader_(row,map,"舞台總表演人數",body["舞台總表演人數"]);
+  setByHeader_(row,map,"表演歌名/名稱",String(body["表演歌名/名稱"]||"").trim());
+  setByHeader_(row,map,"聯絡電話",body["聯絡電話"]);
+  setByHeader_(row,map,"聯絡人信箱",String(body["聯絡人信箱"]||"").trim());
+  setByHeader_(row,map,"老師是否一同表演",body["老師是否一同表演"]);
+  setByHeader_(row,map,"老師一起的方式",body["老師一起的方式"]);
+  setByHeader_(row,map,"老師姓名(代報填)",body["老師姓名(代報填)"]);
+  setByHeader_(row,map,"需求/備註",body["需求/備註"]);
+}
+function writeFormToSheetRow_(sh, rowNumber, header, body){
+  setRowCellByHeader_(sh, rowNumber, header, "場次", body["場次"]);
+  setRowCellByHeader_(sh, rowNumber, header, "表演項目", body["表演項目"]);
+  setRowCellByHeader_(sh, rowNumber, header, "學生姓名", String(body["學生姓名"]||"").trim());
+  setRowCellByHeader_(sh, rowNumber, header, "表演者姓名/團名", body["表演者姓名/團名"]);
+  setRowCellByHeader_(sh, rowNumber, header, "舞台總表演人數", body["舞台總表演人數"]);
+  setRowCellByHeader_(sh, rowNumber, header, "表演歌名/名稱", String(body["表演歌名/名稱"]||"").trim());
+  setRowCellByHeader_(sh, rowNumber, header, "聯絡電話", body["聯絡電話"]);
+  setRowCellByHeader_(sh, rowNumber, header, "聯絡人信箱", String(body["聯絡人信箱"]||"").trim());
+  setRowCellByHeader_(sh, rowNumber, header, "老師是否一同表演", body["老師是否一同表演"]);
+  setRowCellByHeader_(sh, rowNumber, header, "老師一起的方式", body["老師一起的方式"]);
+  setRowCellByHeader_(sh, rowNumber, header, "老師姓名(代報填)", body["老師姓名(代報填)"]);
+  setRowCellByHeader_(sh, rowNumber, header, "需求/備註", body["需求/備註"]);
+}
+
+/************** Sheet helpers **************/
+function sheet_(){
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sh = ss.getSheetByName(SHEET_NAME);
+  if(!sh) throw new Error("找不到工作表："+SHEET_NAME);
+  return sh;
+}
+function getHeader_(sh){
+  var lastCol = sh.getLastColumn();
+  var arr = sh.getRange(1,1,1,lastCol).getValues()[0];
+  var out = [];
+  for (var i=0;i<arr.length;i++) out.push(String(arr[i]).trim());
+  return out;
+}
+function headerToMap_(header){
+  var map = {};
+  for (var i=0;i<header.length;i++) map[header[i]] = i;
+  return map;
+}
+function findRowByRegId_(regId){
+  var sh = sheet_();
+  var values = sh.getDataRange().getValues();
+  if(values.length < 2) return { ok:false, error:"empty sheet" };
+
+  var header = [];
+  for (var c=0;c<values[0].length;c++) header.push(String(values[0][c]).trim());
+
+  var idx = header.indexOf("報名編號");
+  if(idx < 0) return { ok:false, error:"主表缺少欄位：報名編號" };
+
+  for(var r=1;r<values.length;r++){
+    if(String(values[r][idx]).trim() === regId){
+      var obj = {};
+      for (var k=0;k<header.length;k++){
+        obj[header[k]] = values[r][k];
+      }
+      return { ok:true, rowNumber:r+1, header:header, data:obj };
+    }
+  }
+  return { ok:false, error:"找不到此報名編號" };
+}
+function setByHeader_(row, map, headerName, value){
+  var idx = map[headerName];
+  if(idx == null) return;
+  row[idx] = (value == null ? "" : value);
+}
+function setRowCellByHeader_(sh, rowNum, headerArr, headerName, value){
+  var idx = headerArr.indexOf(headerName);
+  if(idx < 0) return;
+  sh.getRange(rowNum, idx+1).setValue(value == null ? "" : value);
+}
+
+/************** utils **************/
+function genRegId_(){ return "R" + Utilities.getUuid().replace(/-/g,"").slice(0,12); }
+function genToken_(){ return Utilities.getUuid().replace(/-/g,""); }
+function safeName_(s){
+  s = String(s||"").trim();
+  if(!s) return "未命名";
+  s = s.replace(/[\\\/:\*\?"<>\|]/g," ");
+  s = s.replace(/\s+/g," ").trim();
+  return s.slice(0,40);
+}
+function extractDriveId_(url){
+  var m = String(url||"").match(/[-\w]{25,}/);
+  return m ? m[0] : "";
+}
+function json_(obj){
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+function getHeaderCI_(headers, key){
+  var want = String(key).toLowerCase();
+  for (var k in (headers || {})){
+    if (String(k).toLowerCase() === want) return headers[k];
+  }
+  return "";
+}
+function esc_(s){
+  s = String(s==null?"":s);
+  return s.replace(/[&<>"']/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);
+  });
+}
