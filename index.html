@@ -7,24 +7,94 @@
   <style>
     *{ box-sizing:border-box; }
     html,body{ width:100%; overflow-x:hidden; }
-    body{ margin:0; font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif; background:#faf7f8; color:#222; }
-    .wrap{ max-width:820px; margin:24px auto; padding:16px; }
-    .card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; box-shadow:0 8px 22px rgba(0,0,0,.06); }
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;
+      background:#faf7f8;
+      color:#222;
+    }
+    .wrap{ max-width:860px; margin:24px auto; padding:16px; }
+    .card{
+      background:#fff;
+      border:1px solid #eee;
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 8px 22px rgba(0,0,0,.06);
+    }
     h1{ margin:0 0 10px; font-size:22px; }
     .muted{ color:#666; font-size:13px; line-height:1.6; }
     label{ display:block; margin:12px 0 6px; font-weight:800; }
-    input,select,textarea{ width:100%; max-width:100%; display:block; padding:12px; border:1px solid #ddd; border-radius:12px; font-size:16px; background:#fff; }
+    input,select,textarea{
+      width:100%;
+      max-width:100%;
+      display:block;
+      padding:12px;
+      border:1px solid #ddd;
+      border-radius:12px;
+      font-size:16px;
+      background:#fff;
+      outline:none;
+    }
+    input:focus,select:focus,textarea:focus{ border-color:#caa0ae; box-shadow:0 0 0 3px rgba(202,160,174,.25); }
     textarea{ min-height:90px; resize:vertical; }
-    .row{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; }
+    .row{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      gap:12px;
+    }
     @media (max-width:640px){ .row{ grid-template-columns:1fr; } }
-    .btn{ margin-top:14px; width:100%; padding:12px; border:0; border-radius:12px; font-size:16px; background:#7b3a52; color:#fff; cursor:pointer; }
-    .btn2{ margin-top:10px; width:100%; padding:12px; border:0; border-radius:12px; font-size:16px; background:#2f8f7b; color:#fff; cursor:pointer; }
-    .btnGhost{ margin-top:10px; width:100%; padding:12px; border:1px solid #ddd; border-radius:12px; font-size:16px; background:#fff; color:#333; cursor:pointer; }
+
+    .btn{
+      margin-top:14px;
+      width:100%;
+      padding:12px;
+      border:0;
+      border-radius:12px;
+      font-size:16px;
+      background:#7b3a52;
+      color:#fff;
+      cursor:pointer;
+    }
+    .btn:disabled{ opacity:.6; cursor:not-allowed; }
+
+    .btn2{
+      margin-top:10px;
+      width:100%;
+      padding:12px;
+      border:0;
+      border-radius:12px;
+      font-size:16px;
+      background:#2f8f7b;
+      color:#fff;
+      cursor:pointer;
+    }
+    .btn2:disabled{ opacity:.6; cursor:not-allowed; }
+
+    .btnGhost{
+      margin-top:10px;
+      width:100%;
+      padding:12px;
+      border:1px solid #ddd;
+      border-radius:12px;
+      font-size:16px;
+      background:#fff;
+      color:#333;
+      cursor:pointer;
+    }
+
     .ok{ color:#0a7a3c; font-weight:900; }
     .err{ color:#b00020; font-weight:900; }
-    .box{ background:#f6fbf9; border:1px solid #d7efe7; border-radius:12px; padding:12px; margin-top:14px; }
+
+    .box{
+      background:#f6fbf9;
+      border:1px solid #d7efe7;
+      border-radius:12px;
+      padding:12px;
+      margin-top:14px;
+    }
     .bar{ width:100%; height:14px; }
     code{ background:#f6f6f6; padding:2px 6px; border-radius:8px; }
+    .hr{ height:1px; background:#eee; margin:14px 0; }
   </style>
 </head>
 
@@ -33,8 +103,8 @@
   <div class="card">
     <h1>柚子樂器成果展｜報名</h1>
     <p class="muted">
-      送出基本資料後，頁面會直接出現「上傳 MP3」區塊（≤ 20MB）。<br>
-      上傳成功後系統會自動改檔名：<code>學生姓名_歌名_報名編號.mp3</code>，並回寫到 Google Sheet。
+      送出基本資料後，下方會直接出現「上傳 MP3」區塊（≤ 20MB）。<br>
+      檔名會自動改成：<code>學生姓名_歌名_報名編號.mp3</code>（學生不用自己改檔名）。
     </p>
 
     <form id="f">
@@ -48,10 +118,19 @@
       <label>表演項目 *</label>
       <select name="表演項目" required>
         <option value="">請選擇</option>
-        <option>熱音樂團</option><option>輕音樂團</option><option>吉他彈唱</option>
-        <option>鋼琴獨奏</option><option>鋼琴雙人</option><option>小提琴</option>
-        <option>中國笛</option><option>長笛木笛直笛</option><option>爵士鼓獨奏</option>
-        <option>鋼琴彈唱</option><option>二胡</option><option>琵琶</option><option>其他</option>
+        <option>熱音樂團</option>
+        <option>輕音樂團</option>
+        <option>吉他彈唱</option>
+        <option>鋼琴獨奏</option>
+        <option>鋼琴雙人</option>
+        <option>小提琴</option>
+        <option>中國笛</option>
+        <option>長笛木笛直笛</option>
+        <option>爵士鼓獨奏</option>
+        <option>鋼琴彈唱</option>
+        <option>二胡</option>
+        <option>琵琶</option>
+        <option>其他</option>
       </select>
 
       <label>學生姓名 *</label>
@@ -79,7 +158,9 @@
 
       <label>老師是否一同表演</label>
       <select name="老師是否一同表演">
-        <option value="">請選擇</option><option>是</option><option>否</option>
+        <option value="">請選擇</option>
+        <option>是</option>
+        <option>否</option>
       </select>
 
       <label>老師一起的方式（沒有就留空）</label>
@@ -97,8 +178,9 @@
       <!-- 送出後出現：上傳MP3 -->
       <div class="box" id="audioBox" style="display:none;">
         <div class="muted" id="audioInfo"></div>
+        <div class="hr"></div>
 
-        <label style="margin-top:10px;">上傳 MP3（≤ 20MB）</label>
+        <label style="margin-top:0;">上傳 MP3（≤ 20MB）</label>
         <input id="audioFile" type="file" accept="audio/mpeg,.mp3">
 
         <button type="button" class="btn2" id="btnUpload">上傳音檔</button>
@@ -174,9 +256,12 @@
         current.song = (data["表演歌名/名稱"]||"").trim();
 
         audioBox.style.display = "";
-        audioInfo.innerHTML = `報名編號：<b>${current.regId}</b><br>學生：<b>${current.student}</b>　歌名：<b>${current.song}</b><br>檔名會自動改成：<code>${current.student}_${current.song}_${current.regId}.mp3</code>`;
-        resetUploadUI();
+        audioInfo.innerHTML =
+          `報名編號：<b>${current.regId}</b><br>` +
+          `學生：<b>${current.student}</b>　歌名：<b>${current.song}</b><br>` +
+          `檔名會自動改成：<code>${current.student}_${current.song}_${current.regId}.mp3</code>`;
 
+        resetUploadUI();
       }else{
         msg.className = "err";
         msg.textContent = "送出失敗：" + (j.error || "unknown");
@@ -194,54 +279,19 @@
     audioMsg.textContent = "✅ 已完成報名（可之後再上傳）。";
   });
 
-  // 讀檔成 base64（去掉 data:...;base64, 前綴）
-  function fileToBase64(file){
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onerror = () => reject(new Error("讀取檔案失敗"));
-      reader.onload = () => {
-        const s = String(reader.result || "");
-        const idx = s.indexOf("base64,");
-        resolve(idx >= 0 ? s.slice(idx + 7) : s);
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // 用 XHR 才能做「上傳進度條」
-  function postJsonWithProgress(url, payload, onProgress){
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", url, true);
-      xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
-
-      xhr.upload.onprogress = (evt) => {
-        if(!evt.lengthComputable) return;
-        const pct = Math.round((evt.loaded / evt.total) * 100);
-        onProgress && onProgress(pct, `上傳中… ${pct}%`);
-      };
-
-      xhr.onreadystatechange = () => {
-        if(xhr.readyState !== 4) return;
-        if(xhr.status >= 200 && xhr.status < 300){
-          try{
-            resolve(JSON.parse(xhr.responseText));
-          }catch(e){
-            reject(new Error("回應不是 JSON"));
-          }
-        }else{
-          reject(new Error("上傳失敗（HTTP " + xhr.status + "）"));
-        }
-      };
-
-      xhr.onerror = () => reject(new Error("網路錯誤，請重試"));
-      xhr.send(JSON.stringify(payload));
-    });
+  // ArrayBuffer -> base64（分段上傳用）
+  function arrayBufferToBase64(buf){
+    const bytes = new Uint8Array(buf);
+    let bin = "";
+    // 20MB 分段 1MB，所以這段不會爆記憶體
+    for(let i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
   }
 
   btnUpload.addEventListener("click", async () => {
     audioMsg.className = "muted";
     audioMsg.textContent = "";
+
     if(!current.regId || !current.token){
       audioMsg.className = "err";
       audioMsg.textContent = "請先送出報名資料。";
@@ -262,7 +312,6 @@
       return;
     }
 
-    // 基本檢查（有些瀏覽器 type 可能空白，所以也看副檔名）
     const lowerName = (file.name || "").toLowerCase();
     const isMp3 = (file.type === "audio/mpeg") || lowerName.endsWith(".mp3");
     if(!isMp3){
@@ -272,35 +321,85 @@
     }
 
     btnUpload.disabled = true;
-    setProg(0, "讀取檔案中…");
 
     try{
-      const b64 = await fileToBase64(file);
+      // 1) 向後台要 resumable uploadUrl
+      setProg(0, "建立上傳通道…");
+      const startRes = await fetch(SCRIPT_URL, {
+        method:"POST",
+        headers:{ "Content-Type":"text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          mode:"startUpload",
+          regId: current.regId,
+          token: current.token,
+          totalBytes: file.size,
+          originalName: file.name
+        })
+      }).then(r => r.json());
 
-      // 送到 Apps Script：後台會改名、覆蓋舊檔、回寫 Sheet
-      const payload = {
-        mode: "uploadAudio",
-        regId: current.regId,
-        token: current.token,
-        originalName: file.name,
-        base64: b64
-      };
-
-      const res = await postJsonWithProgress(SCRIPT_URL, payload, (pct, text)=>setProg(pct, text));
-
-      if(res.ok){
-        setProg(100, "✅ 上傳完成");
-        audioMsg.className = "ok";
-        audioMsg.innerHTML = `✅ 音檔已上傳並整理完成。<br>檔名：<b>${res.fileName}</b><br>連結：<a href="${res.fileUrl}" target="_blank">點我檢視</a>`;
-      }else{
-        audioMsg.className = "err";
-        audioMsg.textContent = "上傳失敗：" + (res.error || "unknown");
-        setProg(0, "上傳失敗");
+      if(!startRes.ok){
+        throw new Error(startRes.error || "建立上傳通道失敗");
       }
+
+      const uploadUrl = startRes.uploadUrl;
+      const finalName = startRes.finalName;
+
+      // 2) 分段上傳（1MB/段）
+      const chunkSize = 1024 * 1024; // 1MB
+      let offset = 0;
+
+      while(offset < file.size){
+        const next = Math.min(offset + chunkSize, file.size);
+        const blob = file.slice(offset, next);
+        const buf = await blob.arrayBuffer();
+        const chunkB64 = arrayBufferToBase64(buf);
+
+        const start = offset;
+        const end = next - 1;
+
+        const pct = Math.round((next / file.size) * 100);
+        setProg(pct, `上傳中… ${pct}%`);
+
+        const chunkRes = await fetch(SCRIPT_URL, {
+          method:"POST",
+          headers:{ "Content-Type":"text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            mode:"uploadChunk",
+            regId: current.regId,
+            token: current.token,
+            uploadUrl,
+            start,
+            end,
+            total: file.size,
+            chunkBase64: chunkB64
+          })
+        }).then(r => r.json());
+
+        if(!chunkRes.ok){
+          throw new Error(chunkRes.error || "分段上傳失敗");
+        }
+
+        if(chunkRes.done){
+          setProg(100, "✅ 上傳完成");
+          audioMsg.className = "ok";
+          audioMsg.innerHTML =
+            `✅ 音檔已上傳完成<br>` +
+            `檔名：<b>${chunkRes.fileName || finalName}</b><br>` +
+            `連結：<a href="${chunkRes.fileUrl}" target="_blank">點我檢視</a>`;
+          return;
+        }
+
+        offset = next;
+      }
+
+      // 正常情況最後一段會 done=true，不會走到這裡
+      setProg(100, "✅ 上傳完成");
+      audioMsg.className = "ok";
+      audioMsg.textContent = "✅ 上傳完成（系統正在回寫資料）";
     }catch(e){
+      setProg(0, "上傳失敗");
       audioMsg.className = "err";
       audioMsg.textContent = "上傳失敗：" + e.message;
-      setProg(0, "上傳失敗");
     }finally{
       btnUpload.disabled = false;
     }
