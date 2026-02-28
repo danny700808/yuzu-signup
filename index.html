@@ -22,7 +22,7 @@
       box-shadow:0 8px 22px rgba(0,0,0,.06);
     }
     h1{ margin:0 0 10px; font-size:22px; }
-    .muted{ color:#666; font-size:13px; line-height:1.6; }
+    .muted{ color:#666; font-size:13px; line-height:1.6; white-space:pre-wrap; }
     label{ display:block; margin:12px 0 6px; font-weight:800; }
     input,select,textarea{
       width:100%;
@@ -175,7 +175,6 @@
       <button class="btn" type="submit" id="btnCreate">送出報名</button>
       <p id="msg" class="muted"></p>
 
-      <!-- 送出後出現：上傳MP3 -->
       <div class="box" id="audioBox" style="display:none;">
         <div class="muted" id="audioInfo"></div>
         <div class="hr"></div>
@@ -198,7 +197,7 @@
 </div>
 
 <script>
-  // ✅ 你的 Apps Script Web App URL（/exec）
+  // ✅ 換成你目前部署的 Web App /exec
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyIrw2PjHkWhlMytY9BmCnXVRsIFOTp3iPAp_2C0rP6gQxe19FvTDSwm7kphUmDjZo_/exec";
 
   const f = document.getElementById("f");
@@ -241,7 +240,7 @@
     try{
       const r = await fetch(SCRIPT_URL, {
         method:"POST",
-        headers:{ "Content-Type":"text/plain;charset=utf-8" },
+        headers:{ "Content-Type":"text/plain;charset=utf-8" }, // 避免 CORS preflight
         body: JSON.stringify(data)
       });
       const j = await r.json();
@@ -264,7 +263,7 @@
         resetUploadUI();
       }else{
         msg.className = "err";
-        msg.textContent = "送出失敗：" + (j.error || "unknown");
+        msg.textContent = "送出失敗：" + (j.error || "unknown") + (j.detail ? ("\n" + j.detail) : "");
       }
     }catch(e){
       msg.className = "err";
@@ -279,12 +278,14 @@
     audioMsg.textContent = "✅ 已完成報名（可之後再上傳）。";
   });
 
-  // ArrayBuffer -> base64（分段上傳用）
+  // ArrayBuffer -> base64（更穩：分段拼字串）
   function arrayBufferToBase64(buf){
     const bytes = new Uint8Array(buf);
     let bin = "";
-    // 20MB 分段 1MB，所以這段不會爆記憶體
-    for(let i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
+    const step = 0x8000; // 32KB
+    for(let i=0;i<bytes.length;i+=step){
+      bin += String.fromCharCode(...bytes.subarray(i, i+step));
+    }
     return btoa(bin);
   }
 
@@ -305,7 +306,7 @@
       return;
     }
 
-    const maxBytes = 20 * 1024 * 1024; // 20MB
+    const maxBytes = 20 * 1024 * 1024;
     if(file.size > maxBytes){
       audioMsg.className = "err";
       audioMsg.textContent = "檔案太大！MP3 請勿超過 20MB。";
@@ -323,8 +324,8 @@
     btnUpload.disabled = true;
 
     try{
-      // 1) 向後台要 resumable uploadUrl
       setProg(0, "建立上傳通道…");
+
       const startRes = await fetch(SCRIPT_URL, {
         method:"POST",
         headers:{ "Content-Type":"text/plain;charset=utf-8" },
@@ -338,13 +339,12 @@
       }).then(r => r.json());
 
       if(!startRes.ok){
-        throw new Error(startRes.error || "建立上傳通道失敗");
+        throw new Error((startRes.error || "建立上傳通道失敗") + (startRes.detail ? ("\n" + startRes.detail) : ""));
       }
 
       const uploadUrl = startRes.uploadUrl;
       const finalName = startRes.finalName;
 
-      // 2) 分段上傳（1MB/段）
       const chunkSize = 1024 * 1024; // 1MB
       let offset = 0;
 
@@ -376,7 +376,7 @@
         }).then(r => r.json());
 
         if(!chunkRes.ok){
-          throw new Error(chunkRes.error || "分段上傳失敗");
+          throw new Error((chunkRes.error || "分段上傳失敗") + (chunkRes.detail ? ("\n" + chunkRes.detail) : ""));
         }
 
         if(chunkRes.done){
@@ -385,14 +385,13 @@
           audioMsg.innerHTML =
             `✅ 音檔已上傳完成<br>` +
             `檔名：<b>${chunkRes.fileName || finalName}</b><br>` +
-            `連結：<a href="${chunkRes.fileUrl}" target="_blank">點我檢視</a>`;
+            `連結：<a href="${chunkRes.fileUrl}" target="_blank" rel="noreferrer">點我檢視</a>`;
           return;
         }
 
         offset = next;
       }
 
-      // 正常情況最後一段會 done=true，不會走到這裡
       setProg(100, "✅ 上傳完成");
       audioMsg.className = "ok";
       audioMsg.textContent = "✅ 上傳完成（系統正在回寫資料）";
