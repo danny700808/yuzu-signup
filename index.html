@@ -3,334 +3,190 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>柚子樂器｜成果展報名</title>
+  <title>柚子樂器成果展｜報名</title>
   <style>
     *{ box-sizing:border-box; }
-    html, body{ width:100%; overflow-x:hidden; }
+    html,body{ width:100%; overflow-x:hidden; }
     body{
       margin:0;
       font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;
-      background:#faf7f8;
-      color:#222;
+      background:#faf7f8; color:#222;
     }
-    .wrap{max-width:760px;margin:24px auto;padding:16px}
-    .card{background:#fff;border:1px solid #eee;border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-    h1{margin:0 0 10px;font-size:22px}
-    .muted{color:#666;font-size:13px;line-height:1.6}
-    .notice{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;padding:10px;border-radius:10px;font-size:13px;line-height:1.6}
-    label{display:block;margin:12px 0 6px;font-weight:700}
-
+    .wrap{ max-width:820px; margin:24px auto; padding:16px; }
+    .card{
+      background:#fff; border:1px solid #eee; border-radius:16px;
+      padding:18px; box-shadow:0 8px 22px rgba(0,0,0,.06);
+    }
+    h1{ margin:0 0 10px; font-size:22px; }
+    .muted{ color:#666; font-size:13px; line-height:1.6; }
+    label{ display:block; margin:12px 0 6px; font-weight:800; }
     input,select,textarea{
-      width:100%;
-      max-width:100%;
-      display:block;
-      padding:12px;
-      border:1px solid #ddd;
-      border-radius:10px;
-      font-size:16px;
-      background:#fff;
+      width:100%; max-width:100%;
+      display:block; padding:12px;
+      border:1px solid #ddd; border-radius:12px;
+      font-size:16px; background:#fff;
     }
-    textarea{min-height:90px}
-
+    textarea{ min-height:90px; resize:vertical; }
     .row{
       display:grid;
-      grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
       gap:12px;
     }
-    @media (max-width: 640px){
-      .row{ grid-template-columns: 1fr; }
-    }
-
+    @media (max-width:640px){ .row{ grid-template-columns:1fr; } }
     .btn{
-      margin-top:14px;width:100%;
-      padding:12px;border:0;border-radius:10px;
-      font-size:16px;background:#7b3a52;color:#fff;cursor:pointer
+      margin-top:14px; width:100%;
+      padding:12px; border:0; border-radius:12px;
+      font-size:16px; background:#7b3a52; color:#fff; cursor:pointer;
     }
     .btn2{
-      margin-top:10px;width:100%;
-      padding:12px;border:1px solid #cfe7df;border-radius:10px;
-      font-size:16px;background:#2f8f7b;color:#fff;cursor:pointer
+      margin-top:10px; width:100%;
+      padding:12px; border:0; border-radius:12px;
+      font-size:16px; background:#2f8f7b; color:#fff; cursor:pointer;
     }
     .btnGhost{
-      margin-top:10px;width:100%;
-      padding:12px;border:1px solid #ddd;border-radius:10px;
-      font-size:16px;background:#fff;color:#333;cursor:pointer
+      margin-top:10px; width:100%;
+      padding:12px; border:1px solid #ddd; border-radius:12px;
+      font-size:16px; background:#fff; color:#333; cursor:pointer;
     }
-    .ok{color:#0a7a3c;font-weight:800}
-    .err{color:#b00020;font-weight:800}
-    .tag{
-      display:inline-block;background:#f2e7ea;border:1px solid #ead6dc;color:#7b3a52;
-      padding:4px 10px;border-radius:999px;font-size:12px;margin-left:8px
+    .ok{ color:#0a7a3c; font-weight:900; }
+    .err{ color:#b00020; font-weight:900; }
+    .box{
+      background:#f6fbf9; border:1px solid #d7efe7;
+      border-radius:12px; padding:12px; margin-top:14px;
     }
-    .hr{height:1px;background:#eee;margin:14px 0}
+    code{ background:#f6f6f6; padding:2px 6px; border-radius:8px; }
+    a{ word-break:break-all; }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>柚子樂器｜成果展報名 <span id="modeTag" class="tag" style="display:none;"></span></h1>
+<div class="wrap">
+  <div class="card">
+    <h1>柚子樂器成果展｜報名</h1>
+    <p class="muted">
+      音檔上傳方式：先送出基本資料 → 取得「報名編號」→ 上傳到暫存資料夾（檔名要含報名編號）→ 系統會自動整理到安全資料夾並回寫到後台表格。<br>
+      MP3 ≤ 15MB；WAV ≤ 80MB。
+    </p>
 
-      <div class="notice" style="margin:10px 0 14px;">
-        <b>* 為必填欄位。</b> 音檔上傳為選填，可先完成報名，之後再用 Email 的修改連結補上傳。<br>
-        音檔規格（建議）：MP3 ≤ 15MB、WAV ≤ 80MB
+    <form id="f">
+      <label>場次 *</label>
+      <select name="場次" required>
+        <option value="">請選擇</option>
+        <option>下午場 13:00~16:00</option>
+        <option>晚上場 17:30~20:30</option>
+      </select>
+
+      <label>表演項目 *</label>
+      <select name="表演項目" required>
+        <option value="">請選擇</option>
+        <option>熱音樂團</option><option>輕音樂團</option><option>吉他彈唱</option>
+        <option>鋼琴獨奏</option><option>鋼琴雙人</option><option>小提琴</option>
+        <option>中國笛</option><option>長笛木笛直笛</option><option>爵士鼓獨奏</option>
+        <option>鋼琴彈唱</option><option>二胡</option><option>琵琶</option><option>其他</option>
+      </select>
+
+      <label>學生姓名 *</label>
+      <input name="學生姓名" required placeholder="例：王小明">
+
+      <label>表演者姓名 / 團名 *</label>
+      <input name="表演者姓名/團名" required placeholder="例：@@吉他社 / @@小提琴中心">
+
+      <div class="row">
+        <div>
+          <label>舞台總表演人數 *</label>
+          <input name="舞台總表演人數" required inputmode="numeric" placeholder="例：2 / 4">
+        </div>
+        <div>
+          <label>聯絡電話 *</label>
+          <input name="聯絡電話" required inputmode="tel" placeholder="例：0952-010146">
+        </div>
       </div>
 
-      <form id="f">
-        <label>場次 *</label>
-        <select name="場次" required>
-          <option value="">請選擇</option>
-          <option>下午場 13:00~16:00</option>
-          <option>晚上場 17:30~20:30</option>
-        </select>
+      <label>表演歌名/名稱 *</label>
+      <input name="表演歌名/名稱" required placeholder="例：浪流連">
 
-        <label>表演項目 *</label>
-        <select name="表演項目" required>
-          <option value="">請選擇</option>
-          <option>熱音樂團</option>
-          <option>輕音樂團</option>
-          <option>吉他彈唱</option>
-          <option>鋼琴獨奏</option>
-          <option>鋼琴雙人</option>
-          <option>小提琴</option>
-          <option>中國笛</option>
-          <option>長笛木笛直笛</option>
-          <option>爵士鼓獨奏</option>
-          <option>鋼琴彈唱</option>
-          <option>二胡</option>
-          <option>琵琶</option>
-          <option>其他</option>
-        </select>
+      <label>聯絡人信箱（老師代報也填老師信箱） *</label>
+      <input name="聯絡人信箱" type="email" required placeholder="example@example.com">
 
-        <label>學生姓名 *</label>
-        <input name="學生姓名" required placeholder="例：王小明">
+      <label>老師是否一同表演</label>
+      <select name="老師是否一同表演">
+        <option value="">請選擇</option><option>是</option><option>否</option>
+      </select>
 
-        <label>表演者姓名 / 團名 *</label>
-        <input name="表演者姓名/團名" required placeholder="例：王小明 / @@吉他社">
+      <label>老師一起的方式（沒有就留空）</label>
+      <input name="老師一起的方式" placeholder="例：鋼琴伴奏">
 
-        <div class="row">
-          <div>
-            <label>舞台總表演人數 *</label>
-            <input name="舞台總表演人數" required inputmode="numeric" placeholder="例：2 / 4">
-          </div>
-          <div>
-            <label>聯絡電話 *</label>
-            <input name="聯絡電話" required inputmode="tel" placeholder="例：0952-010146">
-          </div>
+      <label>老師姓名(代報填)</label>
+      <input name="老師姓名(代報填)" placeholder="例：黃明廷">
+
+      <label>需求/備註</label>
+      <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
+
+      <button class="btn" type="submit" id="btn">送出報名</button>
+      <p id="msg" class="muted"></p>
+
+      <div class="box" id="after" style="display:none;">
+        <div class="muted" id="afterInfo"></div>
+        <div class="muted" style="margin-top:8px">
+          請到暫存資料夾上傳音檔，檔名請務必包含報名編號：<br>
+          <code id="rule"></code>
         </div>
-
-        <label>表演歌名/名稱 *</label>
-        <input name="表演歌名/名稱" required placeholder="例：小蜜蜂 / 浪流連">
-
-        <label>聯絡人信箱 *</label>
-        <input name="聯絡人信箱" type="email" required placeholder="老師或聯絡人 Email">
-
-        <label>老師是否一同表演（選填）</label>
-        <select name="老師是否一同表演">
-          <option value="">請選擇</option>
-          <option>是</option>
-          <option>否</option>
-        </select>
-
-        <label>老師一起的方式（選填）</label>
-        <input name="老師一起的方式" placeholder="例：鋼琴伴奏 / 四手聯彈">
-
-        <label>老師姓名(代報填)（選填）</label>
-        <input name="老師姓名(代報填)" placeholder="例：黃老師">
-
-        <label>需求/備註（選填）</label>
-        <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
-
-        <!-- 修改模式：顯示音檔狀態 -->
-        <div id="uploadArea" style="display:none;">
-          <div class="hr"></div>
-          <div class="muted"><b>音檔上傳（選填）</b>：點按鈕前往上傳表單（系統會自動帶入報名編號）。</div>
-          <button type="button" id="btnUpload" class="btn2">前往上傳音檔</button>
-          <div id="uploadHint" class="muted"></div>
-        </div>
-
-        <button class="btn" type="submit" id="btn">繼續下一步</button>
-        <p id="msg" class="muted"></p>
-
-        <!-- 第二步 -->
-        <div id="step2" style="display:none;">
-          <div class="hr"></div>
-          <div class="notice">
-            <b>下一步：上傳音檔（選填）</b><br>
-            你可以現在上傳，也可以稍後用 Email 的修改連結補上傳。
-          </div>
-          <button type="button" class="btn2" id="btnGoUpload">現在上傳音檔</button>
-          <button type="button" class="btnGhost" id="btnSkipUpload">我先不上傳（完成）</button>
-          <p class="muted" id="step2Hint"></p>
-        </div>
-      </form>
-    </div>
+        <button type="button" class="btn2" id="openIntake">開啟暫存上傳資料夾</button>
+        <button type="button" class="btnGhost" id="skip">我先不上傳（完成）</button>
+        <p class="muted" id="hint"></p>
+      </div>
+    </form>
   </div>
+</div>
 
 <script>
-  // ✅ 你的 Apps Script Web App URL（保持你目前那串）
+  // ✅ 你的 Apps Script Web App URL（你已給我）
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyIrw2PjHkWhlMytY9BmCnXVRsIFOTp3iPAp_2C0rP6gQxe19FvTDSwm7kphUmDjZo_/exec";
 
-  const f = document.getElementById('f');
-  const msg = document.getElementById('msg');
-  const btn = document.getElementById('btn');
-  const modeTag = document.getElementById('modeTag');
+  // ✅ 暫存資料夾分享連結（請貼「暫存夾」的分享網址）
+  const INTAKE_UPLOAD_LINK = "https://drive.google.com/drive/folders/1N32KMZd0HL7QLHm4uB_kUCnqMW2aN9ky  ";
 
-  // 草稿（同裝置回來可續填）
-  const DRAFT_KEY = "yuzu_signup_draft_v6";
-  function saveDraft(){
-    const data = Object.fromEntries(new FormData(f).entries());
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-  }
-  function loadDraft(){
-    const s = localStorage.getItem(DRAFT_KEY);
-    if(!s) return;
-    try{
-      const data = JSON.parse(s);
-      for(const [k,v] of Object.entries(data)){
-        const el = f.elements[k];
-        if(el) el.value = v;
-      }
-    }catch(e){}
-  }
-  f.addEventListener('input', saveDraft);
-  loadDraft();
+  const f = document.getElementById("f");
+  const btn = document.getElementById("btn");
+  const msg = document.getElementById("msg");
 
-  // 修改連結載入（regId+token）
-  const qs = new URLSearchParams(location.search);
-  const regId = qs.get("regId");
-  const token = qs.get("token");
-  let mode = "create";
-
-  function showUploadControls_(data){
-    const uploadArea = document.getElementById("uploadArea");
-    uploadArea.style.display = "";
-
-    const uploadUrl = (data && data["音檔上傳連結"] ? String(data["音檔上傳連結"]).trim() : "");
-    document.getElementById("btnUpload").onclick = () => {
-      if(uploadUrl) window.open(uploadUrl, "_blank");
-      else alert("尚未取得上傳連結，請稍後再試或使用 Email 內的上傳連結。");
-    };
-
-    const link = (data && data["音檔連結"] ? String(data["音檔連結"]).trim() : "");
-    const fname = (data && data["音檔檔名"] ? String(data["音檔檔名"]).trim() : "");
-    const hint = document.getElementById("uploadHint");
-    if(link){
-      hint.innerHTML = `目前已整理的音檔：<a href="${link}" target="_blank">${fname || "開啟音檔"}</a>`;
-    }else{
-      hint.textContent = "目前尚未整理到音檔（系統每 1 小時整理一次；若剛上傳請稍後再回來看）。";
-    }
-  }
-
-  async function loadExisting(){
-    if(!regId || !token) return;
-
-    mode = "update";
-    modeTag.style.display = "";
-    modeTag.textContent = "修改模式";
-    msg.textContent = "載入你的資料中…";
-
-    try{
-      const r = await fetch(`${SCRIPT_URL}?regId=${encodeURIComponent(regId)}&token=${encodeURIComponent(token)}`);
-      const j = await r.json();
-
-      if(j.ok && j.data){
-        const status = (j.data["狀態"] || "").toString().trim();
-        if(status === "已取消"){
-          msg.className = "err";
-          msg.textContent = "此報名已取消。若需重新報名，請回到首頁重新填寫。";
-          btn.disabled = true;
-          Array.from(f.elements).forEach(el => el.disabled = true);
-          return;
-        }
-
-        for(const [k,v] of Object.entries(j.data)){
-          const el = f.elements[k];
-          if(el) el.value = v;
-        }
-        saveDraft();
-
-        msg.className = "muted";
-        msg.textContent = "已載入完成，可修改後按「更新資料」。";
-        btn.textContent = "更新資料";
-
-        showUploadControls_(j.data);
-      }else{
-        msg.className = "err";
-        msg.textContent = "載入失敗：修改連結可能無效。";
-      }
-    }catch(e){
-      msg.className = "err";
-      msg.textContent = "載入失敗：" + e.message;
-    }
-  }
-  loadExisting();
-
-  // 送出（create / update）
-  f.addEventListener('submit', async (ev) => {
+  f.addEventListener("submit", async (ev) => {
     ev.preventDefault();
     msg.className = "muted";
-    msg.textContent = (mode==="create") ? "送出中…" : "更新中…";
+    msg.textContent = "送出中…";
     btn.disabled = true;
 
     const data = Object.fromEntries(new FormData(f).entries());
-    data.mode = mode;
-    if(mode === "update"){
-      data.regId = regId;
-      data.token = token;
-    }
+    data.mode = "create";
 
     try{
       const r = await fetch(SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(data),
+        method:"POST",
+        headers:{ "Content-Type":"text/plain;charset=utf-8" },
+        body: JSON.stringify(data)
       });
-
       const j = await r.json();
+
       if(j.ok){
         msg.className = "ok";
+        msg.textContent = "✅ 基本資料已送出！信箱也會收到確認信。";
 
-        if(mode === "create"){
-          msg.innerHTML =
-            "✅ 基本資料已完成！我們已寄出確認信到你的信箱。<br>" +
-            "接下來可選擇是否上傳音檔（選填）。";
+        const regId = j.regId;
+        const student = (data["學生姓名"]||"").trim();
+        const song = (data["表演歌名/名稱"]||"").trim();
 
-          // 切成修改模式（不必等信）
-          mode = "update";
-          modeTag.style.display = "";
-          modeTag.textContent = "修改模式";
-          btn.textContent = "更新資料";
+        document.getElementById("after").style.display = "";
+        document.getElementById("afterInfo").innerHTML =
+          `你的報名編號：<b>${regId}</b><br>學生姓名：<b>${student}</b>　歌名：<b>${song}</b>`;
+        document.getElementById("rule").textContent = `${regId}_${student}_${song}.mp3（或 .wav）`;
 
-          // 更新 URL
-          const newUrl = `${location.pathname}?regId=${encodeURIComponent(j.regId)}&token=${encodeURIComponent(j.token)}`;
-          history.replaceState(null, "", newUrl);
-
-          // 顯示第二步
-          const step2 = document.getElementById("step2");
-          const step2Hint = document.getElementById("step2Hint");
-          step2.style.display = "";
-          step2Hint.textContent = "你也可以稍後用 Email 內的連結補上傳。";
-
-          document.getElementById("btnGoUpload").onclick = () => {
-            if(j.audio_upload_url) window.open(j.audio_upload_url, "_blank");
-            else alert("尚未取得上傳連結，請稍後再試或使用 Email 內的上傳連結。");
-          };
-          document.getElementById("btnSkipUpload").onclick = () => {
-            step2Hint.innerHTML = "✅ 已完成報名。之後仍可用 Email 的修改連結補上傳音檔。";
-          };
-
-          // 讓修改模式也能看到上傳入口
-          showUploadControls_({ "音檔上傳連結": j.audio_upload_url || "" });
-
-        } else {
-          msg.textContent = "✅ 更新成功！";
-        }
-
-        localStorage.removeItem(DRAFT_KEY);
+        document.getElementById("openIntake").onclick = () => window.open(INTAKE_UPLOAD_LINK, "_blank");
+        document.getElementById("skip").onclick = () => {
+          document.getElementById("hint").textContent = "✅ 已完成報名。你之後仍可補上傳（檔名要含報名編號）。";
+        };
       }else{
         msg.className = "err";
-        msg.textContent = "失敗：" + (j.error || "unknown");
+        msg.textContent = "送出失敗：" + (j.error || "unknown");
       }
     }catch(e){
       msg.className = "err";
