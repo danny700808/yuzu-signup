@@ -571,8 +571,9 @@
     msg.textContent="送出中…";
     btnMain.disabled = true;
 
-    const data = Object.fromEntries(new FormData(f).entries());
-    data.mode="create";
+  const data = Object.fromEntries(new FormData(f).entries());
+data.mode = "create";
+data["我已閱讀並同意填表須知"] = agree.checked ? "是" : "";
 
     try{
       const j = await fetch(SCRIPT_URL, {
@@ -657,3 +658,4 @@
 </script>
 </body>
 </html>
+
