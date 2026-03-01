@@ -7,174 +7,123 @@
   <style>
     *{ box-sizing:border-box; }
     html,body{ width:100%; overflow-x:hidden; }
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;
-      background:#faf7f8;
-      color:#222;
-    }
+    body{ margin:0; font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif; background:#faf7f8; color:#222; }
     .wrap{ max-width:860px; margin:24px auto; padding:16px; }
-    .card{
-      background:#fff;
-      border:1px solid #eee;
-      border-radius:16px;
-      padding:18px;
-      box-shadow:0 8px 22px rgba(0,0,0,.06);
-    }
+    .card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; box-shadow:0 8px 22px rgba(0,0,0,.06); }
     h1{ margin:0 0 10px; font-size:22px; }
     .muted{ color:#666; font-size:13px; line-height:1.6; white-space:pre-wrap; }
+
     label{ display:block; margin:12px 0 6px; font-weight:800; }
     input,select,textarea{
-      width:100%;
-      max-width:100%;
-      display:block;
-      padding:12px;
-      border:1px solid #ddd;
-      border-radius:12px;
-      font-size:16px;
-      background:#fff;
-      outline:none;
+      width:100%; max-width:100%; display:block; padding:12px;
+      border:1px solid #ddd; border-radius:12px; font-size:16px; background:#fff; outline:none;
     }
     input:focus,select:focus,textarea:focus{ border-color:#caa0ae; box-shadow:0 0 0 3px rgba(202,160,174,.25); }
     textarea{ min-height:90px; resize:vertical; }
-    .row{
-      display:grid;
-      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-      gap:12px;
-    }
+
+    .row{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; }
     @media (max-width:640px){ .row{ grid-template-columns:1fr; } }
 
-    .btn{
-      margin-top:14px;
-      width:100%;
-      padding:12px;
-      border:0;
-      border-radius:12px;
-      font-size:16px;
-      background:#7b3a52;
-      color:#fff;
-      cursor:pointer;
-    }
+    .btn{ margin-top:14px; width:100%; padding:12px; border:0; border-radius:12px; font-size:16px; background:#7b3a52; color:#fff; cursor:pointer; }
     .btn:disabled{ opacity:.6; cursor:not-allowed; }
 
-    .btnG{
-      margin-top:10px;
-      width:100%;
-      padding:14px;
-      border:0;
-      border-radius:12px;
-      font-size:17px;
-      background:#2f8f7b;
-      color:#fff;
-      cursor:pointer;
-    }
+    .btnG{ margin-top:10px; width:100%; padding:14px; border:0; border-radius:12px; font-size:17px; background:#2f8f7b; color:#fff; cursor:pointer; }
     .btnG:disabled{ opacity:.6; cursor:not-allowed; }
 
-    .ghost{
-      border:1px solid #d1d5db;
-      background:#fff;
-      color:#111827;
-    }
+    .ghost{ border:1px solid #d1d5db; background:#fff; color:#111827; }
 
     .ok{ color:#0a7a3c; font-weight:900; }
     .err{ color:#b00020; font-weight:900; }
 
-    .box{
-      background:#f6fbf9;
-      border:1px solid #d7efe7;
-      border-radius:14px;
-      padding:14px;
-      margin-top:14px;
-    }
+    .box{ background:#f6fbf9; border:1px solid #d7efe7; border-radius:14px; padding:14px; margin-top:14px; }
     .hr{ height:1px; background:#eee; margin:14px 0; }
 
-    .slot{
-      border:1px solid #d7efe7;
-      background:#ffffff;
+    /* 名額顯示 */
+    #quotaText{
+      display:none;
+      margin-top:8px;
+      padding:10px 12px;
+      border-radius:12px;
+      background:#fff7f9;
+      border:1px solid #f0d7df;
+      font-weight:900;
+      color:#7b3a52;
+    }
+
+    /* === 填表須知 === */
+    .notice{
+      margin:12px 0 14px;
+      padding:14px;
       border-radius:14px;
-      padding:12px;
-      margin-top:12px;
-    }
-    .slotTitle{
-      font-weight:900;
-      margin:0 0 10px;
-      font-size:16px;
+      border:1px solid #dbeafe;
+      background:#eff6ff;
       color:#1f2937;
+    }
+    .notice h2{
+      margin:0 0 8px;
+      font-size:16px;
+      font-weight:1000;
+    }
+    .notice ol{
+      margin:0 0 10px 18px;
+      padding:0;
+      line-height:1.7;
+      font-size:13px;
+      color:#374151;
+    }
+    .agreeRow{
       display:flex;
-      align-items:center;
-      justify-content:space-between;
       gap:10px;
+      align-items:flex-start;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid #c7d2fe;
+      background:#ffffff;
     }
-    .pillOk{
-      font-size:12px;
-      font-weight:900;
-      padding:4px 10px;
-      border-radius:999px;
-      background:#ecfdf3;
-      border:1px solid #b7e4c7;
-      color:#0a7a3c;
+    .agreeRow input[type="checkbox"]{
+      width:20px; height:20px;
+      margin-top:2px;
     }
-    .pillNone{
-      font-size:12px;
+    .agreeText{
+      font-size:14px;
+      line-height:1.6;
+      color:#111827;
       font-weight:900;
-      padding:4px 10px;
-      border-radius:999px;
-      background:#f9fafb;
-      border:1px solid #e5e7eb;
+    }
+    .agreeHint{
+      display:block;
+      margin-top:4px;
+      font-weight:700;
       color:#6b7280;
+      font-size:12px;
     }
+
+    /* 未勾選鎖住整份表單 */
+    .locked{
+      opacity:.55;
+      pointer-events:none;
+      filter:grayscale(.2);
+    }
+
+    /* 三檔上傳區 */
+    .slot{ border:1px solid #d7efe7; background:#fff; border-radius:14px; padding:12px; margin-top:12px; }
+    .slotTitle{ font-weight:900; margin:0 0 10px; font-size:16px; display:flex; justify-content:space-between; gap:10px; }
+    .pill{ font-size:12px; font-weight:900; padding:4px 10px; border-radius:999px; border:1px solid #e5e7eb; background:#f9fafb; color:#6b7280; }
+    .pill.ok{ background:#ecfdf3; border-color:#b7e4c7; color:#0a7a3c; }
     .fileRow{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
     .fileBtn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:14px 16px;
-      border-radius:12px;
-      border:1px solid #cfe9e1;
-      background:#eaf7f3;
-      color:#1f2937;
-      font-weight:900;
-      cursor:pointer;
-      min-width:160px;
-      user-select:none;
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:14px 16px; border-radius:12px; border:1px solid #cfe9e1;
+      background:#eaf7f3; color:#1f2937; font-weight:900; cursor:pointer; min-width:160px;
     }
-    .fileName{
-      color:#374151;
-      font-size:14px;
-      word-break:break-word;
-      flex:1;
-      min-width:180px;
-    }
+    .fileName{ color:#374151; font-size:14px; word-break:break-word; flex:1; min-width:180px; }
+    .miniActions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .miniBtn{ border:1px solid #d1d5db; background:#fff; color:#111827; border-radius:10px; padding:8px 10px; font-weight:900; font-size:13px; cursor:pointer; }
+    .miniBtn.danger{ border-color:#fecaca; color:#b91c1c; background:#fff; }
+    .miniBtn.on{ background:#fee2e2; border-color:#fecaca; color:#b91c1c; }
     .slotMsg{ margin-top:10px; font-size:13px; white-space:pre-wrap; }
 
-    .miniActions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-    .miniBtn{
-      border:1px solid #d1d5db;
-      background:#fff;
-      color:#111827;
-      border-radius:10px;
-      padding:8px 10px;
-      font-weight:900;
-      font-size:13px;
-      cursor:pointer;
-    }
-    .miniBtn.danger{
-      border-color:#fecaca;
-      color:#b91c1c;
-      background:#fff;
-    }
-    .miniBtn.on{
-      background:#fee2e2;
-      border-color:#fecaca;
-      color:#b91c1c;
-    }
-
-    /* 完成卡片 */
+    /* 完成頁 */
     .doneOnly{
       display:none;
       border:1px solid #b7e4c7;
@@ -183,32 +132,21 @@
       padding:16px;
       margin-top:16px;
     }
-    .doneHead{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .doneTitle{
-      font-weight:900;
-      color:#0a7a3c;
-      font-size:22px;
-      margin:0;
-    }
-    .doneBody{
-      margin-top:10px;
-      color:#374151;
-      font-size:14px;
-      white-space:pre-wrap;
-      line-height:1.7;
-    }
-    .doneActions{
-      display:flex;
-      gap:12px;
-      margin-top:14px;
-      flex-wrap:wrap;
-    }
+    .doneTitle{ font-weight:900; color:#0a7a3c; font-size:22px; margin:0; }
+    .doneBody{ margin-top:10px; color:#374151; font-size:14px; line-height:1.7; white-space:pre-wrap; }
+    .doneActions{ display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; }
     .doneActions button{ flex:1; min-width:170px; }
+
+    /* 滿額彈窗（版本B） */
+    .modalMask{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; padding:18px; z-index:9999; }
+    .modal{ width:min(520px, 100%); background:#fff; border-radius:16px; border:1px solid #eee; box-shadow:0 18px 40px rgba(0,0,0,.25); padding:16px; }
+    .modal h3{ margin:0 0 8px; font-size:18px; }
+    .modal p{ margin:0; color:#374151; line-height:1.7; font-size:14px; white-space:pre-wrap; }
+    .modalActions{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
+    .modalActions a,.modalActions button{ flex:1; min-width:160px; text-align:center; text-decoration:none; border-radius:12px; padding:12px; font-weight:900; cursor:pointer; }
+    .aLine{ background:#06c755; color:#fff; border:0; }
+    .aWeb{ background:#2f8f7b; color:#fff; border:0; }
+    .aClose{ background:#fff; color:#111827; border:1px solid #d1d5db; }
   </style>
 </head>
 
@@ -217,175 +155,181 @@
   <div class="card" id="mainCard">
     <h1>柚子樂器成果展｜報名</h1>
 
-    <form id="f">
-      <label>場次 *</label>
-      <select name="場次" id="sessionSel" required>
-        <option value="">請選擇</option>
-        <option>下午場 13:00~16:00</option>
-        <option>晚上場 17:30~20:30</option>
-      </select>
-      <div class="muted" id="quotaHint" style="margin-top:6px;"></div>
+    <!-- ✅ 填表須知（最前面 + 必勾選） -->
+    <div class="notice">
+      <h2>填表須知（請先閱讀並勾選）</h2>
+      <ol>
+        <li><b>音檔最多 3 個</b>：請依序上傳 <b>音檔1 → 音檔2 → 音檔3</b>，<b>不用改檔名</b>（系統會自動命名）。</li>
+        <li><b>可修改/可覆蓋</b>：資料填錯可用信件連結回到修改頁，音檔可 <b>覆蓋重傳或刪除</b>。</li>
+        <li><b>現場設備</b>：提供 <b>電鋼琴、爵士鼓</b>；其餘樂器與設備請自行準備。</li>
+        <li><b>自彈自唱麥克風架</b>：現場提供 <b>3 支麥克風架</b>（數量有限，依現場安排使用）。</li>
+        <li><b>音訊/供電</b>：提供 <b>6 組 DI Box</b>、效果器 <b>110V 電源</b>；自備設備的電源/變壓器請自行準備。</li>
+        <li><b>反送監聽</b>：提供 <b>5 顆反送</b>（其中 <b>1 顆固定給爵士鼓</b>）。</li>
+        <li><b>木吉他收音</b>：木吉他請使用 <b>自己的拾音器/拾音系統</b>；若使用現場提供拾音器而聲音無法達到個人需求，敬請自行負責。</li>
+        <li><b>上台規範</b>：除協同表演外，老師請在台下等候，由舞台人員協助動線；請老師先提醒學生上台注意事項。</li>
+        <li><b>特殊需求</b>：若需特殊設備/音訊需求，請在「需求/備註」填寫，我們會提前協助確認。</li>
+      </ol>
 
-      <label>表演項目 *</label>
-      <select name="表演項目" required>
-        <option value="">請選擇</option>
-        <option>熱音樂團</option>
-        <option>輕音樂團</option>
-        <option>吉他彈唱</option>
-        <option>鋼琴獨奏</option>
-        <option>鋼琴雙人</option>
-        <option>小提琴</option>
-        <option>中國笛</option>
-        <option>長笛木笛直笛</option>
-        <option>爵士鼓獨奏</option>
-        <option>鋼琴彈唱</option>
-        <option>二胡</option>
-        <option>琵琶</option>
-        <option>其他</option>
-      </select>
-
-      <label>學生姓名 *</label>
-      <input name="學生姓名" required placeholder="例：王小明">
-
-      <label>表演者姓名 / 團名 *</label>
-      <input name="表演者姓名/團名" required placeholder="例：@@吉他社 / @@小提琴中心">
-
-      <div class="row">
+      <div class="agreeRow">
+        <input id="agree" type="checkbox" name="我已閱讀並同意填表須知" value="是" required>
         <div>
-          <label>舞台總表演人數 *</label>
-          <input name="舞台總表演人數" required inputmode="numeric" placeholder="例：2 / 4">
-        </div>
-        <div>
-          <label>聯絡電話 *</label>
-          <input name="聯絡電話" required inputmode="tel" placeholder="例：0952-010146">
+          <div class="agreeText">我已閱讀並同意以上填表須知（未勾選無法填寫）</div>
+          <span class="agreeHint">勾選後才會解鎖表單內容</span>
         </div>
       </div>
+    </div>
 
-      <label>表演歌名/名稱 *</label>
-      <input name="表演歌名/名稱" required placeholder="例：浪流連">
+    <form id="f">
+      <!-- ✅ 下面整份表單會被鎖住，勾選後才解鎖 -->
+      <div id="formBody" class="locked">
 
-      <label>聯絡人信箱（老師代報也填老師信箱） *</label>
-      <input name="聯絡人信箱" type="email" required placeholder="example@example.com">
+        <label>場次 *</label>
+        <select name="場次" id="sessionSel" required>
+          <option value="">請選擇</option>
+          <option>下午場 13:00~16:00</option>
+          <option>晚上場 17:30~20:30</option>
+        </select>
 
-      <label>老師是否一同表演</label>
-      <select name="老師是否一同表演">
-        <option value="">請選擇</option>
-        <option>是</option>
-        <option>否</option>
-      </select>
+        <div id="quotaText"></div>
 
-      <label>老師一起的方式（沒有就留空）</label>
-      <input name="老師一起的方式" placeholder="例：鋼琴伴奏">
+        <label>表演項目 *（請選最接近的類型）</label>
+        <select name="表演項目" required>
+          <option value="">請選擇</option>
+          <option>熱音樂團</option>
+          <option>輕音樂團</option>
+          <option>吉他彈唱</option>
+          <option>鋼琴獨奏</option>
+          <option>鋼琴雙人</option>
+          <option>小提琴</option>
+          <option>中國笛</option>
+          <option>長笛木笛直笛</option>
+          <option>爵士鼓獨奏</option>
+          <option>鋼琴彈唱</option>
+          <option>二胡</option>
+          <option>琵琶</option>
+          <option>其他</option>
+        </select>
 
-      <label>老師姓名(代報填)</label>
-      <input name="老師姓名(代報填)" placeholder="例：黃明廷">
+        <label>學生姓名 *（若為雙人/多人，請用「、」分隔，例如：王小明、陳小華）</label>
+        <input name="學生姓名" required placeholder="例：王小明">
 
-      <label>需求/備註</label>
-      <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
+        <label>表演者姓名 / 團名（選填；不知道團名可留空）</label>
+        <input name="表演者姓名/團名" placeholder="例：@@吉他社 / @@小提琴中心">
 
-      <!-- create: 下一步 -->
-      <button class="btn" type="submit" id="btnMain">下一步｜添加音檔</button>
-      <p id="msg" class="muted"></p>
-
-      <!-- 添加音檔區 -->
-      <div class="box" id="audioBox" style="display:none;">
-        <div style="font-weight:900;font-size:18px;">添加音檔（MP3 ≤ 20MB）</div>
-        <div class="muted" style="margin-top:6px;">備註：最多可上傳 3 個音檔。</div>
-
-        <!-- slot 1 -->
-        <div class="slot" id="slot1">
-          <div class="slotTitle">
-            <span>音檔 1</span>
-            <span id="pill1" class="pillNone">尚未上傳</span>
+        <div class="row">
+          <div>
+            <label>舞台總表演人數 *</label>
+            <input name="舞台總表演人數" required inputmode="numeric" placeholder="例：2 / 4">
           </div>
-
-          <div class="muted" id="cur1" style="margin-bottom:6px;display:none;"></div>
-
-          <input id="file1" type="file" accept="audio/mpeg,.mp3" style="display:none;">
-          <div class="fileRow">
-            <div class="fileBtn" data-pick="1">選擇檔案</div>
-            <div class="fileName" id="name1">尚未選取檔案</div>
+          <div>
+            <label>聯絡電話 *</label>
+            <input name="聯絡電話" required inputmode="tel" placeholder="例：0952-010146">
           </div>
-
-          <div class="miniActions">
-            <button type="button" class="miniBtn" id="view1" style="display:none;">檢視</button>
-            <button type="button" class="miniBtn danger" id="del1" style="display:none;">刪除</button>
-          </div>
-
-          <div class="slotMsg muted" id="m1"></div>
         </div>
 
-        <!-- slot 2 -->
-        <div class="slot" id="slot2">
-          <div class="slotTitle">
-            <span>音檔 2</span>
-            <span id="pill2" class="pillNone">尚未上傳</span>
+        <label>表演歌名/名稱 *</label>
+        <input name="表演歌名/名稱" required placeholder="例：浪流連">
+
+        <label>聯絡人信箱（老師代報也填老師信箱） *</label>
+        <input name="聯絡人信箱" type="email" required placeholder="example@example.com">
+
+        <label>老師是否一同表演</label>
+        <select name="老師是否一同表演">
+          <option value="">請選擇</option>
+          <option>是</option>
+          <option>否</option>
+        </select>
+
+        <label>老師一起的方式（沒有就留空）</label>
+        <input name="老師一起的方式" placeholder="例：鋼琴伴奏">
+
+        <label>老師姓名(代報填)</label>
+        <input name="老師姓名(代報填)" placeholder="例：黃明廷">
+
+        <label>需求/備註（若需特殊設備/音訊需求，請在此填寫）</label>
+        <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
+
+        <button class="btn" type="submit" id="btnMain">下一步｜添加音檔</button>
+        <p id="msg" class="muted"></p>
+
+        <div class="box" id="audioBox" style="display:none;">
+          <div style="font-weight:900;font-size:18px;">添加音檔（MP3 ≤ 20MB，最多 3 個）</div>
+          <div class="muted" style="margin-top:6px;">檔名會自動加上「早上/下午/晚上」前綴與音檔序號，無需自行改名。</div>
+
+          <div class="slot">
+            <div class="slotTitle"><span>音檔 1</span><span id="pill1" class="pill">尚未上傳</span></div>
+            <input id="file1" type="file" accept="audio/mpeg,.mp3" style="display:none;">
+            <div class="fileRow">
+              <div class="fileBtn" data-pick="1">選擇檔案</div>
+              <div class="fileName" id="name1">尚未選取檔案</div>
+            </div>
+            <div class="miniActions">
+              <button type="button" class="miniBtn" id="view1" style="display:none;">檢視</button>
+              <button type="button" class="miniBtn danger" id="del1" style="display:none;">刪除</button>
+            </div>
+            <div class="slotMsg muted" id="m1"></div>
           </div>
 
-          <div class="muted" id="cur2" style="margin-bottom:6px;display:none;"></div>
-
-          <input id="file2" type="file" accept="audio/mpeg,.mp3" style="display:none;">
-          <div class="fileRow">
-            <div class="fileBtn" data-pick="2">選擇檔案</div>
-            <div class="fileName" id="name2">尚未選取檔案</div>
+          <div class="slot">
+            <div class="slotTitle"><span>音檔 2</span><span id="pill2" class="pill">尚未上傳</span></div>
+            <input id="file2" type="file" accept="audio/mpeg,.mp3" style="display:none;">
+            <div class="fileRow">
+              <div class="fileBtn" data-pick="2">選擇檔案</div>
+              <div class="fileName" id="name2">尚未選取檔案</div>
+            </div>
+            <div class="miniActions">
+              <button type="button" class="miniBtn" id="view2" style="display:none;">檢視</button>
+              <button type="button" class="miniBtn danger" id="del2" style="display:none;">刪除</button>
+            </div>
+            <div class="slotMsg muted" id="m2"></div>
           </div>
 
-          <div class="miniActions">
-            <button type="button" class="miniBtn" id="view2" style="display:none;">檢視</button>
-            <button type="button" class="miniBtn danger" id="del2" style="display:none;">刪除</button>
+          <div class="slot">
+            <div class="slotTitle"><span>音檔 3</span><span id="pill3" class="pill">尚未上傳</span></div>
+            <input id="file3" type="file" accept="audio/mpeg,.mp3" style="display:none;">
+            <div class="fileRow">
+              <div class="fileBtn" data-pick="3">選擇檔案</div>
+              <div class="fileName" id="name3">尚未選取檔案</div>
+            </div>
+            <div class="miniActions">
+              <button type="button" class="miniBtn" id="view3" style="display:none;">檢視</button>
+              <button type="button" class="miniBtn danger" id="del3" style="display:none;">刪除</button>
+            </div>
+            <div class="slotMsg muted" id="m3"></div>
           </div>
 
-          <div class="slotMsg muted" id="m2"></div>
-        </div>
+          <div class="hr"></div>
 
-        <!-- slot 3 -->
-        <div class="slot" id="slot3">
-          <div class="slotTitle">
-            <span>音檔 3</span>
-            <span id="pill3" class="pillNone">尚未上傳</span>
-          </div>
+          <button type="button" class="btnG" id="btnUploadAll">上傳所有音樂檔</button>
+          <button type="button" class="btnG" id="btnNoAudio">我不需要音樂檔</button>
 
-          <div class="muted" id="cur3" style="margin-bottom:6px;display:none;"></div>
-
-          <input id="file3" type="file" accept="audio/mpeg,.mp3" style="display:none;">
-          <div class="fileRow">
-            <div class="fileBtn" data-pick="3">選擇檔案</div>
-            <div class="fileName" id="name3">尚未選取檔案</div>
-          </div>
-
-          <div class="miniActions">
-            <button type="button" class="miniBtn" id="view3" style="display:none;">檢視</button>
-            <button type="button" class="miniBtn danger" id="del3" style="display:none;">刪除</button>
-          </div>
-
-          <div class="slotMsg muted" id="m3"></div>
-        </div>
-
-        <div class="hr"></div>
-
-        <!-- 新報名用 -->
-        <button type="button" class="btnG" id="btnUploadAll">上傳所有音樂檔</button>
-        <button type="button" class="btnG" id="btnNoAudio">我不需要音樂檔</button>
-
-        <!-- 修改用：最後只留一顆 -->
-        <button type="button" class="btnG" id="btnEditSubmit" style="display:none;">修改送出</button>
-
-        <p class="muted" style="margin-top:10px;">
+          <p class="muted" style="margin-top:10px;">
 若檔案超過 20MB，請先轉檔/壓縮後再上傳。你可以在 Google 搜尋「MP3 轉檔」。
-        </p>
+          </p>
+        </div>
       </div>
     </form>
   </div>
 
-  <!-- 完成卡片 -->
   <div class="doneOnly" id="doneCard">
-    <div class="doneHead">
-      <h2 class="doneTitle">✅ 已完成</h2>
-    </div>
+    <h2 class="doneTitle">✅ 已完成</h2>
     <div class="doneBody" id="doneBody"></div>
     <div class="doneActions">
       <button class="btnG" id="btnGoOfficial">立即前往官方網站</button>
       <button class="btnG ghost" id="btnBackForm">回到報名表（新增下一位）</button>
+    </div>
+  </div>
+</div>
+
+<!-- 滿額彈窗（版本B） -->
+<div class="modalMask" id="fullMask">
+  <div class="modal">
+    <h3>此場次已額滿</h3>
+    <p id="fullText"></p>
+    <div class="modalActions">
+      <a class="aLine" href="https://lin.ee/PSARQN6" target="_blank">加入官方 LINE</a>
+      <a class="aWeb" href="https://www.mingtinghuang.com/" target="_blank">前往官網</a>
+      <button class="aClose" id="btnClose" type="button">我知道了</button>
     </div>
   </div>
 </div>
@@ -395,86 +339,159 @@
   const OFFICIAL_URL = "https://www.mingtinghuang.com/";
   const COUNTDOWN_SECONDS = 20;
 
+  const agree = document.getElementById("agree");
+  const formBody = document.getElementById("formBody");
+
+  function syncLock(){
+    if(agree.checked){
+      formBody.classList.remove("locked");
+    }else{
+      formBody.classList.add("locked");
+      // 回到最上面讓他看到須知
+      // （不強制捲動，避免干擾）
+    }
+  }
+  agree.addEventListener("change", syncLock);
+  syncLock();
+
   const f = document.getElementById("f");
   const msg = document.getElementById("msg");
   const btnMain = document.getElementById("btnMain");
-
   const audioBox = document.getElementById("audioBox");
   const btnUploadAll = document.getElementById("btnUploadAll");
   const btnNoAudio = document.getElementById("btnNoAudio");
-  const btnEditSubmit = document.getElementById("btnEditSubmit");
+
+  const quotaText = document.getElementById("quotaText");
 
   const doneCard = document.getElementById("doneCard");
   const doneBody = document.getElementById("doneBody");
   const btnGoOfficial = document.getElementById("btnGoOfficial");
   const btnBackForm = document.getElementById("btnBackForm");
 
-  const sessionSel = document.getElementById("sessionSel");
-  const quotaHint = document.getElementById("quotaHint");
+  const fullMask = document.getElementById("fullMask");
+  const fullText = document.getElementById("fullText");
+  document.getElementById("btnClose").addEventListener("click", ()=> fullMask.style.display="none");
+  fullMask.addEventListener("click", (e)=>{ if(e.target === fullMask) fullMask.style.display="none"; });
 
-  let mode = "create"; // create | edit
-  let current = { regId:"", token:"" };
-  let countdownTimer = null;
-  let left = COUNTDOWN_SECONDS;
+  const FULL_MSG_B =
+`謝謝您的報名！目前此場次名額已滿，我們先暫停受理。
+若您希望候補/詢問加開場次，請加入官方 LINE。
+最新資訊也會同步更新在官網。`;
 
-  // 音檔狀態
-  const slotInfo = {
-    1:{exists:false,url:"",name:""},
-    2:{exists:false,url:"",name:""},
-    3:{exists:false,url:"",name:""}
-  };
-  const deleteMark = {1:false,2:false,3:false};
+  function showFullModal(){
+    fullText.textContent = FULL_MSG_B;
+    fullMask.style.display = "flex";
+  }
 
-  // quota
-  let quotaData = {}; // { session: {limit, used, remaining, full} }
+  function jsonp(url){
+    return new Promise((resolve, reject)=>{
+      const cb = "cb_" + Math.random().toString(36).slice(2);
+      const s = document.createElement("script");
+      const timer = setTimeout(()=>{ cleanup(); reject(new Error("timeout")); }, 12000);
+      function cleanup(){ clearTimeout(timer); delete window[cb]; s.remove(); }
+      window[cb] = (data)=>{ cleanup(); resolve(data); };
+      s.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
+      s.onerror = ()=>{ cleanup(); reject(new Error("load error")); };
+      document.body.appendChild(s);
+    });
+  }
 
-  function stopCountdown(){
-    if(countdownTimer){
-      clearInterval(countdownTimer);
-      countdownTimer = null;
+  async function loadQuota(){
+    try{
+      const data = await jsonp(SCRIPT_URL + "?mode=quota");
+      if(!data || !data.ok) throw new Error("quota");
+      const a = Number(data.afternoonRemain ?? 0);
+      const e = Number(data.eveningRemain ?? 0);
+      quotaText.style.display = "";
+      quotaText.innerHTML = `可報名組數：下午場 <b>${a}</b> 組｜晚上場 <b>${e}</b> 組`;
+    }catch(e){
+      quotaText.style.display = "none";
     }
   }
-  function renderDoneBody(){
-    doneBody.textContent =
-      "附註：若之後需要修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「點此回到修改頁」。\n" +
-      `${COUNTDOWN_SECONDS} 秒後將自動前往官方網站（倒數：${left}）`;
-  }
+  loadQuota();
+
+  let current = { regId:"", token:"" };
+  let countdownTimer=null, left=COUNTDOWN_SECONDS;
+
+  function stopCountdown(){ if(countdownTimer){ clearInterval(countdownTimer); countdownTimer=null; } }
   function showDoneOnly(){
     document.getElementById("mainCard").style.display = "none";
     doneCard.style.display = "block";
     doneCard.scrollIntoView({behavior:"smooth", block:"start"});
-
     stopCountdown();
     left = COUNTDOWN_SECONDS;
-    renderDoneBody();
-
+    doneBody.textContent =
+      "附註：若之後需要修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。\n" +
+      `${COUNTDOWN_SECONDS} 秒後將自動前往官方網站（倒數：${left}）`;
     countdownTimer = setInterval(()=>{
       left -= 1;
-      renderDoneBody();
-      if(left <= 0){
-        stopCountdown();
-        location.href = OFFICIAL_URL;
-      }
-    }, 1000);
+      doneBody.textContent =
+        "附註：若之後需要修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。\n" +
+        `${COUNTDOWN_SECONDS} 秒後將自動前往官方網站（倒數：${left}）`;
+      if(left<=0){ stopCountdown(); location.href = OFFICIAL_URL; }
+    },1000);
+  }
+  btnGoOfficial.addEventListener("click", ()=>{ stopCountdown(); location.href = OFFICIAL_URL; });
+  btnBackForm.addEventListener("click", ()=>{ stopCountdown(); location.href = location.origin + location.pathname; });
+
+  function fmtMB(n){ return (Math.round((n/(1024*1024))*100)/100).toFixed(2); }
+
+  const slotInfo = {1:{exists:false,url:"",name:""},2:{exists:false,url:"",name:""},3:{exists:false,url:"",name:""}};
+  const deleteMark = {1:false,2:false,3:false};
+
+  document.querySelectorAll(".fileBtn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const slot = btn.getAttribute("data-pick");
+      document.getElementById("file"+slot).click();
+    });
+  });
+
+  [1,2,3].forEach(slot=>{
+    document.getElementById("file"+slot).addEventListener("change", ()=>{
+      const file = document.getElementById("file"+slot).files?.[0];
+      const nameEl = document.getElementById("name"+slot);
+      if(!file){ nameEl.textContent="尚未選取檔案"; return; }
+      nameEl.textContent = `${file.name}（${fmtMB(file.size)} MB）`;
+      deleteMark[slot] = false;
+      renderSlot(slot);
+    });
+
+    const del = document.getElementById("del"+slot);
+    del.addEventListener("click", ()=>{
+      deleteMark[slot] = !deleteMark[slot];
+      renderSlot(slot);
+    });
+  });
+
+  function renderSlot(slot){
+    const pill = document.getElementById("pill"+slot);
+    const view = document.getElementById("view"+slot);
+    const del = document.getElementById("del"+slot);
+
+    if(slotInfo[slot].exists){
+      pill.className = "pill ok";
+      pill.textContent = "已上傳";
+      view.style.display = "";
+      del.style.display = "";
+      view.onclick = ()=> window.open(slotInfo[slot].url, "_blank");
+    }else{
+      pill.className = "pill";
+      pill.textContent = "尚未上傳";
+      view.style.display = "none";
+      del.style.display = "none";
+    }
+    del.classList.toggle("on", !!deleteMark[slot]);
+    del.textContent = deleteMark[slot] ? "已標記刪除" : "刪除";
   }
 
-  btnGoOfficial.addEventListener("click", ()=>{
-    stopCountdown();
-    location.href = OFFICIAL_URL;
-  });
-  btnBackForm.addEventListener("click", ()=>{
-    stopCountdown();
-    const base = location.origin + location.pathname;
-    location.href = base;
-  });
-
-  function getQuery(){
-    const p = new URLSearchParams(location.search);
-    return { regId:(p.get("regId")||"").trim(), token:(p.get("token")||"").trim() };
+  function validateMp3(file){
+    if(!file) return null;
+    if(file.size > 20*1024*1024) return "檔案太大（上限 20MB）";
+    const lower = (file.name||"").toLowerCase();
+    const ok = (file.type==="audio/mpeg") || lower.endsWith(".mp3");
+    if(!ok) return "只接受 MP3（.mp3）";
+    return null;
   }
-
-  function mb(n){ return n/(1024*1024); }
-  function fmtMB(n){ return (Math.round(mb(n)*100)/100).toFixed(2); }
 
   function setSlotMsg(slot, text, isErr){
     const el = document.getElementById("m"+slot);
@@ -492,167 +509,38 @@
     return btoa(bin);
   }
 
-  function getFile(slot){
-    const input = document.getElementById("file"+slot);
-    return (input.files && input.files[0]) ? input.files[0] : null;
-  }
-
-  function validateFile(slot, file){
-    if(!file) return null;
-    if(file.size > 20*1024*1024){
-      return `音檔 ${slot} 檔案太大：${fmtMB(file.size)} MB（上限 20MB）。`;
-    }
-    const lower = (file.name||"").toLowerCase();
-    const isMp3 = (file.type === "audio/mpeg") || lower.endsWith(".mp3");
-    if(!isMp3){
-      return `音檔 ${slot} 只接受 MP3（.mp3）。`;
-    }
-    return null;
-  }
-
-  function setAllDisabled(disabled){
-    btnUploadAll.disabled = disabled;
-    btnNoAudio.disabled = disabled;
-    btnEditSubmit.disabled = disabled;
-    [1,2,3].forEach(s=>{
-      const pick = document.querySelector(`.fileBtn[data-pick="${s}"]`);
-      if(pick){
-        pick.style.pointerEvents = disabled ? "none" : "";
-        pick.style.opacity = disabled ? ".6" : "";
-      }
-      const del = document.getElementById("del"+s);
-      const view = document.getElementById("view"+s);
-      if(del) del.disabled = disabled;
-      if(view) view.disabled = disabled;
-    });
-  }
-
-  function renderSlot(slot){
-    const info = slotInfo[slot];
-    const pill = document.getElementById("pill"+slot);
-    const cur = document.getElementById("cur"+slot);
-    const viewBtn = document.getElementById("view"+slot);
-    const delBtn = document.getElementById("del"+slot);
-
-    if(info.exists){
-      pill.className = "pillOk";
-      pill.textContent = "已上傳";
-      cur.style.display = "";
-      cur.innerHTML = `目前音檔：<b>${escapeHtml(info.name||"")}</b>`;
-      viewBtn.style.display = "";
-      delBtn.style.display = "";
-      viewBtn.onclick = ()=> window.open(info.url, "_blank");
-    }else{
-      pill.className = "pillNone";
-      pill.textContent = "尚未上傳";
-      cur.style.display = "none";
-      viewBtn.style.display = "none";
-      delBtn.style.display = "none";
-    }
-
-    // delete mark
-    delBtn.classList.toggle("on", !!deleteMark[slot]);
-    delBtn.textContent = deleteMark[slot] ? "已標記刪除" : "刪除";
-  }
-
-  function escapeHtml(s){
-    s = String(s==null?"":s);
-    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
-
-  // 選檔按鈕
-  document.querySelectorAll(".fileBtn").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const slot = btn.getAttribute("data-pick");
-      document.getElementById("file"+slot).click();
-    });
-  });
-
-  // 顯示檔名+大小
-  [1,2,3].forEach(slot=>{
-    const input = document.getElementById("file"+slot);
-    input.addEventListener("change", ()=>{
-      const file = getFile(slot);
-      const nameEl = document.getElementById("name"+slot);
-      if(!file){
-        nameEl.textContent = "尚未選取檔案";
-        setSlotMsg(slot, "");
-        return;
-      }
-      nameEl.textContent = `${file.name}（${fmtMB(file.size)} MB）`;
-      const err = validateFile(slot, file);
-      if(err) setSlotMsg(slot, err, true);
-      else setSlotMsg(slot, "");
-
-      // 有選新檔，視為要覆蓋 → 取消刪除標記
-      deleteMark[slot] = false;
-      renderSlot(slot);
-    });
-  });
-
-  // 刪除按鈕：在修改模式才會用到；新報名不顯示
-  [1,2,3].forEach(slot=>{
-    const del = document.getElementById("del"+slot);
-    del.addEventListener("click", ()=>{
-      // toggle
-      deleteMark[slot] = !deleteMark[slot];
-      renderSlot(slot);
-    });
-  });
-
   async function uploadOne(slot, file){
-    setSlotMsg(slot, "建立上傳通道…", false);
-
+    setSlotMsg(slot, "建立上傳通道…");
     const startRes = await fetch(SCRIPT_URL, {
       method:"POST",
       headers:{ "Content-Type":"text/plain;charset=utf-8" },
-      body: JSON.stringify({
-        mode:"startUpload",
-        regId: current.regId,
-        token: current.token,
-        slot: slot,
-        totalBytes: file.size,
-        originalName: file.name
-      })
+      body: JSON.stringify({ mode:"startUpload", regId: current.regId, token: current.token, slot, totalBytes:file.size, originalName:file.name })
     }).then(r=>r.json());
-
-    if(!startRes.ok) throw new Error(startRes.error || `音檔 ${slot} 建立上傳通道失敗`);
+    if(!startRes.ok) throw new Error(startRes.error || "建立上傳通道失敗");
 
     const uploadUrl = startRes.uploadUrl;
-    const finalName = startRes.finalName;
-
     const chunkSize = 1024*1024;
     let offset = 0;
 
     while(offset < file.size){
-      const next = Math.min(offset + chunkSize, file.size);
-      const blob = file.slice(offset, next);
-      const buf = await blob.arrayBuffer();
-      const chunkB64 = arrayBufferToBase64(buf);
-
-      const pct = Math.round((next / file.size) * 100);
-      setSlotMsg(slot, `上傳中… ${pct}%`, false);
+      const next = Math.min(offset+chunkSize, file.size);
+      const buf = await file.slice(offset, next).arrayBuffer();
+      const b64 = arrayBufferToBase64(buf);
+      const pct = Math.round((next/file.size)*100);
+      setSlotMsg(slot, `上傳中… ${pct}%`);
 
       const chunkRes = await fetch(SCRIPT_URL, {
         method:"POST",
         headers:{ "Content-Type":"text/plain;charset=utf-8" },
-        body: JSON.stringify({
-          mode:"uploadChunk",
-          regId: current.regId,
-          token: current.token,
-          slot: slot,
-          uploadUrl: uploadUrl,
-          start: offset,
-          end: next - 1,
-          total: file.size,
-          chunkBase64: chunkB64
-        })
+        body: JSON.stringify({ mode:"uploadChunk", regId: current.regId, token: current.token, slot, uploadUrl, start:offset, end:next-1, total:file.size, chunkBase64:b64 })
       }).then(r=>r.json());
-
-      if(!chunkRes.ok) throw new Error(chunkRes.error || `音檔 ${slot} 分段上傳失敗`);
-
+      if(!chunkRes.ok) throw new Error(chunkRes.error || "分段上傳失敗");
       if(chunkRes.done){
-        setSlotMsg(slot, `✅ 已上傳完成：${chunkRes.fileName || finalName}`, false);
+        slotInfo[slot].exists = true;
+        slotInfo[slot].url = chunkRes.fileUrl || "";
+        slotInfo[slot].name = chunkRes.fileName || "";
+        renderSlot(slot);
+        setSlotMsg(slot, "✅ 已上傳完成");
         return;
       }
       offset = next;
@@ -660,131 +548,31 @@
   }
 
   async function deleteSlot(slot){
-    setSlotMsg(slot, "刪除中…", false);
+    setSlotMsg(slot, "刪除中…");
     const j = await fetch(SCRIPT_URL, {
       method:"POST",
       headers:{ "Content-Type":"text/plain;charset=utf-8" },
       body: JSON.stringify({ mode:"deleteSlot", regId: current.regId, token: current.token, slot })
     }).then(r=>r.json());
-    if(!j.ok) throw new Error(j.error || `音檔 ${slot} 刪除失敗`);
-    setSlotMsg(slot, "✅ 已刪除", false);
+    if(!j.ok) throw new Error(j.error || "刪除失敗");
+    slotInfo[slot] = {exists:false,url:"",name:""};
+    renderSlot(slot);
+    setSlotMsg(slot, "✅ 已刪除");
   }
 
-  // 新報名：上傳所有音樂檔
-  btnUploadAll.addEventListener("click", async ()=>{
-    if(!current.regId || !current.token){
-      msg.className = "err";
-      msg.textContent = "請先完成報名（下一步｜添加音檔）。";
-      return;
-    }
-
-    const files = {1:getFile(1),2:getFile(2),3:getFile(3)};
-    if(!files[1] && !files[2] && !files[3]){
-      setSlotMsg(1, "請至少選擇 1 個音檔，再按「上傳所有音樂檔」。", true);
-      return;
-    }
-    for(const s of [1,2,3]){
-      const err = validateFile(s, files[s]);
-      if(err){ setSlotMsg(s, err, true); return; }
-    }
-
-    setAllDisabled(true);
-    try{
-      for(const s of [1,2,3]){
-        const f = files[s];
-        if(!f) continue;
-        await uploadOne(s, f);
-      }
-      showDoneOnly();
-    }catch(e){
-      msg.className = "err";
-      msg.textContent = "上傳失敗：" + e.message;
-    }finally{
-      setAllDisabled(false);
-    }
-  });
-
-  // 新報名：不需要音檔
-  btnNoAudio.addEventListener("click", async ()=>{
-    if(!current.regId || !current.token){
-      showDoneOnly();
-      return;
-    }
-    setAllDisabled(true);
-    try{
-      const j = await fetch(SCRIPT_URL, {
-        method:"POST",
-        headers:{ "Content-Type":"text/plain;charset=utf-8" },
-        body: JSON.stringify({ mode:"noAudio", regId: current.regId, token: current.token })
-      }).then(r=>r.json());
-      if(!j.ok) throw new Error(j.error || "處理失敗");
-      showDoneOnly();
-    }catch(e){
-      msg.className = "err";
-      msg.textContent = "處理失敗：" + e.message;
-    }finally{
-      setAllDisabled(false);
-    }
-  });
-
-  // 修改模式：修改送出（一次處理刪除 + 覆蓋上傳）
-  btnEditSubmit.addEventListener("click", async ()=>{
-    if(!current.regId || !current.token){
-      msg.className = "err";
-      msg.textContent = "缺少 regId/token，請用信件連結回來。";
-      return;
-    }
-
-    const files = {1:getFile(1),2:getFile(2),3:getFile(3)};
-    for(const s of [1,2,3]){
-      const err = validateFile(s, files[s]);
-      if(err){ setSlotMsg(s, err, true); return; }
-    }
-
-    setAllDisabled(true);
-    try{
-      // 1) delete marked (only if no new file selected)
-      for(const s of [1,2,3]){
-        if(deleteMark[s] && !files[s]){
-          await deleteSlot(s);
-          slotInfo[s].exists = false;
-          slotInfo[s].url = "";
-          slotInfo[s].name = "";
-        }
-      }
-      // 2) upload selected new files (overwrite)
-      for(const s of [1,2,3]){
-        const f = files[s];
-        if(!f) continue;
-        await uploadOne(s, f);
-      }
-
-      showDoneOnly();
-    }catch(e){
-      msg.className = "err";
-      msg.textContent = "修改送出失敗：" + e.message;
-    }finally{
-      setAllDisabled(false);
-    }
-  });
-
-  // 送出報名（create） / 修改資料（update）
   f.addEventListener("submit", async (ev)=>{
     ev.preventDefault();
+    if(!agree.checked){
+      alert("請先閱讀並勾選「填表須知」才能填寫報名表。");
+      return;
+    }
 
-    msg.className = "muted";
-    msg.textContent = (mode==="edit") ? "儲存中…" : "送出中…";
+    msg.className="muted";
+    msg.textContent="送出中…";
     btnMain.disabled = true;
 
     const data = Object.fromEntries(new FormData(f).entries());
-
-    if(mode === "edit"){
-      data.mode = "update";
-      data.regId = current.regId;
-      data.token = current.token;
-    }else{
-      data.mode = "create";
-    }
+    data.mode="create";
 
     try{
       const j = await fetch(SCRIPT_URL, {
@@ -793,150 +581,79 @@
         body: JSON.stringify(data)
       }).then(r=>r.json());
 
-      if(!j.ok) throw new Error(j.error || "unknown");
-
-      if(mode !== "edit"){
-        current.regId = j.regId;
-        current.token = j.token;
-
-        audioBox.style.display = "";
-        audioBox.scrollIntoView({behavior:"smooth", block:"start"});
-
-        btnMain.textContent = "已完成";
-        btnMain.disabled = true;
-
-        msg.textContent = "";
-      }else{
-        // 修改資料送出成功 → 不直接完成，仍讓使用者可處理音檔後按「修改送出」
-        msg.className = "ok";
-        msg.textContent = "✅ 資料已更新，你可繼續處理音檔，最後按「修改送出」。";
+      if(!j.ok){
+        msg.className="err";
+        msg.textContent="送出失敗：" + (j.error||"unknown");
+        if((j.error||"").includes("名額已滿")) showFullModal();
+        return;
       }
+
+      msg.className="ok";
+      msg.textContent="✅ 報名已完成！請在下方添加音檔（或略過）。";
+      current.regId = j.regId;
+      current.token = j.token;
+
+      audioBox.style.display = "";
+      audioBox.scrollIntoView({behavior:"smooth", block:"start"});
+
+      [1,2,3].forEach(s=>{
+        slotInfo[s] = {exists:false,url:"",name:""};
+        deleteMark[s] = false;
+        document.getElementById("name"+s).textContent = "尚未選取檔案";
+        document.getElementById("file"+s).value = "";
+        setSlotMsg(s,"");
+        renderSlot(s);
+      });
+
+      loadQuota();
     }catch(e){
-      msg.className = "err";
-      msg.textContent = ((mode==="edit") ? "儲存失敗：" : "送出失敗：") + e.message;
-      if(mode!=="edit") btnMain.disabled = false;
+      msg.className="err";
+      msg.textContent="送出失敗：" + e.message;
     }finally{
-      if(mode==="edit") btnMain.disabled = true;
+      btnMain.disabled = false;
     }
   });
 
-  // quota UI
-  function renderQuota(){
-    const s = sessionSel.value || "";
-    if(!quotaData || !Object.keys(quotaData).length){
-      quotaHint.textContent = "";
+  btnNoAudio.addEventListener("click", async ()=>{
+    showDoneOnly();
+  });
+
+  btnUploadAll.addEventListener("click", async ()=>{
+    if(!current.regId || !current.token){
+      msg.className="err";
+      msg.textContent="請先完成報名。";
       return;
     }
-    const a = quotaData["下午場 13:00~16:00"];
-    const b = quotaData["晚上場 17:30~20:30"];
 
-    let lines = [];
-    if(a) lines.push(`下午場剩餘：${a.remaining} / ${a.limit}`);
-    if(b) lines.push(`晚上場剩餘：${b.remaining} / ${b.limit}`);
-    quotaHint.textContent = lines.join("　｜　");
-
-    // disable options if full
-    Array.from(sessionSel.options).forEach(opt=>{
-      const v = opt.textContent;
-      if(!v || v==="請選擇") return;
-      const q = quotaData[v];
-      if(q && q.full){
-        opt.disabled = true;
-        if(!opt.textContent.includes("（已額滿）")) opt.textContent = v + "（已額滿）";
-      }
-    });
-
-    // if currently selected is full -> reset
-    const cur = quotaData[s];
-    if(cur && cur.full){
-      sessionSel.value = "";
+    const files = {
+      1:document.getElementById("file1").files?.[0],
+      2:document.getElementById("file2").files?.[0],
+      3:document.getElementById("file3").files?.[0]
+    };
+    if(!files[1] && !files[2] && !files[3]){
+      setSlotMsg(1,"請至少選擇 1 個音檔再上傳。", true);
+      return;
     }
-  }
-
-  async function loadQuota(){
-    try{
-      const j = await fetch(SCRIPT_URL, {
-        method:"POST",
-        headers:{ "Content-Type":"text/plain;charset=utf-8" },
-        body: JSON.stringify({ mode:"getQuota" })
-      }).then(r=>r.json());
-
-      if(j && j.ok && j.quota){
-        quotaData = j.quota;
-        renderQuota();
-      }
-    }catch(e){
-      // ignore
+    for(const s of [1,2,3]){
+      const err = validateMp3(files[s]);
+      if(err){ setSlotMsg(s, err, true); return; }
     }
-  }
-
-  sessionSel.addEventListener("change", renderQuota);
-
-  // init edit mode (from email/PDF)
-  async function initEditMode(){
-    const q = getQuery();
-    if(!q.regId || !q.token) return;
-
-    mode = "edit";
-    current.regId = q.regId;
-    current.token = q.token;
-
-    btnMain.style.display = "none";
-    audioBox.style.display = "";
-    btnUploadAll.style.display = "none";
-    btnNoAudio.style.display = "none";
-    btnEditSubmit.style.display = "";
-
-    msg.textContent = "";
 
     try{
-      const j = await fetch(SCRIPT_URL, {
-        method:"POST",
-        headers:{ "Content-Type":"text/plain;charset=utf-8" },
-        body: JSON.stringify({ mode:"get", regId:q.regId, token:q.token })
-      }).then(r=>r.json());
-
-      if(!j.ok) throw new Error(j.error || "讀取失敗");
-
-      const data = j.data || {};
-      for(const k in data){
-        const el = f.querySelector(`[name="${k}"]`);
-        if(el) el.value = data[k];
+      for(const s of [1,2,3]){
+        if(deleteMark[s] && !files[s]) await deleteSlot(s);
       }
-
-      // audio info
-      const media = j.media || {};
-      [1,2,3].forEach(s=>{
-        const m = media[String(s)] || {};
-        slotInfo[s].exists = !!m.url;
-        slotInfo[s].url = m.url || "";
-        slotInfo[s].name = m.name || "";
-        deleteMark[s] = false;
-        renderSlot(s);
-
-        // reset file display
-        document.getElementById("name"+s).textContent = "尚未選取檔案";
-        document.getElementById("file"+s).value = "";
-        setSlotMsg(s, "");
-      });
-
-      msg.className = "ok";
-      msg.textContent = "✅ 已進入修改模式：可刪除/更換音檔，最後按「修改送出」。";
-
-      audioBox.scrollIntoView({behavior:"smooth", block:"start"});
+      for(const s of [1,2,3]){
+        if(files[s]) await uploadOne(s, files[s]);
+      }
+      showDoneOnly();
     }catch(e){
-      msg.className = "err";
-      msg.textContent = "讀取失敗：" + e.message;
+      msg.className="err";
+      msg.textContent="上傳失敗：" + e.message;
     }
-  }
+  });
 
-  // initial render slots in create mode
   [1,2,3].forEach(s=>renderSlot(s));
-
-  loadQuota();
-  initEditMode();
 </script>
 </body>
 </html>
-
-
