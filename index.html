@@ -419,22 +419,22 @@
     return isNaN(n) ? 0 : n;
   }
 
-  async function loadQuota(){
-    try{
-      var data = await jsonp(SCRIPT_URL + "?mode=quota");
-      if(!data || !data.ok) throw new Error((data && data.error) ? data.error : "quota failed");
-      // ✅ 同時支援 Remain / Remaining（避免版本混用）
-      var a = pickNumber_(data, "afternoonRemain", "afternoonRemaining");
-      var e = pickNumber_(data, "eveningRemain", "eveningRemaining");
+ async function loadQuota(){
+  try{
+    var data = await jsonp(SCRIPT_URL + "?mode=quota");
+    if(!data || !data.ok) throw new Error((data && data.error) ? data.error : "quota failed");
 
-      quotaText.style.display = "";
-      quotaText.innerHTML = "可報名組數：下午場 <b>" + a + "</b> 組｜晚上場 <b>" + e + "</b> 組";
-    }catch(err){
-      // ✅ 不再默默消失：直接顯示原因，方便你定位
-      quotaText.style.display = "";
-      quotaText.innerHTML = "名額載入失敗：<b>" + (err && err.message ? err.message : err) + "</b>";
-    }
+    // 同時支援 Remain / Remaining（避免版本混用）
+    var a = pickNumber_(data, "afternoonRemain", "afternoonRemaining");
+    var e = pickNumber_(data, "eveningRemain", "eveningRemaining");
+
+    quotaText.style.display = "block"; // ✅ 一定要 block，才會蓋過 CSS display:none
+    quotaText.innerHTML = "可報名組數：下午場 <b>" + a + "</b> 組｜晚上場 <b>" + e + "</b> 組";
+  }catch(err){
+    quotaText.style.display = "block"; // ✅ 失敗也顯示原因
+    quotaText.innerHTML = "名額載入失敗：<b>" + (err && err.message ? err.message : err) + "</b>";
   }
+}
   loadQuota();
 
   // done page
@@ -738,3 +738,4 @@
 </script>
 </body>
 </html>
+
