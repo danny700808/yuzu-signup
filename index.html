@@ -417,8 +417,8 @@
     try{
       const data = await jsonp(SCRIPT_URL + "?mode=quota");
       if(!data || !data.ok) throw new Error("quota");
-      const a = Number(data.afternoonRemain ?? 0);
-      const e = Number(data.eveningRemain ?? 0);
+      const a = Number((data.afternoonRemain ?? data.afternoonRemaining ?? 0));
+const e = Number((data.eveningRemain ?? data.eveningRemaining ?? 0));
       quotaText.style.display = "";
       quotaText.innerHTML = "可報名組數：下午場 <b>" + a + "</b> 組｜晚上場 <b>" + e + "</b> 組";
     }catch(e){
@@ -724,4 +724,5 @@
 </script>
 </body>
 </html>
+
 
