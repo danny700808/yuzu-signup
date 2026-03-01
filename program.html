@@ -5,45 +5,190 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>柚子樂器音樂成果展｜節目單</title>
   <style>
-    body{ margin:0; font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif; background:#faf7f8; color:#111; }
-    .wrap{ max-width:980px; margin:24px auto; padding:16px; }
-    .card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; box-shadow:0 8px 22px rgba(0,0,0,.06); }
-    h1{ margin:0 0 8px; font-size:26px; }
-    .meta{ color:#444; line-height:1.7; margin-bottom:14px; }
-    h2{ margin:18px 0 10px; font-size:20px; }
-    table{ width:100%; border-collapse:collapse; background:#fff; }
-    th,td{ border:1px solid #e5e7eb; padding:10px; text-align:left; vertical-align:top; }
-    th{ background:#f9fafb; font-weight:900; }
-    .muted{ color:#6b7280; font-size:13px; line-height:1.6; }
-    .spacer{ height:18px; }
-    .err{ color:#b00020; font-weight:900; }
+    :root{
+      --bg:#f6f3f4;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --brand:#2f8f7b;
+      --brandSoft:#eaf7f3;
+      --shadow:0 10px 26px rgba(0,0,0,.08);
+      --radius:18px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{ max-width:980px; margin:18px auto 30px; padding:14px; }
+    .top{
+      background:linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+      overflow:hidden;
+    }
+    h1{ margin:0 0 8px; font-size:26px; letter-spacing:.3px; }
+    .meta{ color:#374151; line-height:1.8; }
+    .meta b{ color:#111827; }
+    .stamp{
+      margin-top:10px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:var(--brandSoft);
+      border:1px solid #cfeee6;
+      color:#0b5f4f;
+      font-weight:900;
+      font-size:13px;
+    }
+
+    .section{
+      margin-top:14px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:14px;
+    }
+    .secHead{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
+      padding:6px 6px 12px;
+      border-bottom:1px dashed #e6efe9;
+      margin-bottom:12px;
+    }
+    .secTitle{
+      margin:0;
+      font-size:20px;
+      font-weight:1000;
+    }
+    .secTime{
+      color:var(--muted);
+      font-weight:800;
+      font-size:13px;
+      white-space:nowrap;
+    }
+
+    /* Desktop table */
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:#fff;
+      overflow:hidden;
+      border-radius:14px;
+    }
+    th,td{
+      border:1px solid var(--line);
+      padding:10px;
+      text-align:left;
+      vertical-align:top;
+    }
+    th{
+      background:#f9fafb;
+      font-weight:1000;
+      white-space:nowrap;
+    }
+    td{ color:#111827; }
+
+    .muted{ color:var(--muted); font-size:13px; line-height:1.6; }
+    .err{ color:#b00020; font-weight:1000; }
+    .note{ margin-top:12px; color:var(--muted); font-size:13px; }
+
+    /* Mobile list (avoid squeezed table) */
+    .mobileList{ display:none; }
+    .item{
+      border:1px solid #e6efe9;
+      background:#fbfffd;
+      border-radius:14px;
+      padding:12px;
+      margin-bottom:10px;
+    }
+    .row1{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:6px;
+    }
+    .badgeNo{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:40px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--brandSoft);
+      border:1px solid #cfeee6;
+      font-weight:1000;
+      color:#0b5f4f;
+      font-size:13px;
+    }
+    .type{
+      font-weight:1000;
+      font-size:15px;
+      color:#111827;
+      flex:1;
+    }
+    .line2,.line3{
+      font-size:14px;
+      line-height:1.65;
+      color:#111827;
+      word-break:break-word;
+    }
+    .k{ color:#6b7280; font-weight:900; }
+
+    @media (max-width:720px){
+      h1{ font-size:22px; }
+      .secTitle{ font-size:18px; }
+      table{ display:none; }
+      .mobileList{ display:block; }
+      .line2,.line3{ font-size:13px; } /* 你要的：直向字更小一點，不擠 */
+      .type{ font-size:14px; }
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="card">
+    <div class="top">
       <h1>柚子樂器音樂成果展</h1>
       <div class="meta">
-        日期：2026-3-29（星期日）<br>
-        地點：豐原太平洋百貨
+        <div><b>日期：</b>2026-3-29（星期日）</div>
+        <div><b>地點：</b>豐原太平洋百貨</div>
       </div>
+      <div id="status" class="stamp">載入節目單中…</div>
+      <div class="note">備註：節目順序以現場公告為準。</div>
+    </div>
 
-      <div id="status" class="muted">載入節目單中…</div>
+    <div class="section">
+      <div class="secHead">
+        <h2 class="secTitle">下午場</h2>
+        <div class="secTime">13:00–16:00</div>
+      </div>
+      <div id="aftTable"></div>
+      <div id="aftList" class="mobileList"></div>
+    </div>
 
-      <h2>下午場（13:00–16:00）</h2>
-      <div id="aft"></div>
-
-      <div class="spacer"></div>
-
-      <h2>晚上場（17:30–20:30）</h2>
-      <div id="eve"></div>
-
-      <div class="spacer"></div>
-      <div class="muted">備註：節目順序以現場公告為準。</div>
+    <div class="section">
+      <div class="secHead">
+        <h2 class="secTitle">晚上場</h2>
+        <div class="secTime">17:30–20:30</div>
+      </div>
+      <div id="eveTable"></div>
+      <div id="eveList" class="mobileList"></div>
     </div>
   </div>
 
 <script>
+  // 你的 Apps Script Web App（你給的）
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
 
   function esc(s){
@@ -51,6 +196,102 @@
     return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
+  // JSONP（GitHub 需要）
+  function jsonp(url){
+    return new Promise((resolve, reject)=>{
+      const cb = "cb_" + Math.random().toString(36).slice(2);
+      const s = document.createElement("script");
+      const timer = setTimeout(()=>{ cleanup(); reject(new Error("timeout")); }, 15000);
+
+      function cleanup(){
+        clearTimeout(timer);
+        delete window[cb];
+        s.remove();
+      }
+
+      window[cb] = (data)=>{ cleanup(); resolve(data); };
+      s.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
+      s.onerror = ()=>{ cleanup(); reject(new Error("load error")); };
+      document.body.appendChild(s);
+    });
+  }
+
+  // --- 排序規則 B：同類最多連3（穩定排序） ---
+  function stableSeedFromList(list){
+    const fp = (list || []).map(it => [it.type,it.name,it.song].join("|")).join("\n");
+    return fnv1a(fp);
+  }
+  function fnv1a(str){
+    // 32-bit FNV-1a
+    let h = 0x811c9dc5;
+    for(let i=0;i<str.length;i++){
+      h ^= str.charCodeAt(i);
+      h = (h + (h<<1) + (h<<4) + (h<<7) + (h<<8) + (h<<24)) >>> 0;
+    }
+    return h >>> 0;
+  }
+  function hashInt(seed, str){
+    return fnv1a(String(seed) + "|" + str);
+  }
+
+  function scheduleMax3(list, maxConsec){
+    const items = (list||[]).map((it, idx)=>({
+      type: (it.type||"未分類").trim(),
+      name: (it.name||"").trim(),
+      song: (it.song||"").trim(),
+      key: idx + "|" + (it.type||"") + "|" + (it.name||"") + "|" + (it.song||"")
+    }));
+
+    if(items.length <= 1) return items;
+
+    const seed = stableSeedFromList(items);
+
+    // buckets by type (keep stable order within type, but tie-break stable)
+    const buckets = {};
+    for(const it of items){
+      (buckets[it.type] ||= []).push(it);
+    }
+    const types = Object.keys(buckets);
+
+    for(const t of types){
+      buckets[t].sort((a,b)=> hashInt(seed, t+"|"+a.key) - hashInt(seed, t+"|"+b.key));
+    }
+
+    const result = [];
+    let last = "";
+    let streak = 0;
+
+    while(true){
+      const avail = types.filter(t => buckets[t].length > 0);
+      if(avail.length === 0) break;
+
+      // cannot exceed maxConsec if possible
+      let candidates = avail.filter(t => !(t === last && streak >= maxConsec));
+      if(candidates.length === 0){
+        // forced
+        candidates = avail;
+        last = "";
+        streak = 0;
+      }
+
+      // choose the type with most remaining, tie-break stable
+      candidates.sort((a,b)=>{
+        const da = buckets[a].length, db = buckets[b].length;
+        if(db !== da) return db - da;
+        return hashInt(seed, "pick|"+a+"|"+da+"|"+result.length) - hashInt(seed, "pick|"+b+"|"+db+"|"+result.length);
+      });
+
+      const pick = candidates[0];
+      const chosen = buckets[pick].shift();
+      result.push(chosen);
+
+      if(pick === last) streak++;
+      else { last = pick; streak = 1; }
+    }
+    return result;
+  }
+
+  // --- render ---
   function renderTable(list){
     if(!list || !list.length) return `<div class="muted">目前尚無名單</div>`;
     let html = `<table><thead><tr>
@@ -71,25 +312,22 @@
     return html;
   }
 
-  // JSONP loader（GitHub 需要避免跨網域限制）
-  function jsonp(url){
-    return new Promise((resolve, reject)=>{
-      const cb = "cb_" + Math.random().toString(36).slice(2);
-      const s = document.createElement("script");
-      const timer = setTimeout(()=>{ cleanup(); reject(new Error("timeout")); }, 15000);
-
-      function cleanup(){
-        clearTimeout(timer);
-        delete window[cb];
-        s.remove();
-      }
-
-      window[cb] = (data)=>{ cleanup(); resolve(data); };
-
-      s.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
-      s.onerror = ()=>{ cleanup(); reject(new Error("load error")); };
-      document.body.appendChild(s);
+  function renderMobileList(list){
+    if(!list || !list.length) return `<div class="muted">目前尚無名單</div>`;
+    let html = ``;
+    list.forEach((it,i)=>{
+      html += `
+        <div class="item">
+          <div class="row1">
+            <span class="badgeNo">${i+1}</span>
+            <div class="type">${esc(it.type)}</div>
+          </div>
+          <div class="line2"><span class="k">表演者：</span>${esc(it.name)}</div>
+          <div class="line3"><span class="k">曲目：</span>${esc(it.song)}</div>
+        </div>
+      `;
     });
+    return html;
   }
 
   async function load(){
@@ -97,11 +335,20 @@
     try{
       const data = await jsonp(SCRIPT_URL + "?mode=program");
       if(!data || !data.ok) throw new Error((data && data.error) || "讀取失敗");
-      document.getElementById("aft").innerHTML = renderTable(data.afternoon || []);
-      document.getElementById("eve").innerHTML = renderTable(data.evening || []);
+
+      // B排序：同類最多連3（下午、晚上各自排序）
+      const aft = scheduleMax3((data.afternoon||[]), 3);
+      const eve = scheduleMax3((data.evening||[]), 3);
+
+      document.getElementById("aftTable").innerHTML = renderTable(aft);
+      document.getElementById("eveTable").innerHTML = renderTable(eve);
+
+      document.getElementById("aftList").innerHTML = renderMobileList(aft);
+      document.getElementById("eveList").innerHTML = renderMobileList(eve);
+
       status.textContent = `更新時間：${data.ts || ""}`;
     }catch(e){
-      status.className = "err";
+      status.className = "stamp err";
       status.textContent = "載入失敗：" + e.message;
     }
   }
