@@ -88,7 +88,6 @@
     }
     .hr{ height:1px; background:#eee; margin:14px 0; }
 
-    /* 三個檔案槽 */
     .slot{
       border:1px solid #d7efe7;
       background:#ffffff;
@@ -101,6 +100,28 @@
       margin:0 0 10px;
       font-size:16px;
       color:#1f2937;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .pillOk{
+      font-size:12px;
+      font-weight:900;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#ecfdf3;
+      border:1px solid #b7e4c7;
+      color:#0a7a3c;
+    }
+    .pillNone{
+      font-size:12px;
+      font-weight:900;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#f9fafb;
+      border:1px solid #e5e7eb;
+      color:#6b7280;
     }
     .fileRow{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
     .fileBtn{
@@ -126,13 +147,41 @@
     }
     .slotMsg{ margin-top:10px; font-size:13px; white-space:pre-wrap; }
 
-    /* 完成卡片：完成後整頁只剩這個 */
+    .miniActions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .miniBtn{
+      border:1px solid #d1d5db;
+      background:#fff;
+      color:#111827;
+      border-radius:10px;
+      padding:8px 10px;
+      font-weight:900;
+      font-size:13px;
+      cursor:pointer;
+    }
+    .miniBtn.danger{
+      border-color:#fecaca;
+      color:#b91c1c;
+      background:#fff;
+    }
+    .miniBtn.on{
+      background:#fee2e2;
+      border-color:#fecaca;
+      color:#b91c1c;
+    }
+
+    /* 完成卡片 */
     .doneOnly{
       display:none;
       border:1px solid #b7e4c7;
       background:#ecfdf3;
       border-radius:14px;
       padding:16px;
+      margin-top:16px;
     }
     .doneHead{
       display:flex;
@@ -145,15 +194,6 @@
       color:#0a7a3c;
       font-size:22px;
       margin:0;
-    }
-    .doneX{
-      border:0;
-      background:transparent;
-      cursor:pointer;
-      font-size:20px;
-      color:#0a7a3c;
-      padding:6px;
-      line-height:1;
     }
     .doneBody{
       margin-top:10px;
@@ -179,11 +219,12 @@
 
     <form id="f">
       <label>場次 *</label>
-      <select name="場次" required>
+      <select name="場次" id="sessionSel" required>
         <option value="">請選擇</option>
         <option>下午場 13:00~16:00</option>
         <option>晚上場 17:30~20:30</option>
       </select>
+      <div class="muted" id="quotaHint" style="margin-top:6px;"></div>
 
       <label>表演項目 *</label>
       <select name="表演項目" required>
@@ -242,69 +283,104 @@
       <label>需求/備註</label>
       <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
 
-      <!-- create: 下一步｜添加音檔 -->
+      <!-- create: 下一步 -->
       <button class="btn" type="submit" id="btnMain">下一步｜添加音檔</button>
       <p id="msg" class="muted"></p>
 
-      <!-- ✅ 添加音檔（極簡） -->
+      <!-- 添加音檔區 -->
       <div class="box" id="audioBox" style="display:none;">
         <div style="font-weight:900;font-size:18px;">添加音檔（MP3 ≤ 20MB）</div>
         <div class="muted" style="margin-top:6px;">備註：最多可上傳 3 個音檔。</div>
 
-        <!-- 槽位 1 -->
-        <div class="slot">
-          <div class="slotTitle">音檔 1</div>
+        <!-- slot 1 -->
+        <div class="slot" id="slot1">
+          <div class="slotTitle">
+            <span>音檔 1</span>
+            <span id="pill1" class="pillNone">尚未上傳</span>
+          </div>
+
+          <div class="muted" id="cur1" style="margin-bottom:6px;display:none;"></div>
+
           <input id="file1" type="file" accept="audio/mpeg,.mp3" style="display:none;">
           <div class="fileRow">
             <div class="fileBtn" data-pick="1">選擇檔案</div>
             <div class="fileName" id="name1">尚未選取檔案</div>
           </div>
+
+          <div class="miniActions">
+            <button type="button" class="miniBtn" id="view1" style="display:none;">檢視</button>
+            <button type="button" class="miniBtn danger" id="del1" style="display:none;">刪除</button>
+          </div>
+
           <div class="slotMsg muted" id="m1"></div>
         </div>
 
-        <!-- 槽位 2 -->
-        <div class="slot">
-          <div class="slotTitle">音檔 2</div>
+        <!-- slot 2 -->
+        <div class="slot" id="slot2">
+          <div class="slotTitle">
+            <span>音檔 2</span>
+            <span id="pill2" class="pillNone">尚未上傳</span>
+          </div>
+
+          <div class="muted" id="cur2" style="margin-bottom:6px;display:none;"></div>
+
           <input id="file2" type="file" accept="audio/mpeg,.mp3" style="display:none;">
           <div class="fileRow">
             <div class="fileBtn" data-pick="2">選擇檔案</div>
             <div class="fileName" id="name2">尚未選取檔案</div>
           </div>
+
+          <div class="miniActions">
+            <button type="button" class="miniBtn" id="view2" style="display:none;">檢視</button>
+            <button type="button" class="miniBtn danger" id="del2" style="display:none;">刪除</button>
+          </div>
+
           <div class="slotMsg muted" id="m2"></div>
         </div>
 
-        <!-- 槽位 3 -->
-        <div class="slot">
-          <div class="slotTitle">音檔 3</div>
+        <!-- slot 3 -->
+        <div class="slot" id="slot3">
+          <div class="slotTitle">
+            <span>音檔 3</span>
+            <span id="pill3" class="pillNone">尚未上傳</span>
+          </div>
+
+          <div class="muted" id="cur3" style="margin-bottom:6px;display:none;"></div>
+
           <input id="file3" type="file" accept="audio/mpeg,.mp3" style="display:none;">
           <div class="fileRow">
             <div class="fileBtn" data-pick="3">選擇檔案</div>
             <div class="fileName" id="name3">尚未選取檔案</div>
           </div>
+
+          <div class="miniActions">
+            <button type="button" class="miniBtn" id="view3" style="display:none;">檢視</button>
+            <button type="button" class="miniBtn danger" id="del3" style="display:none;">刪除</button>
+          </div>
+
           <div class="slotMsg muted" id="m3"></div>
         </div>
 
         <div class="hr"></div>
 
-        <!-- ✅ 你指定的兩顆按鈕 -->
+        <!-- 新報名用 -->
         <button type="button" class="btnG" id="btnUploadAll">上傳所有音樂檔</button>
         <button type="button" class="btnG" id="btnNoAudio">我不需要音樂檔</button>
+
+        <!-- 修改用：最後只留一顆 -->
+        <button type="button" class="btnG" id="btnEditSubmit" style="display:none;">修改送出</button>
 
         <p class="muted" style="margin-top:10px;">
 若檔案超過 20MB，請先轉檔/壓縮後再上傳。你可以在 Google 搜尋「MP3 轉檔」。
         </p>
-
-        <!-- 修改模式：儲存放最下面 -->
-        <button class="btn" type="submit" id="btnSaveBottom" style="display:none;">儲存修改（覆蓋）</button>
       </div>
     </form>
   </div>
 
-  <!-- ✅ 完成後整頁只顯示這張卡 -->
+  <!-- 完成卡片 -->
   <div class="doneOnly" id="doneCard">
     <div class="doneHead">
       <h2 class="doneTitle">✅ 已完成</h2>
-      <button class="doneX" id="doneX" aria-label="close">✕</button>
     </div>
     <div class="doneBody" id="doneBody"></div>
     <div class="doneActions">
@@ -322,22 +398,35 @@
   const f = document.getElementById("f");
   const msg = document.getElementById("msg");
   const btnMain = document.getElementById("btnMain");
-  const audioBox = document.getElementById("audioBox");
-  const btnSaveBottom = document.getElementById("btnSaveBottom");
 
+  const audioBox = document.getElementById("audioBox");
   const btnUploadAll = document.getElementById("btnUploadAll");
   const btnNoAudio = document.getElementById("btnNoAudio");
+  const btnEditSubmit = document.getElementById("btnEditSubmit");
 
   const doneCard = document.getElementById("doneCard");
   const doneBody = document.getElementById("doneBody");
-  const doneX = document.getElementById("doneX");
   const btnGoOfficial = document.getElementById("btnGoOfficial");
   const btnBackForm = document.getElementById("btnBackForm");
+
+  const sessionSel = document.getElementById("sessionSel");
+  const quotaHint = document.getElementById("quotaHint");
 
   let mode = "create"; // create | edit
   let current = { regId:"", token:"" };
   let countdownTimer = null;
   let left = COUNTDOWN_SECONDS;
+
+  // 音檔狀態
+  const slotInfo = {
+    1:{exists:false,url:"",name:""},
+    2:{exists:false,url:"",name:""},
+    3:{exists:false,url:"",name:""}
+  };
+  const deleteMark = {1:false,2:false,3:false};
+
+  // quota
+  let quotaData = {}; // { session: {limit, used, remaining, full} }
 
   function stopCountdown(){
     if(countdownTimer){
@@ -345,13 +434,11 @@
       countdownTimer = null;
     }
   }
-
   function renderDoneBody(){
     doneBody.textContent =
-      "附註：若之後需要修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。\n" +
+      "附註：若之後需要修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「點此回到修改頁」。\n" +
       `${COUNTDOWN_SECONDS} 秒後將自動前往官方網站（倒數：${left}）`;
   }
-
   function showDoneOnly(){
     document.getElementById("mainCard").style.display = "none";
     doneCard.style.display = "block";
@@ -371,14 +458,13 @@
     }, 1000);
   }
 
-  doneX.addEventListener("click", ()=> stopCountdown());
   btnGoOfficial.addEventListener("click", ()=>{
     stopCountdown();
     location.href = OFFICIAL_URL;
   });
   btnBackForm.addEventListener("click", ()=>{
     stopCountdown();
-    const base = location.origin + location.pathname; // 去掉 regId/token
+    const base = location.origin + location.pathname;
     location.href = base;
   });
 
@@ -412,7 +498,7 @@
   }
 
   function validateFile(slot, file){
-    if(!file) return null; // 沒選不算錯
+    if(!file) return null;
     if(file.size > 20*1024*1024){
       return `音檔 ${slot} 檔案太大：${fmtMB(file.size)} MB（上限 20MB）。`;
     }
@@ -423,6 +509,96 @@
     }
     return null;
   }
+
+  function setAllDisabled(disabled){
+    btnUploadAll.disabled = disabled;
+    btnNoAudio.disabled = disabled;
+    btnEditSubmit.disabled = disabled;
+    [1,2,3].forEach(s=>{
+      const pick = document.querySelector(`.fileBtn[data-pick="${s}"]`);
+      if(pick){
+        pick.style.pointerEvents = disabled ? "none" : "";
+        pick.style.opacity = disabled ? ".6" : "";
+      }
+      const del = document.getElementById("del"+s);
+      const view = document.getElementById("view"+s);
+      if(del) del.disabled = disabled;
+      if(view) view.disabled = disabled;
+    });
+  }
+
+  function renderSlot(slot){
+    const info = slotInfo[slot];
+    const pill = document.getElementById("pill"+slot);
+    const cur = document.getElementById("cur"+slot);
+    const viewBtn = document.getElementById("view"+slot);
+    const delBtn = document.getElementById("del"+slot);
+
+    if(info.exists){
+      pill.className = "pillOk";
+      pill.textContent = "已上傳";
+      cur.style.display = "";
+      cur.innerHTML = `目前音檔：<b>${escapeHtml(info.name||"")}</b>`;
+      viewBtn.style.display = "";
+      delBtn.style.display = "";
+      viewBtn.onclick = ()=> window.open(info.url, "_blank");
+    }else{
+      pill.className = "pillNone";
+      pill.textContent = "尚未上傳";
+      cur.style.display = "none";
+      viewBtn.style.display = "none";
+      delBtn.style.display = "none";
+    }
+
+    // delete mark
+    delBtn.classList.toggle("on", !!deleteMark[slot]);
+    delBtn.textContent = deleteMark[slot] ? "已標記刪除" : "刪除";
+  }
+
+  function escapeHtml(s){
+    s = String(s==null?"":s);
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // 選檔按鈕
+  document.querySelectorAll(".fileBtn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const slot = btn.getAttribute("data-pick");
+      document.getElementById("file"+slot).click();
+    });
+  });
+
+  // 顯示檔名+大小
+  [1,2,3].forEach(slot=>{
+    const input = document.getElementById("file"+slot);
+    input.addEventListener("change", ()=>{
+      const file = getFile(slot);
+      const nameEl = document.getElementById("name"+slot);
+      if(!file){
+        nameEl.textContent = "尚未選取檔案";
+        setSlotMsg(slot, "");
+        return;
+      }
+      nameEl.textContent = `${file.name}（${fmtMB(file.size)} MB）`;
+      const err = validateFile(slot, file);
+      if(err) setSlotMsg(slot, err, true);
+      else setSlotMsg(slot, "");
+
+      // 有選新檔，視為要覆蓋 → 取消刪除標記
+      deleteMark[slot] = false;
+      renderSlot(slot);
+    });
+  });
+
+  // 刪除按鈕：在修改模式才會用到；新報名不顯示
+  [1,2,3].forEach(slot=>{
+    const del = document.getElementById("del"+slot);
+    del.addEventListener("click", ()=>{
+      // toggle
+      deleteMark[slot] = !deleteMark[slot];
+      renderSlot(slot);
+    });
+  });
 
   async function uploadOne(slot, file){
     setSlotMsg(slot, "建立上傳通道…", false);
@@ -483,84 +659,44 @@
     }
   }
 
-  function setAllDisabled(disabled){
-    btnUploadAll.disabled = disabled;
-    btnNoAudio.disabled = disabled;
-    [1,2,3].forEach(s=>{
-      document.querySelector(`.fileBtn[data-pick="${s}"]`).style.pointerEvents = disabled ? "none" : "";
-      document.querySelector(`.fileBtn[data-pick="${s}"]`).style.opacity = disabled ? ".6" : "";
-    });
+  async function deleteSlot(slot){
+    setSlotMsg(slot, "刪除中…", false);
+    const j = await fetch(SCRIPT_URL, {
+      method:"POST",
+      headers:{ "Content-Type":"text/plain;charset=utf-8" },
+      body: JSON.stringify({ mode:"deleteSlot", regId: current.regId, token: current.token, slot })
+    }).then(r=>r.json());
+    if(!j.ok) throw new Error(j.error || `音檔 ${slot} 刪除失敗`);
+    setSlotMsg(slot, "✅ 已刪除", false);
   }
 
-  // 選檔按鈕
-  document.querySelectorAll(".fileBtn").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const slot = btn.getAttribute("data-pick");
-      document.getElementById("file"+slot).click();
-    });
-  });
-
-  // 顯示檔名+大小
-  [1,2,3].forEach(slot=>{
-    const input = document.getElementById("file"+slot);
-    input.addEventListener("change", ()=>{
-      const file = getFile(slot);
-      const nameEl = document.getElementById("name"+slot);
-      if(!file){
-        nameEl.textContent = "尚未選取檔案";
-        setSlotMsg(slot, "");
-        return;
-      }
-      nameEl.textContent = `${file.name}（${fmtMB(file.size)} MB）`;
-      const err = validateFile(slot, file);
-      if(err) setSlotMsg(slot, err, true);
-      else setSlotMsg(slot, "");
-    });
-  });
-
-  // 上傳所有音樂檔：依序上傳 1→2→3（有選才上傳）
+  // 新報名：上傳所有音樂檔
   btnUploadAll.addEventListener("click", async ()=>{
     if(!current.regId || !current.token){
       msg.className = "err";
-      msg.textContent = "請先完成報名（下一步｜添加音檔）或用信件連結回來修改。";
+      msg.textContent = "請先完成報名（下一步｜添加音檔）。";
       return;
     }
 
-    msg.textContent = "";
-    [1,2,3].forEach(s=>{ /* 清空舊錯誤但保留成功訊息 */ });
-
-    const files = {
-      1: getFile(1),
-      2: getFile(2),
-      3: getFile(3)
-    };
-
+    const files = {1:getFile(1),2:getFile(2),3:getFile(3)};
     if(!files[1] && !files[2] && !files[3]){
       setSlotMsg(1, "請至少選擇 1 個音檔，再按「上傳所有音樂檔」。", true);
       return;
     }
-
-    // 先整體驗證
     for(const s of [1,2,3]){
-      const f = files[s];
-      const err = validateFile(s, f);
-      if(err){
-        setSlotMsg(s, err, true);
-        return;
-      }
+      const err = validateFile(s, files[s]);
+      if(err){ setSlotMsg(s, err, true); return; }
     }
 
     setAllDisabled(true);
     try{
       for(const s of [1,2,3]){
         const f = files[s];
-        if(!f) { setSlotMsg(s, "", false); continue; }
+        if(!f) continue;
         await uploadOne(s, f);
       }
-      // 全部上傳完成 → 直接進完成卡片
       showDoneOnly();
     }catch(e){
-      // 發生錯誤就停止，讓他修正後再按一次
       msg.className = "err";
       msg.textContent = "上傳失敗：" + e.message;
     }finally{
@@ -568,7 +704,7 @@
     }
   });
 
-  // 我不需要音樂檔：清掉 1~3 並完成
+  // 新報名：不需要音檔
   btnNoAudio.addEventListener("click", async ()=>{
     if(!current.regId || !current.token){
       showDoneOnly();
@@ -581,7 +717,6 @@
         headers:{ "Content-Type":"text/plain;charset=utf-8" },
         body: JSON.stringify({ mode:"noAudio", regId: current.regId, token: current.token })
       }).then(r=>r.json());
-
       if(!j.ok) throw new Error(j.error || "處理失敗");
       showDoneOnly();
     }catch(e){
@@ -592,13 +727,54 @@
     }
   });
 
-  // 送出報名 / 儲存修改（覆蓋）
+  // 修改模式：修改送出（一次處理刪除 + 覆蓋上傳）
+  btnEditSubmit.addEventListener("click", async ()=>{
+    if(!current.regId || !current.token){
+      msg.className = "err";
+      msg.textContent = "缺少 regId/token，請用信件連結回來。";
+      return;
+    }
+
+    const files = {1:getFile(1),2:getFile(2),3:getFile(3)};
+    for(const s of [1,2,3]){
+      const err = validateFile(s, files[s]);
+      if(err){ setSlotMsg(s, err, true); return; }
+    }
+
+    setAllDisabled(true);
+    try{
+      // 1) delete marked (only if no new file selected)
+      for(const s of [1,2,3]){
+        if(deleteMark[s] && !files[s]){
+          await deleteSlot(s);
+          slotInfo[s].exists = false;
+          slotInfo[s].url = "";
+          slotInfo[s].name = "";
+        }
+      }
+      // 2) upload selected new files (overwrite)
+      for(const s of [1,2,3]){
+        const f = files[s];
+        if(!f) continue;
+        await uploadOne(s, f);
+      }
+
+      showDoneOnly();
+    }catch(e){
+      msg.className = "err";
+      msg.textContent = "修改送出失敗：" + e.message;
+    }finally{
+      setAllDisabled(false);
+    }
+  });
+
+  // 送出報名（create） / 修改資料（update）
   f.addEventListener("submit", async (ev)=>{
     ev.preventDefault();
+
     msg.className = "muted";
     msg.textContent = (mode==="edit") ? "儲存中…" : "送出中…";
     btnMain.disabled = true;
-    btnSaveBottom.disabled = true;
 
     const data = Object.fromEntries(new FormData(f).entries());
 
@@ -631,20 +807,72 @@
 
         msg.textContent = "";
       }else{
-        // 修改儲存成功 → 直接進完成卡片
-        msg.textContent = "";
-        showDoneOnly();
+        // 修改資料送出成功 → 不直接完成，仍讓使用者可處理音檔後按「修改送出」
+        msg.className = "ok";
+        msg.textContent = "✅ 資料已更新，你可繼續處理音檔，最後按「修改送出」。";
       }
     }catch(e){
       msg.className = "err";
       msg.textContent = ((mode==="edit") ? "儲存失敗：" : "送出失敗：") + e.message;
       if(mode!=="edit") btnMain.disabled = false;
     }finally{
-      btnSaveBottom.disabled = false;
+      if(mode==="edit") btnMain.disabled = true;
     }
   });
 
-  // 初始化：信件/ PDF 回來（regId/token） → 修改模式
+  // quota UI
+  function renderQuota(){
+    const s = sessionSel.value || "";
+    if(!quotaData || !Object.keys(quotaData).length){
+      quotaHint.textContent = "";
+      return;
+    }
+    const a = quotaData["下午場 13:00~16:00"];
+    const b = quotaData["晚上場 17:30~20:30"];
+
+    let lines = [];
+    if(a) lines.push(`下午場剩餘：${a.remaining} / ${a.limit}`);
+    if(b) lines.push(`晚上場剩餘：${b.remaining} / ${b.limit}`);
+    quotaHint.textContent = lines.join("　｜　");
+
+    // disable options if full
+    Array.from(sessionSel.options).forEach(opt=>{
+      const v = opt.textContent;
+      if(!v || v==="請選擇") return;
+      const q = quotaData[v];
+      if(q && q.full){
+        opt.disabled = true;
+        if(!opt.textContent.includes("（已額滿）")) opt.textContent = v + "（已額滿）";
+      }
+    });
+
+    // if currently selected is full -> reset
+    const cur = quotaData[s];
+    if(cur && cur.full){
+      sessionSel.value = "";
+    }
+  }
+
+  async function loadQuota(){
+    try{
+      const j = await fetch(SCRIPT_URL, {
+        method:"POST",
+        headers:{ "Content-Type":"text/plain;charset=utf-8" },
+        body: JSON.stringify({ mode:"getQuota" })
+      }).then(r=>r.json());
+
+      if(j && j.ok && j.quota){
+        quotaData = j.quota;
+        renderQuota();
+      }
+    }catch(e){
+      // ignore
+    }
+  }
+
+  sessionSel.addEventListener("change", renderQuota);
+
+  // init edit mode (from email/PDF)
   async function initEditMode(){
     const q = getQuery();
     if(!q.regId || !q.token) return;
@@ -654,10 +882,13 @@
     current.token = q.token;
 
     btnMain.style.display = "none";
-    btnSaveBottom.style.display = "";
     audioBox.style.display = "";
+    btnUploadAll.style.display = "none";
+    btnNoAudio.style.display = "none";
+    btnEditSubmit.style.display = "";
 
     msg.textContent = "";
+
     try{
       const j = await fetch(SCRIPT_URL, {
         method:"POST",
@@ -672,12 +903,37 @@
         const el = f.querySelector(`[name="${k}"]`);
         if(el) el.value = data[k];
       }
+
+      // audio info
+      const media = j.media || {};
+      [1,2,3].forEach(s=>{
+        const m = media[String(s)] || {};
+        slotInfo[s].exists = !!m.url;
+        slotInfo[s].url = m.url || "";
+        slotInfo[s].name = m.name || "";
+        deleteMark[s] = false;
+        renderSlot(s);
+
+        // reset file display
+        document.getElementById("name"+s).textContent = "尚未選取檔案";
+        document.getElementById("file"+s).value = "";
+        setSlotMsg(s, "");
+      });
+
+      msg.className = "ok";
+      msg.textContent = "✅ 已進入修改模式：可刪除/更換音檔，最後按「修改送出」。";
+
+      audioBox.scrollIntoView({behavior:"smooth", block:"start"});
     }catch(e){
       msg.className = "err";
       msg.textContent = "讀取失敗：" + e.message;
     }
   }
 
+  // initial render slots in create mode
+  [1,2,3].forEach(s=>renderSlot(s));
+
+  loadQuota();
   initEditMode();
 </script>
 </body>
