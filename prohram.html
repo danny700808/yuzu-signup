@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>柚子樂器音樂成果展｜節目單</title>
+  <style>
+    body{ margin:0; font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif; background:#faf7f8; color:#111; }
+    .wrap{ max-width:980px; margin:24px auto; padding:16px; }
+    .card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; box-shadow:0 8px 22px rgba(0,0,0,.06); }
+    h1{ margin:0 0 8px; font-size:26px; }
+    .meta{ color:#444; line-height:1.7; margin-bottom:14px; }
+    h2{ margin:18px 0 10px; font-size:20px; }
+    table{ width:100%; border-collapse:collapse; background:#fff; }
+    th,td{ border:1px solid #e5e7eb; padding:10px; text-align:left; vertical-align:top; }
+    th{ background:#f9fafb; font-weight:900; }
+    .muted{ color:#6b7280; font-size:13px; line-height:1.6; }
+    .spacer{ height:18px; }
+    .err{ color:#b00020; font-weight:900; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>柚子樂器音樂成果展</h1>
+      <div class="meta">
+        日期：2026-3-29（星期日）<br>
+        地點：豐原太平洋百貨
+      </div>
+
+      <div id="status" class="muted">載入節目單中…</div>
+
+      <h2>下午場（13:00–16:00）</h2>
+      <div id="aft"></div>
+
+      <div class="spacer"></div>
+
+      <h2>晚上場（17:30–20:30）</h2>
+      <div id="eve"></div>
+
+      <div class="spacer"></div>
+      <div class="muted">備註：節目順序以現場公告為準。</div>
+    </div>
+  </div>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
+
+  function esc(s){
+    s = String(s ?? "");
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function renderTable(list){
+    if(!list || !list.length) return `<div class="muted">目前尚無名單</div>`;
+    let html = `<table><thead><tr>
+      <th style="width:70px;">序號</th>
+      <th style="width:140px;">表演項目</th>
+      <th style="width:240px;">表演者姓名/團名</th>
+      <th>表演曲目</th>
+    </tr></thead><tbody>`;
+    list.forEach((it, i)=>{
+      html += `<tr>
+        <td>${i+1}</td>
+        <td>${esc(it.type)}</td>
+        <td>${esc(it.name)}</td>
+        <td>${esc(it.song)}</td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+    return html;
+  }
+
+  // JSONP loader（GitHub 需要避免跨網域限制）
+  function jsonp(url){
+    return new Promise((resolve, reject)=>{
+      const cb = "cb_" + Math.random().toString(36).slice(2);
+      const s = document.createElement("script");
+      const timer = setTimeout(()=>{ cleanup(); reject(new Error("timeout")); }, 15000);
+
+      function cleanup(){
+        clearTimeout(timer);
+        delete window[cb];
+        s.remove();
+      }
+
+      window[cb] = (data)=>{ cleanup(); resolve(data); };
+
+      s.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
+      s.onerror = ()=>{ cleanup(); reject(new Error("load error")); };
+      document.body.appendChild(s);
+    });
+  }
+
+  async function load(){
+    const status = document.getElementById("status");
+    try{
+      const data = await jsonp(SCRIPT_URL + "?mode=program");
+      if(!data || !data.ok) throw new Error((data && data.error) || "讀取失敗");
+      document.getElementById("aft").innerHTML = renderTable(data.afternoon || []);
+      document.getElementById("eve").innerHTML = renderTable(data.evening || []);
+      status.textContent = `更新時間：${data.ts || ""}`;
+    }catch(e){
+      status.className = "err";
+      status.textContent = "載入失敗：" + e.message;
+    }
+  }
+  load();
+</script>
+</body>
+</html>
