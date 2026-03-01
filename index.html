@@ -158,7 +158,6 @@
     <div class="muted" id="modeHint"></div>
 
     <form id="f">
-      <!-- ✅ 填表須知（放在 form 內，但不放進 locked 區） -->
       <div class="notice">
         <h2>填表須知（請先閱讀並勾選）</h2>
         <ol>
@@ -182,7 +181,6 @@
         </div>
       </div>
 
-      <!-- ✅ 表單主體（未勾選會被鎖住） -->
       <div id="formBody" class="locked">
 
         <label>場次 *</label>
@@ -323,7 +321,6 @@
   </div>
 </div>
 
-<!-- 滿額彈窗 -->
 <div class="modalMask" id="fullMask">
   <div class="modal">
     <h3>此場次已額滿</h3>
@@ -336,28 +333,26 @@
   </div>
 </div>
 
-<!-- PART 2 接續：script 區塊 + 收尾 -->
-  <script>
-  // ✅ 把這個換成你 Apps Script Web App /exec
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
-
-  const OFFICIAL_URL = "https://www.mingtinghuang.com/";
-  const COUNTDOWN_SECONDS = 20;
+<script>
+  // 你的 Web App /exec
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
+  var OFFICIAL_URL = "https://www.mingtinghuang.com/";
+  var COUNTDOWN_SECONDS = 20;
 
   // query params（修改模式）
-  const params = new URLSearchParams(location.search);
-  const qRegId = (params.get("regId")||"").trim();
-  const qToken = (params.get("token")||"").trim();
-  const isEditMode = !!(qRegId && qToken);
+  var params = new URLSearchParams(location.search);
+  var qRegId = (params.get("regId") || "").trim();
+  var qToken = (params.get("token") || "").trim();
+  var isEditMode = !!(qRegId && qToken);
 
-  const modeHint = document.getElementById("modeHint");
+  var modeHint = document.getElementById("modeHint");
   modeHint.textContent = isEditMode
     ? "目前為【修改模式】— 可直接修改資料、重傳音檔覆蓋，送出後會覆蓋為最新資料。"
     : "請先閱讀並勾選填表須知，再填寫報名資料。";
 
   // lock
-  const agree = document.getElementById("agree");
-  const formBody = document.getElementById("formBody");
+  var agree = document.getElementById("agree");
+  var formBody = document.getElementById("formBody");
   function syncLock(){
     if(agree.checked) formBody.classList.remove("locked");
     else formBody.classList.add("locked");
@@ -365,70 +360,85 @@
   agree.addEventListener("change", syncLock);
   syncLock();
 
-  // elements
-  const f = document.getElementById("f");
-  const msg = document.getElementById("msg");
-  const btnMain = document.getElementById("btnMain");
-  const audioBox = document.getElementById("audioBox");
-  const btnUploadAll = document.getElementById("btnUploadAll");
-  const btnNoAudio = document.getElementById("btnNoAudio");
-  const quotaText = document.getElementById("quotaText");
+  // ✅ 修改模式：先直接解鎖（避免導入失敗整張表卡住）
+  if(isEditMode){
+    agree.checked = true;
+    syncLock();
+  }
 
-  const doneCard = document.getElementById("doneCard");
-  const doneBody = document.getElementById("doneBody");
-  const btnGoOfficial = document.getElementById("btnGoOfficial");
-  const btnBackForm = document.getElementById("btnBackForm");
+  var f = document.getElementById("f");
+  var msg = document.getElementById("msg");
+  var btnMain = document.getElementById("btnMain");
+  var audioBox = document.getElementById("audioBox");
+  var btnUploadAll = document.getElementById("btnUploadAll");
+  var btnNoAudio = document.getElementById("btnNoAudio");
+  var quotaText = document.getElementById("quotaText");
 
-  const fullMask = document.getElementById("fullMask");
-  const fullText = document.getElementById("fullText");
+  var doneCard = document.getElementById("doneCard");
+  var doneBody = document.getElementById("doneBody");
+  var btnGoOfficial = document.getElementById("btnGoOfficial");
+  var btnBackForm = document.getElementById("btnBackForm");
+
+  var fullMask = document.getElementById("fullMask");
+  var fullText = document.getElementById("fullText");
   document.getElementById("btnClose").addEventListener("click", function(){ fullMask.style.display="none"; });
   fullMask.addEventListener("click", function(e){ if(e.target === fullMask) fullMask.style.display="none"; });
 
-  const FULL_MSG_B =
-`謝謝您的報名！目前此場次名額已滿，我們先暫停受理。
-若您希望候補/詢問加開場次，請加入官方 LINE。
-最新資訊也會同步更新在官網。`;
+  var FULL_MSG_B =
+"謝謝您的報名！目前此場次名額已滿，我們先暫停受理。\n" +
+"若您希望候補/詢問加開場次，請加入官方 LINE。\n" +
+"最新資訊也會同步更新在官網。";
 
   function showFullModal(){
     fullText.textContent = FULL_MSG_B;
     fullMask.style.display = "flex";
   }
 
-  // jsonp helper
   function jsonp(url){
     return new Promise(function(resolve, reject){
-      const cb = "cb_" + Math.random().toString(36).slice(2);
-      const s = document.createElement("script");
-      const timer = setTimeout(function(){ cleanup(); reject(new Error("timeout")); }, 12000);
+      var cb = "cb_" + Math.random().toString(36).slice(2);
+      var s = document.createElement("script");
+      var timer = setTimeout(function(){ cleanup(); reject(new Error("timeout")); }, 12000);
+
       function cleanup(){
         clearTimeout(timer);
         try{ delete window[cb]; }catch(e){}
         s.remove();
       }
+
       window[cb] = function(data){ cleanup(); resolve(data); };
-      s.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
+      s.src = url + (url.indexOf("?")>=0 ? "&" : "?") + "callback=" + cb;
       s.onerror = function(){ cleanup(); reject(new Error("load error")); };
       document.body.appendChild(s);
     });
   }
 
-  // quota
+  function pickNumber_(obj, k1, k2){
+    var v = (obj && obj[k1] != null) ? obj[k1] : ((obj && obj[k2] != null) ? obj[k2] : 0);
+    var n = Number(v);
+    return isNaN(n) ? 0 : n;
+  }
+
   async function loadQuota(){
     try{
-      const data = await jsonp(SCRIPT_URL + "?mode=quota");
-      if(!data || !data.ok) throw new Error("quota");
-      const a = Number((data.afternoonRemain ?? data.afternoonRemaining ?? 0));
-const e = Number((data.eveningRemain ?? data.eveningRemaining ?? 0));
+      var data = await jsonp(SCRIPT_URL + "?mode=quota");
+      if(!data || !data.ok) throw new Error((data && data.error) ? data.error : "quota failed");
+      // ✅ 同時支援 Remain / Remaining（避免版本混用）
+      var a = pickNumber_(data, "afternoonRemain", "afternoonRemaining");
+      var e = pickNumber_(data, "eveningRemain", "eveningRemaining");
+
       quotaText.style.display = "";
       quotaText.innerHTML = "可報名組數：下午場 <b>" + a + "</b> 組｜晚上場 <b>" + e + "</b> 組";
-    }catch(e){
-      quotaText.style.display = "none";
+    }catch(err){
+      // ✅ 不再默默消失：直接顯示原因，方便你定位
+      quotaText.style.display = "";
+      quotaText.innerHTML = "名額載入失敗：<b>" + (err && err.message ? err.message : err) + "</b>";
     }
   }
   loadQuota();
 
   // done page
-  let countdownTimer=null, left=COUNTDOWN_SECONDS;
+  var countdownTimer=null, left=COUNTDOWN_SECONDS;
   function stopCountdown(){ if(countdownTimer){ clearInterval(countdownTimer); countdownTimer=null; } }
   function showDoneOnly(){
     document.getElementById("mainCard").style.display = "none";
@@ -452,39 +462,20 @@ const e = Number((data.eveningRemain ?? data.eveningRemaining ?? 0));
 
   // upload slots
   function fmtMB(n){ return (Math.round((n/(1024*1024))*100)/100).toFixed(2); }
+  var current = { regId:"", token:"" };
+  var slotInfo = {1:{exists:false,url:"",name:""},2:{exists:false,url:"",name:""},3:{exists:false,url:"",name:""}};
+  var deleteMark = {1:false,2:false,3:false};
 
-  let current = { regId:"", token:"" };
-  const slotInfo = {1:{exists:false,url:"",name:""},2:{exists:false,url:"",name:""},3:{exists:false,url:"",name:""}};
-  const deleteMark = {1:false,2:false,3:false};
-
-  document.querySelectorAll(".fileBtn").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      const slot = btn.getAttribute("data-pick");
-      document.getElementById("file"+slot).click();
-    });
-  });
-
-  [1,2,3].forEach(function(slot){
-    document.getElementById("file"+slot).addEventListener("change", function(){
-      const file = document.getElementById("file"+slot).files && document.getElementById("file"+slot).files[0];
-      const nameEl = document.getElementById("name"+slot);
-      if(!file){ nameEl.textContent="尚未選取檔案"; return; }
-      nameEl.textContent = file.name + "（" + fmtMB(file.size) + " MB）";
-      deleteMark[slot] = false;
-      renderSlot(slot);
-    });
-
-    const del = document.getElementById("del"+slot);
-    del.addEventListener("click", function(){
-      deleteMark[slot] = !deleteMark[slot];
-      renderSlot(slot);
-    });
-  });
+  function setSlotMsg(slot, text, isErr){
+    var el = document.getElementById("m"+slot);
+    el.className = "slotMsg " + (isErr ? "err" : "muted");
+    el.textContent = text || "";
+  }
 
   function renderSlot(slot){
-    const pill = document.getElementById("pill"+slot);
-    const view = document.getElementById("view"+slot);
-    const del = document.getElementById("del"+slot);
+    var pill = document.getElementById("pill"+slot);
+    var view = document.getElementById("view"+slot);
+    var del = document.getElementById("del"+slot);
 
     if(slotInfo[slot].exists){
       pill.className = "pill ok";
@@ -502,34 +493,56 @@ const e = Number((data.eveningRemain ?? data.eveningRemaining ?? 0));
     del.textContent = deleteMark[slot] ? "已標記刪除" : "刪除";
   }
 
+  document.querySelectorAll(".fileBtn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var slot = btn.getAttribute("data-pick");
+      document.getElementById("file"+slot).click();
+    });
+  });
+
+  [1,2,3].forEach(function(slot){
+    document.getElementById("file"+slot).addEventListener("change", function(){
+      var file = document.getElementById("file"+slot).files && document.getElementById("file"+slot).files[0];
+      var nameEl = document.getElementById("name"+slot);
+      if(!file){ nameEl.textContent="尚未選取檔案"; return; }
+      nameEl.textContent = file.name + "（" + fmtMB(file.size) + " MB）";
+      deleteMark[slot] = false;
+      renderSlot(slot);
+    });
+
+    var del = document.getElementById("del"+slot);
+    del.addEventListener("click", function(){
+      deleteMark[slot] = !deleteMark[slot];
+      renderSlot(slot);
+    });
+  });
+
   function validateMp3(file){
     if(!file) return null;
     if(file.size > 20*1024*1024) return "檔案太大（上限 20MB）";
-    const lower = (file.name||"").toLowerCase();
-    const ok = (file.type==="audio/mpeg") || lower.slice(-4)===".mp3";
+    var lower = (file.name||"").toLowerCase();
+    var ok = (file.type==="audio/mpeg") || lower.slice(-4)===".mp3";
     if(!ok) return "只接受 MP3（.mp3）";
     return null;
   }
 
-  function setSlotMsg(slot, text, isErr){
-    const el = document.getElementById("m"+slot);
-    el.className = "slotMsg " + (isErr ? "err" : "muted");
-    el.textContent = text || "";
-  }
-
+  // 不用展開運算子，兼容性更高
   function arrayBufferToBase64(buf){
-    const bytes = new Uint8Array(buf);
-    let bin = "";
-    const step = 0x8000;
-    for(let i=0;i<bytes.length;i+=step){
-      bin += String.fromCharCode(...bytes.subarray(i, i+step));
+    var bytes = new Uint8Array(buf);
+    var bin = "";
+    var step = 0x8000;
+    for(var i=0;i<bytes.length;i+=step){
+      var chunk = bytes.subarray(i, i+step);
+      var arr = new Array(chunk.length);
+      for(var j=0;j<chunk.length;j++) arr[j] = chunk[j];
+      bin += String.fromCharCode.apply(null, arr);
     }
     return btoa(bin);
   }
 
   async function uploadOne(slot, file){
     setSlotMsg(slot, "建立上傳通道…");
-    const startRes = await fetch(SCRIPT_URL, {
+    var startRes = await fetch(SCRIPT_URL, {
       method:"POST",
       headers:{ "Content-Type":"text/plain;charset=utf-8" },
       body: JSON.stringify({ mode:"startUpload", regId: current.regId, token: current.token, slot:slot, totalBytes:file.size, originalName:file.name })
@@ -537,18 +550,18 @@ const e = Number((data.eveningRemain ?? data.eveningRemaining ?? 0));
 
     if(!startRes.ok) throw new Error(startRes.error || "建立上傳通道失敗");
 
-    const uploadUrl = startRes.uploadUrl;
-    const chunkSize = 1024*1024;
-    let offset = 0;
+    var uploadUrl = startRes.uploadUrl;
+    var chunkSize = 1024*1024;
+    var offset = 0;
 
     while(offset < file.size){
-      const next = Math.min(offset+chunkSize, file.size);
-      const buf = await file.slice(offset, next).arrayBuffer();
-      const b64 = arrayBufferToBase64(buf);
-      const pct = Math.round((next/file.size)*100);
+      var next = Math.min(offset+chunkSize, file.size);
+      var buf = await file.slice(offset, next).arrayBuffer();
+      var b64 = arrayBufferToBase64(buf);
+      var pct = Math.round((next/file.size)*100);
       setSlotMsg(slot, "上傳中… " + pct + "%");
 
-      const chunkRes = await fetch(SCRIPT_URL, {
+      var chunkRes = await fetch(SCRIPT_URL, {
         method:"POST",
         headers:{ "Content-Type":"text/plain;charset=utf-8" },
         body: JSON.stringify({ mode:"uploadChunk", regId: current.regId, token: current.token, slot:slot, uploadUrl:uploadUrl, start:offset, end:next-1, total:file.size, chunkBase64:b64 })
@@ -569,7 +582,7 @@ const e = Number((data.eveningRemain ?? data.eveningRemaining ?? 0));
 
   async function deleteSlot(slot){
     setSlotMsg(slot, "刪除中…");
-    const j = await fetch(SCRIPT_URL, {
+    var j = await fetch(SCRIPT_URL, {
       method:"POST",
       headers:{ "Content-Type":"text/plain;charset=utf-8" },
       body: JSON.stringify({ mode:"deleteSlot", regId: current.regId, token: current.token, slot:slot })
@@ -581,29 +594,26 @@ const e = Number((data.eveningRemain ?? data.eveningRemaining ?? 0));
     setSlotMsg(slot, "✅ 已刪除");
   }
 
-  // 讀取修改資料
   async function loadExisting(){
     if(!isEditMode) return;
     try{
-      const data = await jsonp(SCRIPT_URL + "?mode=read&regId=" + encodeURIComponent(qRegId) + "&token=" + encodeURIComponent(qToken));
-      if(!data || !data.ok) throw new Error(data && data.error ? data.error : "read failed");
-
-      // 修改模式：直接解鎖
-      agree.checked = true;
-      syncLock();
+      var data = await jsonp(SCRIPT_URL + "?mode=read&regId=" + encodeURIComponent(qRegId) + "&token=" + encodeURIComponent(qToken));
+      if(!data || !data.ok) throw new Error((data && data.error) ? data.error : "read failed");
 
       current.regId = qRegId;
       current.token = qToken;
 
-      const map = data.data || {};
+      // ✅ 不用 CSS.escape，最穩
+      var map = data.data || {};
       Object.keys(map).forEach(function(k){
-        const el = f.querySelector('[name="' + CSS.escape(k) + '"]');
-        if(el) el.value = (map[k]==null ? "" : String(map[k]));
+        var el = f.elements.namedItem(k);
+        if(!el) return;
+        el.value = (map[k]==null ? "" : String(map[k]));
       });
 
-      const slots = data.slots || {};
+      var slots = data.slots || {};
       [1,2,3].forEach(function(s){
-        const info = slots[String(s)] || {};
+        var info = slots[String(s)] || {};
         slotInfo[s].exists = !!info.exists;
         slotInfo[s].url = info.url || "";
         slotInfo[s].name = info.name || "";
@@ -625,7 +635,6 @@ const e = Number((data.eveningRemain ?? data.eveningRemaining ?? 0));
   }
   loadExisting();
 
-  // submit（create/update）
   f.addEventListener("submit", async function(ev){
     ev.preventDefault();
 
@@ -638,7 +647,11 @@ const e = Number((data.eveningRemain ?? data.eveningRemaining ?? 0));
     msg.textContent="送出中…";
     btnMain.disabled = true;
 
-    const data = Object.fromEntries(new FormData(f).entries());
+    var data = {};
+    var fd = new FormData(f);
+    fd.forEach(function(v,k){ data[k] = v; });
+
+    // ✅ 永遠明確送出勾選值（避免你之前「已勾還說沒勾」）
     data["我已閱讀並同意填表須知"] = agree.checked ? "是" : "";
 
     if(isEditMode){
@@ -650,7 +663,7 @@ const e = Number((data.eveningRemain ?? data.eveningRemaining ?? 0));
     }
 
     try{
-      const j = await fetch(SCRIPT_URL, {
+      var j = await fetch(SCRIPT_URL, {
         method:"POST",
         headers:{ "Content-Type":"text/plain;charset=utf-8" },
         body: JSON.stringify(data)
@@ -691,27 +704,28 @@ const e = Number((data.eveningRemain ?? data.eveningRemaining ?? 0));
       return;
     }
 
-    const files = {
-      1:document.getElementById("file1").files && document.getElementById("file1").files[0],
-      2:document.getElementById("file2").files && document.getElementById("file2").files[0],
-      3:document.getElementById("file3").files && document.getElementById("file3").files[0]
+    var files = {
+      1:(document.getElementById("file1").files && document.getElementById("file1").files[0]) || null,
+      2:(document.getElementById("file2").files && document.getElementById("file2").files[0]) || null,
+      3:(document.getElementById("file3").files && document.getElementById("file3").files[0]) || null
     };
 
     if(!files[1] && !files[2] && !files[3]){
       setSlotMsg(1,"請至少選擇 1 個音檔再上傳。", true);
       return;
     }
-    for(const s of [1,2,3]){
-      const err = validateMp3(files[s]);
+
+    for(var s=1;s<=3;s++){
+      var err = validateMp3(files[s]);
       if(err){ setSlotMsg(s, err, true); return; }
     }
 
     try{
-      for(const s of [1,2,3]){
-        if(deleteMark[s] && !files[s]) await deleteSlot(s);
+      for(var s2=1;s2<=3;s2++){
+        if(deleteMark[s2] && !files[s2]) await deleteSlot(s2);
       }
-      for(const s of [1,2,3]){
-        if(files[s]) await uploadOne(s, files[s]);
+      for(var s3=1;s3<=3;s3++){
+        if(files[s3]) await uploadOne(s3, files[s3]);
       }
       showDoneOnly();
     }catch(e){
@@ -724,5 +738,3 @@ const e = Number((data.eveningRemain ?? data.eveningRemaining ?? 0));
 </script>
 </body>
 </html>
-
-
