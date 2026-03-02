@@ -41,7 +41,6 @@
     .box{ background:#f6fbf9; border:1px solid #d7efe7; border-radius:14px; padding:14px; margin-top:14px; }
     .hr{ height:1px; background:#eee; margin:14px 0; }
 
-    /* 名額顯示 */
     #quotaText{
       display:none;
       margin-top:8px;
@@ -53,7 +52,6 @@
       color:#7b3a52;
     }
 
-    /* === 填表須知 === */
     .notice{
       margin:12px 0 14px;
       padding:14px;
@@ -62,53 +60,17 @@
       background:#eff6ff;
       color:#1f2937;
     }
-    .notice h2{
-      margin:0 0 8px;
-      font-size:16px;
-      font-weight:1000;
-    }
-    .notice ol{
-      margin:0 0 10px 18px;
-      padding:0;
-      line-height:1.7;
-      font-size:13px;
-      color:#374151;
-    }
+    .notice h2{ margin:0 0 8px; font-size:16px; font-weight:1000; }
+    .notice ol{ margin:0 0 10px 18px; padding:0; line-height:1.7; font-size:13px; color:#374151; }
     .agreeRow{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      padding:12px;
-      border-radius:12px;
-      border:1px solid #c7d2fe;
-      background:#ffffff;
+      display:flex; gap:10px; align-items:flex-start;
+      padding:12px; border-radius:12px; border:1px solid #c7d2fe; background:#ffffff;
     }
-    .agreeRow input[type="checkbox"]{
-      width:20px; height:20px;
-      margin-top:2px;
-    }
-    .agreeText{
-      font-size:14px;
-      line-height:1.6;
-      color:#111827;
-      font-weight:900;
-    }
-    .agreeHint{
-      display:block;
-      margin-top:4px;
-      font-weight:700;
-      color:#6b7280;
-      font-size:12px;
-    }
+    .agreeRow input[type="checkbox"]{ width:20px; height:20px; margin-top:2px; }
+    .agreeText{ font-size:14px; line-height:1.6; color:#111827; font-weight:900; }
+    .agreeHint{ display:block; margin-top:4px; font-weight:700; color:#6b7280; font-size:12px; }
+    .locked{ opacity:.55; pointer-events:none; filter:grayscale(.2); }
 
-    /* 未勾選鎖住整份表單（只鎖 formBody） */
-    .locked{
-      opacity:.55;
-      pointer-events:none;
-      filter:grayscale(.2);
-    }
-
-    /* 三檔上傳區 */
     .slot{ border:1px solid #d7efe7; background:#fff; border-radius:14px; padding:12px; margin-top:12px; }
     .slotTitle{ font-weight:900; margin:0 0 10px; font-size:16px; display:flex; justify-content:space-between; gap:10px; }
     .pill{ font-size:12px; font-weight:900; padding:4px 10px; border-radius:999px; border:1px solid #e5e7eb; background:#f9fafb; color:#6b7280; }
@@ -127,21 +89,15 @@
     .miniBtn.on{ background:#fee2e2; border-color:#fecaca; color:#b91c1c; }
     .slotMsg{ margin-top:10px; font-size:13px; white-space:pre-wrap; }
 
-    /* 完成頁 */
     .doneOnly{
-      display:none;
-      border:1px solid #b7e4c7;
-      background:#ecfdf3;
-      border-radius:14px;
-      padding:16px;
-      margin-top:16px;
+      display:none; border:1px solid #b7e4c7; background:#ecfdf3;
+      border-radius:14px; padding:16px; margin-top:16px;
     }
     .doneTitle{ font-weight:900; color:#0a7a3c; font-size:22px; margin:0; }
     .doneBody{ margin-top:10px; color:#374151; font-size:14px; line-height:1.7; white-space:pre-wrap; }
     .doneActions{ display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; }
     .doneActions button{ flex:1; min-width:170px; }
 
-    /* 滿額彈窗 */
     .modalMask{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; padding:18px; z-index:9999; }
     .modal{ width:min(520px, 100%); background:#fff; border-radius:16px; border:1px solid #eee; box-shadow:0 18px 40px rgba(0,0,0,.25); padding:16px; }
     .modal h3{ margin:0 0 8px; font-size:18px; }
@@ -164,15 +120,9 @@
       <div class="notice">
         <h2>填表須知（請先閱讀並勾選）</h2>
         <ol>
-          <li><b>音檔最多 3 個</b>：請依序上傳 <b>音檔1 → 音檔2 → 音檔3</b>，<b>不用改檔名</b>（系統會自動命名）。</li>
-          <li><b>可修改/可覆蓋</b>：資料填錯可用信件連結回到修改頁，音檔可 <b>覆蓋重傳或刪除</b>。</li>
-          <li><b>現場設備</b>：提供 <b>電鋼琴、爵士鼓</b>；其餘樂器與設備請自行準備。</li>
-          <li><b>自彈自唱麥克風架</b>：現場提供 <b>3 支麥克風架</b>（數量有限，依現場安排使用）。</li>
-          <li><b>音訊/供電</b>：提供 <b>6 組 DI Box</b>、效果器 <b>110V 電源</b>；自備設備的電源/變壓器請自行準備。</li>
-          <li><b>反送監聽</b>：提供 <b>5 顆反送</b>（其中 <b>1 顆固定給爵士鼓</b>）。</li>
-          <li><b>木吉他收音</b>：木吉他請使用 <b>自己的拾音器/拾音系統</b>；若使用現場提供拾音器而聲音無法達到個人需求，敬請自行負責。</li>
-          <li><b>上台規範</b>：除協同表演外，老師請在台下等候，由舞台人員協助動線；請老師先提醒學生上台注意事項。</li>
-          <li><b>特殊需求</b>：若需特殊設備/音訊需求，請在「需求/備註」填寫，我們會提前協助確認。</li>
+          <li><b>音檔最多 3 個</b>：請依序上傳 <b>音檔1 → 音檔2 → 音檔3</b>，不用改檔名（系統自動命名）。</li>
+          <li><b>可修改/可覆蓋</b>：資料填錯可用信件連結回到修改頁，音檔可覆蓋重傳或刪除。</li>
+          <li><b>特殊需求</b>：若需特殊設備/音訊需求，請在「需求/備註」填寫。</li>
         </ol>
 
         <div class="agreeRow">
@@ -213,11 +163,9 @@
           <option>其他</option>
         </select>
 
-        <label>學生姓名 *（若為雙人/多人，請用「、」分隔，例如：王小明、陳小華）</label>
-        <input name="學生姓名" required placeholder="例：王小明">
-
-        <label>表演者姓名 / 團名（選填；不知道團名可留空）</label>
-        <input name="表演者姓名/團名" placeholder="例：@@吉他社 / @@小提琴中心">
+        <!-- ✅ 只留這一欄，改成必填 -->
+        <label>表演者姓名 / 團名 *（若為雙人/多人，請用「、」分隔；不知道團名可填表演者姓名）</label>
+        <input name="表演者姓名/團名" required placeholder="例：王小明、陳小華 / @@吉他社">
 
         <div class="row">
           <div>
@@ -249,7 +197,7 @@
         <label>老師姓名(代報填)</label>
         <input name="老師姓名(代報填)" placeholder="例：黃明廷">
 
-        <label>需求/備註（若需特殊設備/音訊需求，請在此填寫）</label>
+        <label>需求/備註</label>
         <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
 
         <button class="btn" type="submit" id="btnMain">下一步｜添加音檔</button>
@@ -307,10 +255,6 @@
 
           <button type="button" class="btnG" id="btnUploadAll">上傳所有音樂檔</button>
           <button type="button" class="btnG ghost" id="btnNoAudio">我不需要音樂檔</button>
-
-          <p class="muted" style="margin-top:10px;">
-若檔案超過 20MB，請先轉檔/壓縮後再上傳。你可以在 Google 搜尋「MP3 轉檔」。
-          </p>
         </div>
       </div>
     </form>
@@ -346,7 +290,6 @@
   var LINE_URL = "https://lin.ee/ABY1yil";
   var COUNTDOWN_SECONDS = 20;
 
-  // program page（同層檔案）
   function programUrl(){
     try{ return new URL("program.html", location.href).href; }catch(e){ return "program.html"; }
   }
@@ -369,11 +312,7 @@
   }
   agree.addEventListener("change", syncLock);
   syncLock();
-
-  if(isEditMode){
-    agree.checked = true;
-    syncLock();
-  }
+  if(isEditMode){ agree.checked = true; syncLock(); }
 
   var f = document.getElementById("f");
   var msg = document.getElementById("msg");
@@ -398,13 +337,13 @@
   document.getElementById("btnClose").addEventListener("click", function(){ fullMask.style.display="none"; });
   fullMask.addEventListener("click", function(e){ if(e.target === fullMask) fullMask.style.display="none"; });
 
-  var FULL_MSG_B =
+  var FULL_MSG =
 "謝謝您的報名！目前此場次名額已滿，我們先暫停受理。\n" +
 "若您希望候補/詢問加開場次，請加入官方 LINE。\n" +
 "最新資訊也會同步更新在官網。";
 
   function showFullModal(){
-    fullText.textContent = FULL_MSG_B;
+    fullText.textContent = FULL_MSG;
     fullMask.style.display = "flex";
   }
 
@@ -412,14 +351,12 @@
     return new Promise(function(resolve, reject){
       var cb = "cb_" + Math.random().toString(36).slice(2);
       var s = document.createElement("script");
-      var timer = setTimeout(function(){ cleanup(); reject(new Error("timeout")); }, 12000);
-
+      var timer = setTimeout(function(){ cleanup(); reject(new Error("timeout")); }, 15000);
       function cleanup(){
         clearTimeout(timer);
         try{ delete window[cb]; }catch(e){}
         s.remove();
       }
-
       window[cb] = function(data){ cleanup(); resolve(data); };
       s.src = url + (url.indexOf("?")>=0 ? "&" : "?") + "callback=" + cb;
       s.onerror = function(){ cleanup(); reject(new Error("load error")); };
@@ -427,51 +364,41 @@
     });
   }
 
-  function pickNumber_(obj, k1, k2){
-    var v = (obj && obj[k1] != null) ? obj[k1] : ((obj && obj[k2] != null) ? obj[k2] : 0);
-    var n = Number(v);
-    return isNaN(n) ? 0 : n;
-  }
-
   async function loadQuota(){
     try{
       var data = await jsonp(SCRIPT_URL + "?mode=quota");
-      if(!data || !data.ok) throw new Error((data && data.error) ? data.error : "quota failed");
-      var a = pickNumber_(data, "afternoonRemain", "afternoonRemaining");
-      var e = pickNumber_(data, "eveningRemain", "eveningRemaining");
+      if(!data || !data.ok) throw new Error("quota");
+      var a = Number(data.afternoonRemain || 0);
+      var e = Number(data.eveningRemain || 0);
       quotaText.style.display = "block";
       quotaText.innerHTML = "可報名組數：下午場 <b>" + a + "</b> 組｜晚上場 <b>" + e + "</b> 組";
-    }catch(err){
-      quotaText.style.display = "block";
-      quotaText.innerHTML = "名額載入失敗：<b>" + (err && err.message ? err.message : err) + "</b>";
+    }catch(e){
+      quotaText.style.display = "none";
     }
   }
   loadQuota();
 
   var countdownTimer=null, left=COUNTDOWN_SECONDS;
   function stopCountdown(){ if(countdownTimer){ clearInterval(countdownTimer); countdownTimer=null; } }
-
   function showDoneOnly(text){
     document.getElementById("mainCard").style.display = "none";
     doneCard.style.display = "block";
     doneCard.scrollIntoView({behavior:"smooth", block:"start"});
     stopCountdown();
-
     left = COUNTDOWN_SECONDS;
-    doneBody.textContent = (text || "") + "\n" + COUNTDOWN_SECONDS + " 秒後將自動前往官網（倒數：" + left + "）";
+    doneBody.textContent = (text||"") + "\n" + COUNTDOWN_SECONDS + " 秒後將自動前往官網（倒數：" + left + "）";
     countdownTimer = setInterval(function(){
       left -= 1;
-      doneBody.textContent = (text || "") + "\n" + COUNTDOWN_SECONDS + " 秒後將自動前往官網（倒數：" + left + "）";
+      doneBody.textContent = (text||"") + "\n" + COUNTDOWN_SECONDS + " 秒後將自動前往官網（倒數：" + left + "）";
       if(left<=0){ stopCountdown(); location.href = OFFICIAL_URL; }
     },1000);
   }
-
   btnGoOfficial.addEventListener("click", function(){ stopCountdown(); location.href = OFFICIAL_URL; });
   btnGoLine.addEventListener("click", function(){ stopCountdown(); location.href = LINE_URL; });
   btnGoProgram.addEventListener("click", function(){ stopCountdown(); location.href = programUrl(); });
   btnBackForm.addEventListener("click", function(){ stopCountdown(); location.href = location.origin + location.pathname; });
 
-  // ===== 音檔區（保持你原本的上傳流程）=====
+  // ===== 音檔 =====
   function fmtMB(n){ return (Math.round((n/(1024*1024))*100)/100).toFixed(2); }
   var current = { regId:"", token:"" };
   var slotInfo = {1:{exists:false,url:"",name:""},2:{exists:false,url:"",name:""},3:{exists:false,url:"",name:""}};
@@ -616,8 +543,7 @@
       var map = data.data || {};
       Object.keys(map).forEach(function(k){
         var el = f.elements.namedItem(k);
-        if(!el) return;
-        el.value = (map[k]==null ? "" : String(map[k]));
+        if(el) el.value = (map[k]==null ? "" : String(map[k]));
       });
 
       var slots = data.slots || {};
@@ -633,7 +559,7 @@
         renderSlot(s);
       });
 
-      audioBox.style.display = "";
+      audioBox.style.display = "block";
       msg.className="ok";
       msg.textContent = "✅ 已載入資料（修改模式）— 你可以直接改資料並重傳音檔覆蓋；也可取消本次報名。";
       btnMain.textContent = "儲存資料｜前往音檔";
@@ -644,11 +570,9 @@
   }
   loadExisting();
 
-  // ✅ 取消報名：確認文字改成你要的簡潔版
   btnCancel.addEventListener("click", async function(){
     if(!isEditMode) return;
-    var ok = confirm("確定要取消本次報名嗎？\n取消後將釋出名額，且無法復原。");
-    if(!ok) return;
+    if(!confirm("確定要取消本次報名嗎？\n取消後將釋出名額，且無法復原。")) return;
 
     btnCancel.disabled = true;
     msg.className = "muted";
@@ -717,7 +641,7 @@
       current.regId = j.regId;
       current.token = j.token;
 
-      audioBox.style.display = "";
+      audioBox.style.display = "block";
       audioBox.scrollIntoView({behavior:"smooth", block:"start"});
       loadQuota();
     }catch(e){
@@ -729,7 +653,7 @@
   });
 
   btnNoAudio.addEventListener("click", function(){
-    showDoneOnly("✅ 已完成。\n附註：若之後需要修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。");
+    showDoneOnly("✅ 已完成。\n如需修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。");
   });
 
   btnUploadAll.addEventListener("click", async function(){
@@ -751,8 +675,8 @@
     }
 
     for(var s=1;s<=3;s++){
-      var err = validateMp3(files[s]);
-      if(err){ setSlotMsg(s, err, true); return; }
+      var er = validateMp3(files[s]);
+      if(er){ setSlotMsg(s, er, true); return; }
     }
 
     try{
@@ -762,7 +686,7 @@
       for(var s3=1;s3<=3;s3++){
         if(files[s3]) await uploadOne(s3, files[s3]);
       }
-      showDoneOnly("✅ 已完成。\n附註：若之後需要修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。");
+      showDoneOnly("✅ 已完成。\n如需修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。");
     }catch(e){
       msg.className="err";
       msg.textContent="上傳失敗：" + e.message;
