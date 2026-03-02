@@ -15,15 +15,10 @@
       --brandSoft:#eaf7f3;
       --radius:18px;
       --shadow:0 10px 26px rgba(0,0,0,.08);
-      --zebra:#f2faf7; /* 隔行淡底色（C） */
+      --zebra:#f2faf7;
     }
     *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;
-      background:var(--bg);
-      color:var(--text);
-    }
+    body{ margin:0; font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif; background:var(--bg); color:var(--text); }
     .wrap{ max-width:980px; margin:18px auto 30px; padding:14px; }
 
     .top{
@@ -49,6 +44,29 @@
       font-size:13px;
     }
 
+    .navBar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .navBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 14px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      text-decoration:none;
+      font-weight:900;
+      font-size:14px;
+    }
+    .navBtn.brand{ background:var(--brand); border-color:var(--brand); color:#fff; }
+    .navBtn.line{ background:#06c755; border-color:#06c755; color:#fff; }
+    .navBtn.ghost{ background:#fff; }
+
     .section{
       margin-top:14px;
       background:var(--card);
@@ -63,13 +81,12 @@
       justify-content:space-between;
       gap:10px;
       padding:6px 6px 12px;
-      border-bottom:1px solid #eef2f7; /* 很淡的底線，不是重線 */
+      border-bottom:1px solid #eef2f7;
       margin-bottom:10px;
     }
     .secTitle{ margin:0; font-size:20px; font-weight:1000; }
     .secTime{ color:var(--muted); font-weight:900; font-size:13px; white-space:nowrap; }
 
-    /* 桌機：表格（但不做格線很重的那種） */
     table{ width:100%; border-collapse:collapse; }
     thead th{
       text-align:left;
@@ -86,42 +103,19 @@
       border-bottom:1px solid #eef2f7;
       word-break:break-word;
     }
-    /* C：隔行淡底色 */
     tbody tr:nth-child(even){ background:var(--zebra); }
 
     .muted{ color:var(--muted); font-size:13px; line-height:1.6; }
     .note{ margin-top:10px; color:var(--muted); font-size:13px; }
     .err{ color:#b00020; font-weight:1000; }
 
-    /* 手機：改成「一條一條列表」，同樣用隔行淡底色 */
     .list{ display:none; }
-    .li{
-      padding:12px 10px;
-      border-bottom:1px solid #eef2f7;
-    }
+    .li{ padding:12px 10px; border-bottom:1px solid #eef2f7; }
     .li:nth-child(even){ background:var(--zebra); }
-    .liTop{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      margin-bottom:6px;
-    }
-    .no{
-      min-width:34px;
-      font-weight:1000;
-      color:#0b5f4f;
-    }
-    .type{
-      font-weight:1000;
-      color:#111827;
-      flex:1;
-    }
-    .line{
-      font-size:13px;   /* 你要的：直向字體更小一點 */
-      line-height:1.65; /* 行距舒服，不擠 */
-      color:#111827;
-      word-break:break-word;
-    }
+    .liTop{ display:flex; gap:10px; align-items:flex-start; margin-bottom:6px; }
+    .no{ min-width:34px; font-weight:1000; color:#0b5f4f; }
+    .type{ font-weight:1000; color:#111827; flex:1; }
+    .line{ font-size:13px; line-height:1.65; color:#111827; word-break:break-word; }
     .k{ color:var(--muted); font-weight:900; }
 
     @media (max-width:720px){
@@ -134,14 +128,24 @@
 </head>
 
 <body>
-  <div class="wrap">
+  <div class="wrap" id="top">
     <div class="top">
       <h1>柚子樂器音樂成果展</h1>
       <div class="meta">
         日期：2026-3-29（星期日）<br>
         地點：豐原太平洋百貨
       </div>
+
       <div id="status" class="stamp">載入節目單中…</div>
+
+      <!-- ✅ 頂部導航 -->
+      <div class="navBar">
+        <a class="navBtn brand" id="btnOfficialTop" href="#" target="_self">前往官網</a>
+        <a class="navBtn line" id="btnLineTop" href="#" target="_self">加入官方 LINE</a>
+        <a class="navBtn ghost" id="btnSignupTop" href="#" target="_self">回到報名表</a>
+        <a class="navBtn ghost" href="#bottom">到頁面底部</a>
+      </div>
+
       <div class="note">備註：節目順序以現場公告為準。</div>
     </div>
 
@@ -162,17 +166,43 @@
       <div id="eveTable"></div>
       <div id="eveList" class="list"></div>
     </div>
+
+    <!-- ✅ 底部導航 -->
+    <div class="section" id="bottom">
+      <div class="secHead">
+        <h2 class="secTitle">導覽</h2>
+        <div class="secTime">快速回到你要的地方</div>
+      </div>
+      <div class="navBar">
+        <a class="navBtn brand" id="btnOfficialBottom" href="#" target="_self">前往官網</a>
+        <a class="navBtn line" id="btnLineBottom" href="#" target="_self">加入官方 LINE</a>
+        <a class="navBtn ghost" id="btnSignupBottom" href="#" target="_self">回到報名表</a>
+        <a class="navBtn ghost" href="#top">回到最上方</a>
+      </div>
+      <div class="muted" style="margin-top:10px;">名單僅顯示「表演項目 / 表演者 / 曲目」，不包含電話與信箱。</div>
+    </div>
   </div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
+  const OFFICIAL_URL = "https://www.mingtinghuang.com/";
+  const LINE_URL = "https://lin.ee/ABY1yil";
+
+  // 這頁跟 index.html 同層
+  const SIGNUP_URL = new URL("index.html", location.href).href.replace(/program\.html.*$/,"index.html");
+
+  document.getElementById("btnOfficialTop").href = OFFICIAL_URL;
+  document.getElementById("btnOfficialBottom").href = OFFICIAL_URL;
+  document.getElementById("btnLineTop").href = LINE_URL;
+  document.getElementById("btnLineBottom").href = LINE_URL;
+  document.getElementById("btnSignupTop").href = SIGNUP_URL;
+  document.getElementById("btnSignupBottom").href = SIGNUP_URL;
 
   function esc(s){
     s = String(s ?? "");
     return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
-  // JSONP（GitHub 需要）
   function jsonp(url){
     return new Promise((resolve, reject)=>{
       const cb = "cb_" + Math.random().toString(36).slice(2);
@@ -192,7 +222,7 @@
     });
   }
 
-  // --- 排序規則 B：同類（表演項目）最多連3（穩定排序） ---
+  // --- 排序規則：同類最多連3（你原本的） ---
   function fnv1a(str){
     let h = 0x811c9dc5;
     for(let i=0;i<str.length;i++){
@@ -208,7 +238,6 @@
   function hashInt(seed, str){
     return fnv1a(String(seed) + "|" + str);
   }
-
   function scheduleMax3(list, maxConsec){
     const items = (list||[]).map((it, idx)=>({
       type: (it.type||"未分類").trim(),
@@ -219,7 +248,6 @@
     if(items.length <= 1) return items;
 
     const seed = stableSeedFromList(items);
-
     const buckets = {};
     for(const it of items){
       (buckets[it.type] ||= []).push(it);
@@ -261,7 +289,6 @@
     return result;
   }
 
-  // --- render ---
   function renderTable(list){
     if(!list || !list.length) return `<div class="muted">目前尚無名單</div>`;
     let html = `<table>
