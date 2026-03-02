@@ -14,29 +14,27 @@
     .muted{ color:#666; font-size:13px; line-height:1.6; white-space:pre-wrap; }
 
     label{ display:block; margin:12px 0 6px; font-weight:800; }
+    .reqStar::after{ content:" *"; color:#b00020; font-weight:1000; }
     input,select,textarea{
       width:100%; max-width:100%; display:block; padding:12px;
       border:1px solid #ddd; border-radius:12px; font-size:16px; background:#fff; outline:none;
     }
-    input:focus,select:focus,textarea:focus{ border-color:#caa0ae; box-shadow:0 0 0 3px rgba(202,160,174,.25); }
+    input:focus,select:focus,textarea:focus{ border-color:#9fb8b1; box-shadow:0 0 0 3px rgba(11,95,79,.18); }
     textarea{ min-height:90px; resize:vertical; }
 
     .row{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; }
     @media (max-width:640px){ .row{ grid-template-columns:1fr; } }
 
-    .btn{ margin-top:14px; width:100%; padding:12px; border:0; border-radius:12px; font-size:16px; background:#7b3a52; color:#fff; cursor:pointer; }
+    :root{ --deep:#0b5f4f; --deep2:#0a5648; --danger:#b00020; }
+
+    .btn{ margin-top:14px; width:100%; padding:12px; border:0; border-radius:12px; font-size:16px; background:var(--deep); color:#fff; cursor:pointer; }
     .btn:disabled{ opacity:.6; cursor:not-allowed; }
-
-    .btnG{ margin-top:10px; width:100%; padding:14px; border:0; border-radius:12px; font-size:17px; background:#2f8f7b; color:#fff; cursor:pointer; }
-    .btnG:disabled{ opacity:.6; cursor:not-allowed; }
-
-    .btnLine{ margin-top:10px; width:100%; padding:14px; border:0; border-radius:12px; font-size:17px; background:#06c755; color:#fff; cursor:pointer; }
-    .btnDanger{ margin-top:10px; width:100%; padding:14px; border:0; border-radius:12px; font-size:17px; background:#b00020; color:#fff; cursor:pointer; }
+    .btnSmall{ margin-top:10px; width:100%; padding:12px; border:0; border-radius:12px; font-size:15px; background:var(--deep2); color:#fff; cursor:pointer; }
 
     .ghost{ border:1px solid #d1d5db; background:#fff; color:#111827; }
 
     .ok{ color:#0a7a3c; font-weight:900; }
-    .err{ color:#b00020; font-weight:900; }
+    .err{ color:var(--danger); font-weight:900; }
 
     .box{ background:#f6fbf9; border:1px solid #d7efe7; border-radius:14px; padding:14px; margin-top:14px; }
     .hr{ height:1px; background:#eee; margin:14px 0; }
@@ -62,6 +60,7 @@
     }
     .notice h2{ margin:0 0 8px; font-size:16px; font-weight:1000; }
     .notice ol{ margin:0 0 10px 18px; padding:0; line-height:1.7; font-size:13px; color:#374151; }
+
     .agreeRow{
       display:flex; gap:10px; align-items:flex-start;
       padding:12px; border-radius:12px; border:1px solid #c7d2fe; background:#ffffff;
@@ -69,8 +68,28 @@
     .agreeRow input[type="checkbox"]{ width:20px; height:20px; margin-top:2px; }
     .agreeText{ font-size:14px; line-height:1.6; color:#111827; font-weight:900; }
     .agreeHint{ display:block; margin-top:4px; font-weight:700; color:#6b7280; font-size:12px; }
+
     .locked{ opacity:.55; pointer-events:none; filter:grayscale(.2); }
 
+    /* 必填錯誤標示 */
+    .fieldErr{ border-color: var(--danger) !important; box-shadow:0 0 0 3px rgba(176,0,32,.12) !important; }
+    .fieldHint{ margin-top:6px; font-size:12px; color:var(--danger); font-weight:900; }
+
+    /* 偏好勾選 */
+    .prefBox{
+      margin-top:12px;
+      border:1px solid #e5e7eb;
+      background:#f9fafb;
+      border-radius:12px;
+      padding:12px;
+    }
+    .prefTitle{ font-weight:1000; margin:0 0 8px; }
+    .prefHint{ font-size:12px; color:#6b7280; font-weight:800; margin-top:6px; }
+    .prefRow{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+    .prefRow label{ margin:0; font-weight:900; display:flex; align-items:center; gap:8px; }
+    .prefRow input{ width:18px; height:18px; }
+
+    /* 音檔區（沿用你原本） */
     .slot{ border:1px solid #d7efe7; background:#fff; border-radius:14px; padding:12px; margin-top:12px; }
     .slotTitle{ font-weight:900; margin:0 0 10px; font-size:16px; display:flex; justify-content:space-between; gap:10px; }
     .pill{ font-size:12px; font-weight:900; padding:4px 10px; border-radius:999px; border:1px solid #e5e7eb; background:#f9fafb; color:#6b7280; }
@@ -89,24 +108,22 @@
     .miniBtn.on{ background:#fee2e2; border-color:#fecaca; color:#b91c1c; }
     .slotMsg{ margin-top:10px; font-size:13px; white-space:pre-wrap; }
 
-    .doneOnly{
-      display:none; border:1px solid #b7e4c7; background:#ecfdf3;
-      border-radius:14px; padding:16px; margin-top:16px;
-    }
-    .doneTitle{ font-weight:900; color:#0a7a3c; font-size:22px; margin:0; }
+    /* 完成頁 */
+    .doneOnly{ display:none; border:1px solid #b7e4c7; background:#ecfdf3; border-radius:14px; padding:16px; margin-top:16px; }
+    .doneTitle{ font-weight:1000; color:#0a7a3c; font-size:22px; margin:0; }
     .doneBody{ margin-top:10px; color:#374151; font-size:14px; line-height:1.7; white-space:pre-wrap; }
-    .doneActions{ display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; }
-    .doneActions button{ flex:1; min-width:170px; }
+    .doneActions{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
+    @media (max-width:640px){ .doneActions{ grid-template-columns:1fr; } }
 
+    /* 滿額彈窗 */
     .modalMask{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; padding:18px; z-index:9999; }
     .modal{ width:min(520px, 100%); background:#fff; border-radius:16px; border:1px solid #eee; box-shadow:0 18px 40px rgba(0,0,0,.25); padding:16px; }
     .modal h3{ margin:0 0 8px; font-size:18px; }
     .modal p{ margin:0; color:#374151; line-height:1.7; font-size:14px; white-space:pre-wrap; }
     .modalActions{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
     .modalActions a,.modalActions button{ flex:1; min-width:160px; text-align:center; text-decoration:none; border-radius:12px; padding:12px; font-weight:900; cursor:pointer; }
-    .aLine{ background:#06c755; color:#fff; border:0; }
-    .aWeb{ background:#2f8f7b; color:#fff; border:0; }
     .aClose{ background:#fff; color:#111827; border:1px solid #d1d5db; }
+    .aDeep{ background:var(--deep); color:#fff; border:0; }
   </style>
 </head>
 
@@ -120,8 +137,14 @@
       <div class="notice">
         <h2>填表須知（請先閱讀並勾選）</h2>
         <ol>
-          <li><b>音檔最多 3 個</b>：請依序上傳 <b>音檔1 → 音檔2 → 音檔3</b>，不用改檔名（系統自動命名）。</li>
+          <li><b>音檔最多 3 個</b>：請依序上傳 <b>音檔1 → 音檔2 → 音檔3</b>，<b>不用改檔名</b>（系統自動命名）。</li>
           <li><b>可修改/可覆蓋</b>：資料填錯可用信件連結回到修改頁，音檔可覆蓋重傳或刪除。</li>
+          <li><b>現場設備</b>：提供 <b>電鋼琴、爵士鼓</b>；其餘樂器與設備請自行準備。</li>
+          <li><b>自彈自唱麥克風架</b>：現場提供 <b>3 支麥克風架</b>（數量有限，依現場安排使用）。</li>
+          <li><b>音訊/供電</b>：提供 <b>6 組 DI Box</b>、效果器 <b>110V 電源</b>；自備設備的電源/變壓器請自行準備。</li>
+          <li><b>反送監聽</b>：提供 <b>5 顆反送</b>（其中 <b>1 顆固定給爵士鼓</b>）。</li>
+          <li><b>木吉他收音</b>：木吉他請使用 <b>自己的拾音器/拾音系統</b>。</li>
+          <li><b>上台規範</b>：老師請在台下等候，由舞台人員協助動線。</li>
           <li><b>特殊需求</b>：若需特殊設備/音訊需求，請在「需求/備註」填寫。</li>
         </ol>
 
@@ -135,17 +158,15 @@
       </div>
 
       <div id="formBody" class="locked">
-
-        <label>場次 *</label>
+        <label class="reqStar">場次</label>
         <select name="場次" id="sessionSel" required>
           <option value="">請選擇</option>
           <option>下午場 13:00~16:00</option>
           <option>晚上場 17:30~20:30</option>
         </select>
-
         <div id="quotaText"></div>
 
-        <label>表演項目 *（請選最接近的類型）</label>
+        <label class="reqStar">表演項目（請選最接近的類型）</label>
         <select name="表演項目" required>
           <option value="">請選擇</option>
           <option>熱音樂團</option>
@@ -163,25 +184,33 @@
           <option>其他</option>
         </select>
 
-        <!-- ✅ 只留這一欄，改成必填 -->
-        <label>表演者姓名 / 團名 *（若為雙人/多人，請用「、」分隔；不知道團名可填表演者姓名）</label>
+        <label class="reqStar">表演者姓名 / 團名（若為雙人/多人，請用「、」分隔；不知道團名可填表演者姓名）</label>
         <input name="表演者姓名/團名" required placeholder="例：王小明、陳小華 / @@吉他社">
+
+        <div class="prefBox">
+          <div class="prefTitle">表演次序偏好（沒有需求就不用勾選）</div>
+          <div class="prefRow">
+            <label><input type="checkbox" id="prefFront" name="希望靠前10組" value="是"> 希望靠前 10 組</label>
+            <label><input type="checkbox" id="prefBack"  name="希望靠後10組" value="是"> 希望靠後 10 組</label>
+          </div>
+          <div class="prefHint">提示：兩個選項擇一即可；若都不勾選，將由系統安排。</div>
+        </div>
 
         <div class="row">
           <div>
-            <label>舞台總表演人數 *</label>
+            <label class="reqStar">舞台總表演人數</label>
             <input name="舞台總表演人數" required inputmode="numeric" placeholder="例：2 / 4">
           </div>
           <div>
-            <label>聯絡電話 *</label>
+            <label class="reqStar">聯絡電話</label>
             <input name="聯絡電話" required inputmode="tel" placeholder="例：0952-010146">
           </div>
         </div>
 
-        <label>表演歌名/名稱 *</label>
+        <label class="reqStar">表演歌名/名稱</label>
         <input name="表演歌名/名稱" required placeholder="例：浪流連">
 
-        <label>聯絡人信箱（老師代報也填老師信箱） *</label>
+        <label class="reqStar">聯絡人信箱（老師代報也填老師信箱）</label>
         <input name="聯絡人信箱" type="email" required placeholder="example@example.com">
 
         <label>老師是否一同表演</label>
@@ -203,10 +232,10 @@
         <button class="btn" type="submit" id="btnMain">下一步｜添加音檔</button>
         <p id="msg" class="muted"></p>
 
-        <button class="btnDanger" type="button" id="btnCancel" style="display:none;">取消本次報名</button>
+        <button class="btnSmall" type="button" id="btnCancel" style="display:none;">取消本次報名</button>
 
         <div class="box" id="audioBox" style="display:none;">
-          <div style="font-weight:900;font-size:18px;">添加音檔（MP3 ≤ 20MB，最多 3 個）</div>
+          <div style="font-weight:1000;font-size:18px;">添加音檔（MP3 ≤ 20MB，最多 3 個）</div>
           <div class="muted" style="margin-top:6px;">檔名會自動加上「下午/晚上」前綴與音檔序號，無需自行改名。</div>
 
           <div class="slot">
@@ -253,21 +282,23 @@
 
           <div class="hr"></div>
 
-          <button type="button" class="btnG" id="btnUploadAll">上傳所有音樂檔</button>
-          <button type="button" class="btnG ghost" id="btnNoAudio">我不需要音樂檔</button>
+          <button type="button" class="btn" id="btnUploadAll">上傳所有音樂檔</button>
+          <button type="button" class="btnSmall ghost" id="btnNoAudio">我不需要音樂檔</button>
         </div>
-      </div>
+              </div>
     </form>
   </div>
 
   <div class="doneOnly" id="doneCard">
     <h2 class="doneTitle">✅ 已完成</h2>
     <div class="doneBody" id="doneBody"></div>
+
+    <!-- ✅ 按你的需求：最重要兩個放前面 -->
     <div class="doneActions">
-      <button class="btnG" id="btnGoOfficial">前往官網</button>
-      <button class="btnLine" id="btnGoLine">加入官方 LINE</button>
-      <button class="btnG" id="btnGoProgram">查看表演名單</button>
-      <button class="btnG ghost" id="btnBackForm">回到報名表（新增下一位）</button>
+      <button class="btn" id="btnGoProgram">查看表演名單</button>
+      <button class="btn" id="btnBackForm">回到報名表（新增下一位）</button>
+      <button class="btnSmall" id="btnGoOfficial">前往官網</button>
+      <button class="btnSmall" id="btnGoLine">加入官方 LINE</button>
     </div>
   </div>
 </div>
@@ -277,8 +308,8 @@
     <h3>此場次已額滿</h3>
     <p id="fullText"></p>
     <div class="modalActions">
-      <a class="aLine" href="https://lin.ee/ABY1yil" target="_blank">加入官方 LINE</a>
-      <a class="aWeb" href="https://www.mingtinghuang.com/" target="_blank">前往官網</a>
+      <a class="aDeep" href="index.html">回到報名表</a>
+      <a class="aDeep" href="https://www.mingtinghuang.com/" target="_blank">前往官網</a>
       <button class="aClose" id="btnClose" type="button">我知道了</button>
     </div>
   </div>
@@ -290,9 +321,7 @@
   var LINE_URL = "https://lin.ee/ABY1yil";
   var COUNTDOWN_SECONDS = 20;
 
-  function programUrl(){
-    try{ return new URL("program.html", location.href).href; }catch(e){ return "program.html"; }
-  }
+  function programUrl(){ try{ return new URL("program.html", location.href).href; }catch(e){ return "program.html"; } }
 
   var params = new URLSearchParams(location.search);
   var qRegId = (params.get("regId") || "").trim();
@@ -304,16 +333,25 @@
     ? "目前為【修改模式】— 可直接修改資料、重傳音檔覆蓋；也可取消本次報名。"
     : "請先閱讀並勾選填表須知，再填寫報名資料。";
 
+  // lock
   var agree = document.getElementById("agree");
   var formBody = document.getElementById("formBody");
-  function syncLock(){
-    if(agree.checked) formBody.classList.remove("locked");
-    else formBody.classList.add("locked");
-  }
+  function syncLock(){ if(agree.checked) formBody.classList.remove("locked"); else formBody.classList.add("locked"); }
   agree.addEventListener("change", syncLock);
   syncLock();
   if(isEditMode){ agree.checked = true; syncLock(); }
 
+  // 偏好互斥
+  var prefFront = document.getElementById("prefFront");
+  var prefBack  = document.getElementById("prefBack");
+  function syncPref(){
+    if(prefFront.checked) prefBack.checked = false;
+    if(prefBack.checked) prefFront.checked = false;
+  }
+  prefFront.addEventListener("change", syncPref);
+  prefBack.addEventListener("change", syncPref);
+
+  // elements
   var f = document.getElementById("f");
   var msg = document.getElementById("msg");
   var btnMain = document.getElementById("btnMain");
@@ -321,42 +359,40 @@
   var btnUploadAll = document.getElementById("btnUploadAll");
   var btnNoAudio = document.getElementById("btnNoAudio");
   var quotaText = document.getElementById("quotaText");
-
   var btnCancel = document.getElementById("btnCancel");
   if(isEditMode) btnCancel.style.display = "block";
 
+  // done
   var doneCard = document.getElementById("doneCard");
   var doneBody = document.getElementById("doneBody");
-  var btnGoOfficial = document.getElementById("btnGoOfficial");
-  var btnGoLine = document.getElementById("btnGoLine");
   var btnGoProgram = document.getElementById("btnGoProgram");
-  var btnBackForm = document.getElementById("btnBackForm");
+  var btnBackForm  = document.getElementById("btnBackForm");
+  var btnGoOfficial= document.getElementById("btnGoOfficial");
+  var btnGoLine    = document.getElementById("btnGoLine");
 
+  btnGoProgram.addEventListener("click", function(){ stopCountdown(); location.href = programUrl(); });
+  btnBackForm.addEventListener("click",  function(){ stopCountdown(); location.href = location.origin + location.pathname; });
+  btnGoOfficial.addEventListener("click",function(){ stopCountdown(); location.href = OFFICIAL_URL; });
+  btnGoLine.addEventListener("click",    function(){ stopCountdown(); location.href = LINE_URL; });
+
+  // full modal
   var fullMask = document.getElementById("fullMask");
   var fullText = document.getElementById("fullText");
   document.getElementById("btnClose").addEventListener("click", function(){ fullMask.style.display="none"; });
   fullMask.addEventListener("click", function(e){ if(e.target === fullMask) fullMask.style.display="none"; });
-
   var FULL_MSG =
 "謝謝您的報名！目前此場次名額已滿，我們先暫停受理。\n" +
 "若您希望候補/詢問加開場次，請加入官方 LINE。\n" +
 "最新資訊也會同步更新在官網。";
+  function showFullModal(){ fullText.textContent = FULL_MSG; fullMask.style.display = "flex"; }
 
-  function showFullModal(){
-    fullText.textContent = FULL_MSG;
-    fullMask.style.display = "flex";
-  }
-
+  // jsonp
   function jsonp(url){
     return new Promise(function(resolve, reject){
       var cb = "cb_" + Math.random().toString(36).slice(2);
       var s = document.createElement("script");
       var timer = setTimeout(function(){ cleanup(); reject(new Error("timeout")); }, 15000);
-      function cleanup(){
-        clearTimeout(timer);
-        try{ delete window[cb]; }catch(e){}
-        s.remove();
-      }
+      function cleanup(){ clearTimeout(timer); try{ delete window[cb]; }catch(e){} s.remove(); }
       window[cb] = function(data){ cleanup(); resolve(data); };
       s.src = url + (url.indexOf("?")>=0 ? "&" : "?") + "callback=" + cb;
       s.onerror = function(){ cleanup(); reject(new Error("load error")); };
@@ -378,6 +414,91 @@
   }
   loadQuota();
 
+  // ✅ 手機也記住：localStorage（只在非修改模式）
+  var LS_KEY = "yuzu_signup_draft_v2";
+  function collectDraft(){
+    var obj = {};
+    ["場次","表演項目","表演者姓名/團名","舞台總表演人數","聯絡電話","表演歌名/名稱","聯絡人信箱","老師是否一同表演","老師一起的方式","老師姓名(代報填)","需求/備註","希望靠前10組","希望靠後10組"]
+      .forEach(function(k){
+        var el = f.elements.namedItem(k);
+        if(!el) return;
+        if(el.type === "checkbox") obj[k] = el.checked ? "是" : "";
+        else obj[k] = el.value || "";
+      });
+    return obj;
+  }
+  function saveDraft(){
+    if(isEditMode) return;
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(collectDraft())); }catch(e){}
+  }
+  function loadDraft(){
+    if(isEditMode) return;
+    try{
+      var raw = localStorage.getItem(LS_KEY);
+      if(!raw) return;
+      var d = JSON.parse(raw);
+      Object.keys(d||{}).forEach(function(k){
+        var el = f.elements.namedItem(k);
+        if(!el) return;
+        if(el.type === "checkbox") el.checked = (d[k] === "是");
+        else if(!el.value) el.value = d[k] || "";
+      });
+      syncPref();
+    }catch(e){}
+  }
+  loadDraft();
+  f.addEventListener("input", saveDraft);
+  f.addEventListener("change", saveDraft);
+
+  // ✅ 必填提醒（捲動+紅框+訊息）
+  function clearFieldErrors(){
+    Array.from(f.querySelectorAll(".fieldErr")).forEach(function(el){ el.classList.remove("fieldErr"); });
+    Array.from(f.querySelectorAll(".fieldHint")).forEach(function(el){ el.remove(); });
+  }
+  function markError(el, text){
+    el.classList.add("fieldErr");
+    var hint = document.createElement("div");
+    hint.className = "fieldHint";
+    hint.textContent = text;
+    el.insertAdjacentElement("afterend", hint);
+  }
+  function validateRequired(){
+    clearFieldErrors();
+    var firstBad = null;
+
+    function need(name, msgText){
+      var el = f.elements.namedItem(name);
+      if(!el) return;
+      var ok = true;
+      if(el.type === "checkbox") ok = el.checked;
+      else ok = !!String(el.value||"").trim();
+      if(!ok){
+        markError(el, msgText);
+        if(!firstBad) firstBad = el;
+      }
+    }
+
+    if(!agree.checked){
+      alert("請先勾選「我已閱讀並同意填表須知」。");
+      return false;
+    }
+
+    need("場次", "請選擇場次");
+    need("表演項目", "請選擇表演項目");
+    need("表演者姓名/團名", "請填寫表演者姓名/團名（多人用、分隔）");
+    need("舞台總表演人數", "請填寫舞台總表演人數");
+    need("聯絡電話", "請填寫聯絡電話");
+    need("表演歌名/名稱", "請填寫表演歌名/名稱");
+    need("聯絡人信箱", "請填寫聯絡人信箱");
+
+    if(firstBad){
+      firstBad.scrollIntoView({behavior:"smooth", block:"center"});
+      return false;
+    }
+    return true;
+  }
+
+  // done page
   var countdownTimer=null, left=COUNTDOWN_SECONDS;
   function stopCountdown(){ if(countdownTimer){ clearInterval(countdownTimer); countdownTimer=null; } }
   function showDoneOnly(text){
@@ -393,12 +514,8 @@
       if(left<=0){ stopCountdown(); location.href = OFFICIAL_URL; }
     },1000);
   }
-  btnGoOfficial.addEventListener("click", function(){ stopCountdown(); location.href = OFFICIAL_URL; });
-  btnGoLine.addEventListener("click", function(){ stopCountdown(); location.href = LINE_URL; });
-  btnGoProgram.addEventListener("click", function(){ stopCountdown(); location.href = programUrl(); });
-  btnBackForm.addEventListener("click", function(){ stopCountdown(); location.href = location.origin + location.pathname; });
 
-  // ===== 音檔 =====
+  // ===== 音檔（保留你原本的流程）=====
   function fmtMB(n){ return (Math.round((n/(1024*1024))*100)/100).toFixed(2); }
   var current = { regId:"", token:"" };
   var slotInfo = {1:{exists:false,url:"",name:""},2:{exists:false,url:"",name:""},3:{exists:false,url:"",name:""}};
@@ -409,23 +526,18 @@
     el.className = "slotMsg " + (isErr ? "err" : "muted");
     el.textContent = text || "";
   }
-
   function renderSlot(slot){
     var pill = document.getElementById("pill"+slot);
     var view = document.getElementById("view"+slot);
     var del = document.getElementById("del"+slot);
 
     if(slotInfo[slot].exists){
-      pill.className = "pill ok";
-      pill.textContent = "已上傳";
-      view.style.display = "";
-      del.style.display = "";
+      pill.className = "pill ok"; pill.textContent = "已上傳";
+      view.style.display = ""; del.style.display = "";
       view.onclick = function(){ window.open(slotInfo[slot].url, "_blank"); };
     }else{
-      pill.className = "pill";
-      pill.textContent = "尚未上傳";
-      view.style.display = "none";
-      del.style.display = "none";
+      pill.className = "pill"; pill.textContent = "尚未上傳";
+      view.style.display = "none"; del.style.display = "none";
     }
     del.classList.toggle("on", !!deleteMark[slot]);
     del.textContent = deleteMark[slot] ? "已標記刪除" : "刪除";
@@ -447,12 +559,8 @@
       deleteMark[slot] = false;
       renderSlot(slot);
     });
-
     var del = document.getElementById("del"+slot);
-    del.addEventListener("click", function(){
-      deleteMark[slot] = !deleteMark[slot];
-      renderSlot(slot);
-    });
+    del.addEventListener("click", function(){ deleteMark[slot] = !deleteMark[slot]; renderSlot(slot); });
   });
 
   function validateMp3(file){
@@ -486,7 +594,6 @@
     }).then(function(r){ return r.json(); });
 
     if(!startRes.ok) throw new Error(startRes.error || "建立上傳通道失敗");
-
     var uploadUrl = startRes.uploadUrl;
     var chunkSize = 1024*1024;
     var offset = 0;
@@ -543,8 +650,11 @@
       var map = data.data || {};
       Object.keys(map).forEach(function(k){
         var el = f.elements.namedItem(k);
-        if(el) el.value = (map[k]==null ? "" : String(map[k]));
+        if(!el) return;
+        if(el.type === "checkbox") el.checked = (map[k] === "是");
+        else el.value = (map[k]==null ? "" : String(map[k]));
       });
+      syncPref();
 
       var slots = data.slots || {};
       [1,2,3].forEach(function(s){
@@ -597,10 +707,8 @@
   f.addEventListener("submit", async function(ev){
     ev.preventDefault();
 
-    if(!agree.checked){
-      alert("請先閱讀並勾選「填表須知」才能填寫報名表。");
-      return;
-    }
+    // ✅ 你要的：沒填必填就提示、捲動、紅框
+    if(!validateRequired()) return;
 
     msg.className="muted";
     msg.textContent="送出中…";
@@ -612,9 +720,7 @@
     data["我已閱讀並同意填表須知"] = agree.checked ? "是" : "";
 
     if(isEditMode){
-      data.mode="update";
-      data.regId=qRegId;
-      data.token=qToken;
+      data.mode="update"; data.regId=qRegId; data.token=qToken;
     }else{
       data.mode="create";
     }
@@ -644,6 +750,11 @@
       audioBox.style.display = "block";
       audioBox.scrollIntoView({behavior:"smooth", block:"start"});
       loadQuota();
+
+      // 新報名成功後，草稿可清掉（避免下一位帶入舊資料）
+      if(!isEditMode){
+        try{ localStorage.removeItem(LS_KEY); }catch(e){}
+      }
     }catch(e){
       msg.className="err";
       msg.textContent="送出失敗：" + e.message;
