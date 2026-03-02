@@ -7,7 +7,7 @@
   <style>
     :root{
       --bg:#f6f3f4; --card:#ffffff; --text:#111827; --muted:#6b7280; --line:#e5e7eb;
-      --brand:#2f8f7b; --brandSoft:#eaf7f3; --radius:18px; --shadow:0 10px 26px rgba(0,0,0,.08);
+      --brand:#0b5f4f; --brandSoft:#eaf7f3; --radius:18px; --shadow:0 10px 26px rgba(0,0,0,.08);
       --zebra:#f2faf7;
     }
     *{ box-sizing:border-box; }
@@ -18,37 +18,43 @@
     .meta{ color:#374151; line-height:1.8; }
     .stamp{
       margin-top:12px; display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
-      background:var(--brandSoft); border:1px solid #cfeee6; color:#0b5f4f; font-weight:900; font-size:13px;
+      background:var(--brandSoft); border:1px solid #cfeee6; color:var(--brand); font-weight:900; font-size:13px;
     }
     .navBar{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
     .navBtn{ display:inline-flex; align-items:center; justify-content:center; padding:10px 14px; border-radius:12px; border:1px solid var(--line);
       background:#fff; color:var(--text); text-decoration:none; font-weight:900; font-size:14px;
     }
     .navBtn.brand{ background:var(--brand); border-color:var(--brand); color:#fff; }
-    .navBtn.line{ background:#06c755; border-color:#06c755; color:#fff; }
 
     .section{ margin-top:14px; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px; }
     .secHead{ display:flex; align-items:flex-end; justify-content:space-between; gap:10px; padding:6px 6px 12px; border-bottom:1px solid #eef2f7; margin-bottom:10px; }
     .secTitle{ margin:0; font-size:20px; font-weight:1000; }
     .secTime{ color:var(--muted); font-weight:900; font-size:13px; white-space:nowrap; }
 
+    /* 桌機表格：表演者最大、曲目第二、類型小 */
     table{ width:100%; border-collapse:collapse; }
     thead th{ text-align:left; font-weight:1000; padding:10px 10px; background:#f9fafb; border-bottom:1px solid #eef2f7; white-space:nowrap; }
-    tbody td{ padding:12px 10px; border-bottom:1px solid #eef2f7; word-break:break-word; }
+    tbody td{ padding:14px 10px; border-bottom:1px solid #eef2f7; vertical-align:top; }
     tbody tr:nth-child(even){ background:var(--zebra); }
+
+    .tdNo{ width:70px; font-weight:1000; color:var(--brand); }
+    .who{ font-size:18px; font-weight:1000; color:#111827; line-height:1.35; }          /* 表演者最大 */
+    .song{ margin-top:6px; font-size:15px; font-weight:900; color:#111827; }           /* 曲目第二 */
+    .type{ margin-top:6px; font-size:13px; font-weight:900; color:var(--muted); }     /* 類型最小 */
 
     .muted{ color:var(--muted); font-size:13px; line-height:1.6; }
     .note{ margin-top:10px; color:var(--muted); font-size:13px; }
     .err{ color:#b00020; font-weight:1000; }
 
+    /* 手機列表：同樣表演者最大、曲目第二、類型最小 */
     .list{ display:none; }
-    .li{ padding:12px 10px; border-bottom:1px solid #eef2f7; }
+    .li{ padding:14px 12px; border-bottom:1px solid #eef2f7; }
     .li:nth-child(even){ background:var(--zebra); }
-    .liTop{ display:flex; gap:10px; align-items:flex-start; margin-bottom:6px; }
-    .no{ min-width:34px; font-weight:1000; color:#0b5f4f; }
-    .type{ font-weight:1000; flex:1; }
-    .line{ font-size:13px; line-height:1.65; word-break:break-word; }
-    .k{ color:var(--muted); font-weight:900; }
+    .liTop{ display:flex; gap:10px; align-items:flex-start; }
+    .no{ min-width:34px; font-weight:1000; color:var(--brand); font-size:18px; line-height:1; padding-top:2px; }
+    .whoM{ font-size:20px; font-weight:1000; line-height:1.3; }
+    .songM{ margin-top:6px; font-size:16px; font-weight:900; }
+    .typeM{ margin-top:6px; font-size:13px; font-weight:900; color:var(--muted); }
 
     @media (max-width:720px){
       h1{ font-size:22px; }
@@ -71,9 +77,7 @@
       <div id="status" class="stamp">載入節目單中…</div>
 
       <div class="navBar">
-        <a class="navBtn brand" href="https://www.mingtinghuang.com/" target="_blank">前往官網</a>
-        <a class="navBtn line" href="https://lin.ee/ABY1yil" target="_blank">加入官方 LINE</a>
-        <a class="navBtn" href="index.html">回到報名表</a>
+        <a class="navBtn brand" href="index.html">回到報名表</a>
         <a class="navBtn" href="#bottom">到頁面底部</a>
       </div>
 
@@ -104,12 +108,10 @@
         <div class="secTime">快速回到你要的地方</div>
       </div>
       <div class="navBar">
-        <a class="navBtn brand" href="https://www.mingtinghuang.com/" target="_blank">前往官網</a>
-        <a class="navBtn line" href="https://lin.ee/ABY1yil" target="_blank">加入官方 LINE</a>
-        <a class="navBtn" href="index.html">回到報名表</a>
+        <a class="navBtn brand" href="index.html">回到報名表</a>
         <a class="navBtn" href="#top">回到最上方</a>
       </div>
-      <div class="muted" style="margin-top:10px;">名單顯示：「表演項目 / 表演者姓名/團名 / 曲目」，不包含電話與信箱。</div>
+      <div class="muted" style="margin-top:10px;">名單顯示：「表演者（最大）/ 曲目（第二大）/ 表演項目（小字）」。不包含電話與信箱。</div>
     </div>
   </div>
 
@@ -121,6 +123,7 @@
     return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
 
+  // JSONP（GitHub Pages 需要）
   function jsonp(url){
     return new Promise((resolve, reject)=>{
       const cb = "cb_" + Math.random().toString(36).slice(2);
@@ -134,21 +137,114 @@
     });
   }
 
+  // ---- 排序：先照「靠前/靠後」分區，再保持同類最多連3（穩定排序）----
+  function fnv1a(str){
+    let h = 0x811c9dc5;
+    for(let i=0;i<str.length;i++){
+      h ^= str.charCodeAt(i);
+      h = (h + (h<<1) + (h<<4) + (h<<7) + (h<<8) + (h<<24)) >>> 0;
+    }
+    return h >>> 0;
+  }
+  function stableSeedFromList(list){
+    const fp = (list || []).map(it => [it.type,it.name,it.song,(it.front?1:0),(it.back?1:0)].join("|")).join("\n");
+    return fnv1a(fp);
+  }
+  function hashInt(seed, str){ return fnv1a(String(seed) + "|" + str); }
+
+  function scheduleMax3(list, maxConsec){
+    const items = (list||[]).map((it, idx)=>({
+      type:(it.type||"未分類").trim(),
+      name:(it.name||"").trim(),
+      song:(it.song||"").trim(),
+      front: !!it.front,
+      back: !!it.back,
+      key: idx + "|" + (it.type||"") + "|" + (it.name||"") + "|" + (it.song||"")
+    }));
+    if(items.length <= 1) return items;
+
+    const seed = stableSeedFromList(items);
+    const buckets = {};
+    for(const it of items){ (buckets[it.type] ||= []).push(it); }
+    const types = Object.keys(buckets);
+
+    for(const t of types){
+      buckets[t].sort((a,b)=> hashInt(seed, t+"|"+a.key) - hashInt(seed, t+"|"+b.key));
+    }
+
+    const result = [];
+    let last = "", streak = 0;
+
+    while(true){
+      const avail = types.filter(t => buckets[t].length > 0);
+      if(avail.length === 0) break;
+
+      let candidates = avail.filter(t => !(t === last && streak >= maxConsec));
+      if(candidates.length === 0){ candidates = avail; last = ""; streak = 0; }
+
+      candidates.sort((a,b)=>{
+        const da = buckets[a].length, db = buckets[b].length;
+        if(db !== da) return db - da;
+        return hashInt(seed, "pick|"+a+"|"+da+"|"+result.length) - hashInt(seed, "pick|"+b+"|"+db+"|"+result.length);
+      });
+
+      const pick = candidates[0];
+      const chosen = buckets[pick].shift();
+      result.push(chosen);
+
+      if(pick === last) streak++;
+      else { last = pick; streak = 1; }
+    }
+    return result;
+  }
+
+  function applyPreferenceTopBottom(list){
+    // 分區
+    const front = [], back = [], mid = [];
+    for(const it of (list||[])){
+      if(it.front && !it.back) front.push(it);
+      else if(it.back && !it.front) back.push(it);
+      else mid.push(it);
+    }
+
+    // 各自做 max3
+    let A = scheduleMax3(front, 3);
+    let B = scheduleMax3(mid, 3);
+    let C = scheduleMax3(back, 3);
+
+    // Top10 / Bottom10 限制（超過就溢出回中間）
+    if(A.length > 10){
+      const spill = A.slice(10);
+      A = A.slice(0,10);
+      B = spill.concat(B);
+    }
+    if(C.length > 10){
+      const spill = C.slice(0, C.length - 10);
+      C = C.slice(C.length - 10);
+      B = B.concat(spill);
+    }
+
+    // 中間再跑一次 max3（保持整體更順）
+    B = scheduleMax3(B, 3);
+
+    return A.concat(B).concat(C);
+  }
+
   function renderTable(list){
     if(!list || !list.length) return `<div class="muted">目前尚無名單</div>`;
     let html = `<table>
       <thead><tr>
         <th style="width:70px;">序號</th>
-        <th style="width:150px;">表演項目</th>
-        <th style="width:240px;">表演者姓名/團名</th>
-        <th>表演曲目</th>
+        <th>內容</th>
       </tr></thead><tbody>`;
     list.forEach((it, i)=>{
       html += `<tr>
-        <td>${i+1}</td>
-        <td>${esc(it.type)}</td>
-        <td>${esc(it.name)}</td>
-        <td>${esc(it.song)}</td>
+        <td class="tdNo">${i+1}</td>
+        <td>
+          <div class="who">${esc(it.name)}</div>
+          <div class="song">曲目：${esc(it.song)}</div>
+          <div class="type">${esc(it.type)}</div>
+        </td>
       </tr>`;
     });
     html += `</tbody></table>`;
@@ -163,10 +259,12 @@
         <div class="li">
           <div class="liTop">
             <div class="no">${i+1}</div>
-            <div class="type">${esc(it.type)}</div>
+            <div>
+              <div class="whoM">${esc(it.name)}</div>
+              <div class="songM">曲目：${esc(it.song)}</div>
+              <div class="typeM">${esc(it.type)}</div>
+            </div>
           </div>
-          <div class="line"><span class="k">表演者：</span>${esc(it.name)}</div>
-          <div class="line"><span class="k">曲目：</span>${esc(it.song)}</div>
         </div>
       `;
     });
@@ -178,10 +276,15 @@
     try{
       const data = await jsonp(SCRIPT_URL + "?mode=program");
       if(!data || !data.ok) throw new Error((data && data.error) || "讀取失敗");
-      document.getElementById("aftTable").innerHTML = renderTable(data.afternoon||[]);
-      document.getElementById("eveTable").innerHTML = renderTable(data.evening||[]);
-      document.getElementById("aftList").innerHTML = renderList(data.afternoon||[]);
-      document.getElementById("eveList").innerHTML = renderList(data.evening||[]);
+
+      const aft = applyPreferenceTopBottom(data.afternoon||[]);
+      const eve = applyPreferenceTopBottom(data.evening||[]);
+
+      document.getElementById("aftTable").innerHTML = renderTable(aft);
+      document.getElementById("eveTable").innerHTML = renderTable(eve);
+      document.getElementById("aftList").innerHTML = renderList(aft);
+      document.getElementById("eveList").innerHTML = renderList(eve);
+
       status.textContent = `更新時間：${data.ts || ""}`;
     }catch(e){
       status.className = "stamp err";
