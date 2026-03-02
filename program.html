@@ -6,103 +6,35 @@
   <title>柚子樂器音樂成果展｜節目單</title>
   <style>
     :root{
-      --bg:#f6f3f4;
-      --card:#ffffff;
-      --text:#111827;
-      --muted:#6b7280;
-      --line:#e5e7eb;
-      --brand:#2f8f7b;
-      --brandSoft:#eaf7f3;
-      --radius:18px;
-      --shadow:0 10px 26px rgba(0,0,0,.08);
+      --bg:#f6f3f4; --card:#ffffff; --text:#111827; --muted:#6b7280; --line:#e5e7eb;
+      --brand:#2f8f7b; --brandSoft:#eaf7f3; --radius:18px; --shadow:0 10px 26px rgba(0,0,0,.08);
       --zebra:#f2faf7;
     }
     *{ box-sizing:border-box; }
     body{ margin:0; font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif; background:var(--bg); color:var(--text); }
     .wrap{ max-width:980px; margin:18px auto 30px; padding:14px; }
-
-    .top{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
+    .top{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; }
     h1{ margin:0 0 10px; font-size:26px; letter-spacing:.3px; }
     .meta{ color:#374151; line-height:1.8; }
     .stamp{
-      margin-top:12px;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:var(--brandSoft);
-      border:1px solid #cfeee6;
-      color:#0b5f4f;
-      font-weight:900;
-      font-size:13px;
+      margin-top:12px; display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      background:var(--brandSoft); border:1px solid #cfeee6; color:#0b5f4f; font-weight:900; font-size:13px;
     }
-
-    .navBar{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
-    .navBtn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:10px 14px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--text);
-      text-decoration:none;
-      font-weight:900;
-      font-size:14px;
+    .navBar{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+    .navBtn{ display:inline-flex; align-items:center; justify-content:center; padding:10px 14px; border-radius:12px; border:1px solid var(--line);
+      background:#fff; color:var(--text); text-decoration:none; font-weight:900; font-size:14px;
     }
     .navBtn.brand{ background:var(--brand); border-color:var(--brand); color:#fff; }
     .navBtn.line{ background:#06c755; border-color:#06c755; color:#fff; }
-    .navBtn.ghost{ background:#fff; }
 
-    .section{
-      margin-top:14px;
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:14px;
-    }
-    .secHead{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:10px;
-      padding:6px 6px 12px;
-      border-bottom:1px solid #eef2f7;
-      margin-bottom:10px;
-    }
+    .section{ margin-top:14px; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px; }
+    .secHead{ display:flex; align-items:flex-end; justify-content:space-between; gap:10px; padding:6px 6px 12px; border-bottom:1px solid #eef2f7; margin-bottom:10px; }
     .secTitle{ margin:0; font-size:20px; font-weight:1000; }
     .secTime{ color:var(--muted); font-weight:900; font-size:13px; white-space:nowrap; }
 
     table{ width:100%; border-collapse:collapse; }
-    thead th{
-      text-align:left;
-      font-weight:1000;
-      color:#111827;
-      padding:10px 10px;
-      background:#f9fafb;
-      border-bottom:1px solid #eef2f7;
-      white-space:nowrap;
-    }
-    tbody td{
-      padding:12px 10px;
-      vertical-align:top;
-      border-bottom:1px solid #eef2f7;
-      word-break:break-word;
-    }
+    thead th{ text-align:left; font-weight:1000; padding:10px 10px; background:#f9fafb; border-bottom:1px solid #eef2f7; white-space:nowrap; }
+    tbody td{ padding:12px 10px; border-bottom:1px solid #eef2f7; word-break:break-word; }
     tbody tr:nth-child(even){ background:var(--zebra); }
 
     .muted{ color:var(--muted); font-size:13px; line-height:1.6; }
@@ -114,8 +46,8 @@
     .li:nth-child(even){ background:var(--zebra); }
     .liTop{ display:flex; gap:10px; align-items:flex-start; margin-bottom:6px; }
     .no{ min-width:34px; font-weight:1000; color:#0b5f4f; }
-    .type{ font-weight:1000; color:#111827; flex:1; }
-    .line{ font-size:13px; line-height:1.65; color:#111827; word-break:break-word; }
+    .type{ font-weight:1000; flex:1; }
+    .line{ font-size:13px; line-height:1.65; word-break:break-word; }
     .k{ color:var(--muted); font-weight:900; }
 
     @media (max-width:720px){
@@ -138,12 +70,11 @@
 
       <div id="status" class="stamp">載入節目單中…</div>
 
-      <!-- ✅ 頂部導航 -->
       <div class="navBar">
-        <a class="navBtn brand" id="btnOfficialTop" href="#" target="_self">前往官網</a>
-        <a class="navBtn line" id="btnLineTop" href="#" target="_self">加入官方 LINE</a>
-        <a class="navBtn ghost" id="btnSignupTop" href="#" target="_self">回到報名表</a>
-        <a class="navBtn ghost" href="#bottom">到頁面底部</a>
+        <a class="navBtn brand" href="https://www.mingtinghuang.com/" target="_blank">前往官網</a>
+        <a class="navBtn line" href="https://lin.ee/ABY1yil" target="_blank">加入官方 LINE</a>
+        <a class="navBtn" href="index.html">回到報名表</a>
+        <a class="navBtn" href="#bottom">到頁面底部</a>
       </div>
 
       <div class="note">備註：節目順序以現場公告為準。</div>
@@ -167,36 +98,23 @@
       <div id="eveList" class="list"></div>
     </div>
 
-    <!-- ✅ 底部導航 -->
     <div class="section" id="bottom">
       <div class="secHead">
         <h2 class="secTitle">導覽</h2>
         <div class="secTime">快速回到你要的地方</div>
       </div>
       <div class="navBar">
-        <a class="navBtn brand" id="btnOfficialBottom" href="#" target="_self">前往官網</a>
-        <a class="navBtn line" id="btnLineBottom" href="#" target="_self">加入官方 LINE</a>
-        <a class="navBtn ghost" id="btnSignupBottom" href="#" target="_self">回到報名表</a>
-        <a class="navBtn ghost" href="#top">回到最上方</a>
+        <a class="navBtn brand" href="https://www.mingtinghuang.com/" target="_blank">前往官網</a>
+        <a class="navBtn line" href="https://lin.ee/ABY1yil" target="_blank">加入官方 LINE</a>
+        <a class="navBtn" href="index.html">回到報名表</a>
+        <a class="navBtn" href="#top">回到最上方</a>
       </div>
-      <div class="muted" style="margin-top:10px;">名單僅顯示「表演項目 / 表演者 / 曲目」，不包含電話與信箱。</div>
+      <div class="muted" style="margin-top:10px;">名單顯示：「表演項目 / 表演者姓名/團名 / 曲目」，不包含電話與信箱。</div>
     </div>
   </div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
-  const OFFICIAL_URL = "https://www.mingtinghuang.com/";
-  const LINE_URL = "https://lin.ee/ABY1yil";
-
-  // 這頁跟 index.html 同層
-  const SIGNUP_URL = new URL("index.html", location.href).href.replace(/program\.html.*$/,"index.html");
-
-  document.getElementById("btnOfficialTop").href = OFFICIAL_URL;
-  document.getElementById("btnOfficialBottom").href = OFFICIAL_URL;
-  document.getElementById("btnLineTop").href = LINE_URL;
-  document.getElementById("btnLineBottom").href = LINE_URL;
-  document.getElementById("btnSignupTop").href = SIGNUP_URL;
-  document.getElementById("btnSignupBottom").href = SIGNUP_URL;
 
   function esc(s){
     s = String(s ?? "");
@@ -208,85 +126,12 @@
       const cb = "cb_" + Math.random().toString(36).slice(2);
       const s = document.createElement("script");
       const timer = setTimeout(()=>{ cleanup(); reject(new Error("timeout")); }, 15000);
-
-      function cleanup(){
-        clearTimeout(timer);
-        delete window[cb];
-        s.remove();
-      }
-
+      function cleanup(){ clearTimeout(timer); delete window[cb]; s.remove(); }
       window[cb] = (data)=>{ cleanup(); resolve(data); };
       s.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
       s.onerror = ()=>{ cleanup(); reject(new Error("load error")); };
       document.body.appendChild(s);
     });
-  }
-
-  // --- 排序規則：同類最多連3（你原本的） ---
-  function fnv1a(str){
-    let h = 0x811c9dc5;
-    for(let i=0;i<str.length;i++){
-      h ^= str.charCodeAt(i);
-      h = (h + (h<<1) + (h<<4) + (h<<7) + (h<<8) + (h<<24)) >>> 0;
-    }
-    return h >>> 0;
-  }
-  function stableSeedFromList(list){
-    const fp = (list || []).map(it => [it.type,it.name,it.song].join("|")).join("\n");
-    return fnv1a(fp);
-  }
-  function hashInt(seed, str){
-    return fnv1a(String(seed) + "|" + str);
-  }
-  function scheduleMax3(list, maxConsec){
-    const items = (list||[]).map((it, idx)=>({
-      type: (it.type||"未分類").trim(),
-      name: (it.name||"").trim(),
-      song: (it.song||"").trim(),
-      key: idx + "|" + (it.type||"") + "|" + (it.name||"") + "|" + (it.song||"")
-    }));
-    if(items.length <= 1) return items;
-
-    const seed = stableSeedFromList(items);
-    const buckets = {};
-    for(const it of items){
-      (buckets[it.type] ||= []).push(it);
-    }
-    const types = Object.keys(buckets);
-
-    for(const t of types){
-      buckets[t].sort((a,b)=> hashInt(seed, t+"|"+a.key) - hashInt(seed, t+"|"+b.key));
-    }
-
-    const result = [];
-    let last = "";
-    let streak = 0;
-
-    while(true){
-      const avail = types.filter(t => buckets[t].length > 0);
-      if(avail.length === 0) break;
-
-      let candidates = avail.filter(t => !(t === last && streak >= maxConsec));
-      if(candidates.length === 0){
-        candidates = avail;
-        last = "";
-        streak = 0;
-      }
-
-      candidates.sort((a,b)=>{
-        const da = buckets[a].length, db = buckets[b].length;
-        if(db !== da) return db - da;
-        return hashInt(seed, "pick|"+a+"|"+da+"|"+result.length) - hashInt(seed, "pick|"+b+"|"+db+"|"+result.length);
-      });
-
-      const pick = candidates[0];
-      const chosen = buckets[pick].shift();
-      result.push(chosen);
-
-      if(pick === last) streak++;
-      else { last = pick; streak = 1; }
-    }
-    return result;
   }
 
   function renderTable(list){
@@ -333,16 +178,10 @@
     try{
       const data = await jsonp(SCRIPT_URL + "?mode=program");
       if(!data || !data.ok) throw new Error((data && data.error) || "讀取失敗");
-
-      const aft = scheduleMax3((data.afternoon||[]), 3);
-      const eve = scheduleMax3((data.evening||[]), 3);
-
-      document.getElementById("aftTable").innerHTML = renderTable(aft);
-      document.getElementById("eveTable").innerHTML = renderTable(eve);
-
-      document.getElementById("aftList").innerHTML = renderList(aft);
-      document.getElementById("eveList").innerHTML = renderList(eve);
-
+      document.getElementById("aftTable").innerHTML = renderTable(data.afternoon||[]);
+      document.getElementById("eveTable").innerHTML = renderTable(data.evening||[]);
+      document.getElementById("aftList").innerHTML = renderList(data.afternoon||[]);
+      document.getElementById("eveList").innerHTML = renderList(data.evening||[]);
       status.textContent = `更新時間：${data.ts || ""}`;
     }catch(e){
       status.className = "stamp err";
