@@ -30,6 +30,8 @@
     .btnG{ margin-top:10px; width:100%; padding:14px; border:0; border-radius:12px; font-size:17px; background:#2f8f7b; color:#fff; cursor:pointer; }
     .btnG:disabled{ opacity:.6; cursor:not-allowed; }
 
+    .btnDanger{ margin-top:10px; width:100%; padding:14px; border:0; border-radius:12px; font-size:17px; background:#b00020; color:#fff; cursor:pointer; }
+
     .ghost{ border:1px solid #d1d5db; background:#fff; color:#111827; }
 
     .ok{ color:#0a7a3c; font-weight:900; }
@@ -40,7 +42,7 @@
 
     /* 名額顯示 */
     #quotaText{
-      display:none;
+      display:none; /* 由 JS 改成 block */
       margin-top:8px;
       padding:10px 12px;
       border-radius:12px;
@@ -252,6 +254,9 @@
         <button class="btn" type="submit" id="btnMain">下一步｜添加音檔</button>
         <p id="msg" class="muted"></p>
 
+        <!-- ✅ 取消報名（只在修改模式顯示） -->
+        <button class="btnDanger" type="button" id="btnCancel" style="display:none;">取消本次報名</button>
+
         <div class="box" id="audioBox" style="display:none;">
           <div style="font-weight:900;font-size:18px;">添加音檔（MP3 ≤ 20MB，最多 3 個）</div>
           <div class="muted" style="margin-top:6px;">檔名會自動加上「下午/晚上」前綴與音檔序號，無需自行改名。</div>
@@ -334,12 +339,10 @@
 </div>
 
 <script>
-  // 你的 Web App /exec
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
   var OFFICIAL_URL = "https://www.mingtinghuang.com/";
   var COUNTDOWN_SECONDS = 20;
 
-  // query params（修改模式）
   var params = new URLSearchParams(location.search);
   var qRegId = (params.get("regId") || "").trim();
   var qToken = (params.get("token") || "").trim();
@@ -347,10 +350,9 @@
 
   var modeHint = document.getElementById("modeHint");
   modeHint.textContent = isEditMode
-    ? "目前為【修改模式】— 可直接修改資料、重傳音檔覆蓋，送出後會覆蓋為最新資料。"
+    ? "目前為【修改模式】— 可直接修改資料、重傳音檔覆蓋；也可在下方取消本次報名。"
     : "請先閱讀並勾選填表須知，再填寫報名資料。";
 
-  // lock
   var agree = document.getElementById("agree");
   var formBody = document.getElementById("formBody");
   function syncLock(){
@@ -360,7 +362,6 @@
   agree.addEventListener("change", syncLock);
   syncLock();
 
-  // ✅ 修改模式：先直接解鎖（避免導入失敗整張表卡住）
   if(isEditMode){
     agree.checked = true;
     syncLock();
@@ -373,6 +374,9 @@
   var btnUploadAll = document.getElementById("btnUploadAll");
   var btnNoAudio = document.getElementById("btnNoAudio");
   var quotaText = document.getElementById("quotaText");
+
+  var btnCancel = document.getElementById("btnCancel");
+  if(isEditMode) btnCancel.style.display = "block";
 
   var doneCard = document.getElementById("doneCard");
   var doneBody = document.getElementById("doneBody");
@@ -419,48 +423,42 @@
     return isNaN(n) ? 0 : n;
   }
 
- async function loadQuota(){
-  try{
-    var data = await jsonp(SCRIPT_URL + "?mode=quota");
-    if(!data || !data.ok) throw new Error((data && data.error) ? data.error : "quota failed");
-
-    // 同時支援 Remain / Remaining（避免版本混用）
-    var a = pickNumber_(data, "afternoonRemain", "afternoonRemaining");
-    var e = pickNumber_(data, "eveningRemain", "eveningRemaining");
-
-    quotaText.style.display = "block"; // ✅ 一定要 block，才會蓋過 CSS display:none
-    quotaText.innerHTML = "可報名組數：下午場 <b>" + a + "</b> 組｜晚上場 <b>" + e + "</b> 組";
-  }catch(err){
-    quotaText.style.display = "block"; // ✅ 失敗也顯示原因
-    quotaText.innerHTML = "名額載入失敗：<b>" + (err && err.message ? err.message : err) + "</b>";
+  async function loadQuota(){
+    try{
+      var data = await jsonp(SCRIPT_URL + "?mode=quota");
+      if(!data || !data.ok) throw new Error((data && data.error) ? data.error : "quota failed");
+      var a = pickNumber_(data, "afternoonRemain", "afternoonRemaining");
+      var e = pickNumber_(data, "eveningRemain", "eveningRemaining");
+      quotaText.style.display = "block";
+      quotaText.innerHTML = "可報名組數：下午場 <b>" + a + "</b> 組｜晚上場 <b>" + e + "</b> 組";
+    }catch(err){
+      quotaText.style.display = "block";
+      quotaText.innerHTML = "名額載入失敗：<b>" + (err && err.message ? err.message : err) + "</b>";
+    }
   }
-}
   loadQuota();
 
-  // done page
   var countdownTimer=null, left=COUNTDOWN_SECONDS;
   function stopCountdown(){ if(countdownTimer){ clearInterval(countdownTimer); countdownTimer=null; } }
-  function showDoneOnly(){
+
+  function showDoneOnly(text){
     document.getElementById("mainCard").style.display = "none";
     doneCard.style.display = "block";
     doneCard.scrollIntoView({behavior:"smooth", block:"start"});
     stopCountdown();
+
     left = COUNTDOWN_SECONDS;
-    doneBody.textContent =
-      "附註：若之後需要修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。\n" +
-      COUNTDOWN_SECONDS + " 秒後將自動前往官方網站（倒數：" + left + "）";
+    doneBody.textContent = (text || "") + "\n" + COUNTDOWN_SECONDS + " 秒後將自動前往官方網站（倒數：" + left + "）";
     countdownTimer = setInterval(function(){
       left -= 1;
-      doneBody.textContent =
-        "附註：若之後需要修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。\n" +
-        COUNTDOWN_SECONDS + " 秒後將自動前往官方網站（倒數：" + left + "）";
+      doneBody.textContent = (text || "") + "\n" + COUNTDOWN_SECONDS + " 秒後將自動前往官方網站（倒數：" + left + "）";
       if(left<=0){ stopCountdown(); location.href = OFFICIAL_URL; }
     },1000);
   }
+
   btnGoOfficial.addEventListener("click", function(){ stopCountdown(); location.href = OFFICIAL_URL; });
   btnBackForm.addEventListener("click", function(){ stopCountdown(); location.href = location.origin + location.pathname; });
 
-  // upload slots
   function fmtMB(n){ return (Math.round((n/(1024*1024))*100)/100).toFixed(2); }
   var current = { regId:"", token:"" };
   var slotInfo = {1:{exists:false,url:"",name:""},2:{exists:false,url:"",name:""},3:{exists:false,url:"",name:""}};
@@ -526,7 +524,6 @@
     return null;
   }
 
-  // 不用展開運算子，兼容性更高
   function arrayBufferToBase64(buf){
     var bytes = new Uint8Array(buf);
     var bin = "";
@@ -603,7 +600,6 @@
       current.regId = qRegId;
       current.token = qToken;
 
-      // ✅ 不用 CSS.escape，最穩
       var map = data.data || {};
       Object.keys(map).forEach(function(k){
         var el = f.elements.namedItem(k);
@@ -626,7 +622,7 @@
 
       audioBox.style.display = "";
       msg.className="ok";
-      msg.textContent = "✅ 已載入資料（修改模式）— 你可以直接改資料並重傳音檔覆蓋。";
+      msg.textContent = "✅ 已載入資料（修改模式）— 你可以直接改資料並重傳音檔覆蓋；也可取消本次報名。";
       btnMain.textContent = "儲存資料｜前往音檔";
     }catch(e){
       msg.className="err";
@@ -634,6 +630,32 @@
     }
   }
   loadExisting();
+
+  // ✅ 取消報名
+  btnCancel.addEventListener("click", async function(){
+    if(!isEditMode) return;
+    var ok1 = confirm("確定要取消本次報名嗎？\n取消後會釋出名額，並把已上傳音檔移到取消備份資料夾。");
+    if(!ok1) return;
+
+    btnCancel.disabled = true;
+    msg.className = "muted";
+    msg.textContent = "取消中…";
+
+    try{
+      var j = await fetch(SCRIPT_URL, {
+        method:"POST",
+        headers:{ "Content-Type":"text/plain;charset=utf-8" },
+        body: JSON.stringify({ mode:"cancel", regId:qRegId, token:qToken })
+      }).then(function(r){ return r.json(); });
+
+      if(!j.ok) throw new Error(j.error || "取消失敗");
+      showDoneOnly("✅ 已取消本次報名。\n如需再次報名，請回到報名表重新填寫。");
+    }catch(e){
+      msg.className="err";
+      msg.textContent="取消失敗：" + e.message;
+      btnCancel.disabled = false;
+    }
+  });
 
   f.addEventListener("submit", async function(ev){
     ev.preventDefault();
@@ -651,7 +673,6 @@
     var fd = new FormData(f);
     fd.forEach(function(v,k){ data[k] = v; });
 
-    // ✅ 永遠明確送出勾選值（避免你之前「已勾還說沒勾」）
     data["我已閱讀並同意填表須知"] = agree.checked ? "是" : "";
 
     if(isEditMode){
@@ -695,7 +716,9 @@
     }
   });
 
-  btnNoAudio.addEventListener("click", function(){ showDoneOnly(); });
+  btnNoAudio.addEventListener("click", function(){
+    showDoneOnly("✅ 已完成。\n附註：若之後需要修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。");
+  });
 
   btnUploadAll.addEventListener("click", async function(){
     if(!current.regId || !current.token){
@@ -727,7 +750,7 @@
       for(var s3=1;s3<=3;s3++){
         if(files[s3]) await uploadOne(s3, files[s3]);
       }
-      showDoneOnly();
+      showDoneOnly("✅ 已完成。\n附註：若之後需要修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。");
     }catch(e){
       msg.className="err";
       msg.textContent="上傳失敗：" + e.message;
@@ -738,4 +761,3 @@
 </script>
 </body>
 </html>
-
