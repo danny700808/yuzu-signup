@@ -30,6 +30,12 @@
     .btn{ margin-top:14px; width:100%; padding:12px; border:0; border-radius:12px; font-size:16px; background:var(--deep); color:#fff; cursor:pointer; }
     .btn:disabled{ opacity:.6; cursor:not-allowed; }
     .btnSmall{ margin-top:10px; width:100%; padding:12px; border:0; border-radius:12px; font-size:15px; background:var(--deep2); color:#fff; cursor:pointer; }
+    .btnSmall.danger{
+  background:#b00020;
+}
+.btnSmall.danger:hover{
+  background:#8f001a;
+}
 
     .ghost{ border:1px solid #d1d5db; background:#fff; color:#111827; }
 
@@ -232,7 +238,7 @@
         <button class="btn" type="submit" id="btnMain">下一步｜添加音檔</button>
         <p id="msg" class="muted"></p>
 
-        <button class="btnSmall" type="button" id="btnCancel" style="display:none;">取消本次報名</button>
+        <button class="btnSmall danger" type="button" id="btnCancel" style="display:none;">取消本次報名</button>
 
         <div class="box" id="audioBox" style="display:none;">
           <div style="font-weight:1000;font-size:18px;">添加音檔（MP3 ≤ 20MB，最多 3 個）</div>
@@ -808,4 +814,5 @@
 </script>
 </body>
 </html>
+
 
