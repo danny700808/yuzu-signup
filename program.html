@@ -3,508 +3,510 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>柚子樂器音樂成果展｜節目單</title>
+  <title>柚子樂器音樂成果展節目單</title>
   <style>
     :root{
-      --bg:#f5f2ec;
+      --bg:#f7f5f2;
       --card:#ffffff;
-      --line:#e8e3da;
-      --text:#1f2937;
-      --muted:#6b7280;
-      --brand:#155e4b;
-      --brand-2:#2f8f6b;
-      --soft:#eef8f3;
-      --soft-2:#fff8eb;
-      --gold:#c79b35;
-      --aft:#eef7ff;
-      --eve:#fff3f0;
-      --shadow:0 14px 38px rgba(17,24,39,.08);
-      --radius:24px;
+      --text:#18212b;
+      --muted:#667085;
+      --line:#e7e2db;
+      --brand:#1f7a5a;
+      --brand-2:#dff3eb;
+      --aft:#e9f7f2;
+      --eve:#fff1e8;
+      --shadow:0 14px 34px rgba(18, 24, 32, .08);
     }
     *{ box-sizing:border-box; }
-    html{ scroll-behavior:smooth; }
+    html,body{ margin:0; padding:0; }
     body{
-      margin:0;
-      color:var(--text);
       font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;
+      color:var(--text);
       background:
-        radial-gradient(circle at top left, rgba(255,255,255,.85), transparent 24%),
-        linear-gradient(180deg, #faf7f2 0%, #f4efe8 100%);
+        radial-gradient(circle at top right, rgba(31,122,90,.10), transparent 22%),
+        radial-gradient(circle at top left, rgba(241,185,142,.16), transparent 24%),
+        var(--bg);
     }
-    .wrap{ max-width:1360px; margin:0 auto; padding:22px 18px 42px; }
-
+    .wrap{ max-width:1320px; margin:0 auto; padding:22px 16px 40px; }
     .hero{
-      position:relative;
-      overflow:hidden;
-      border:1px solid #eadfce;
-      border-radius:32px;
-      background:
-        linear-gradient(135deg, rgba(21,94,75,.96) 0%, rgba(47,143,107,.92) 52%, rgba(199,155,53,.72) 100%);
-      color:#fff;
-      box-shadow:0 18px 44px rgba(21,94,75,.18);
-      padding:28px 26px 24px;
+      background:linear-gradient(135deg, rgba(255,255,255,.98), rgba(247,251,249,.94));
+      border:1px solid rgba(231,226,219,.95);
+      border-radius:30px;
+      box-shadow:var(--shadow);
+      padding:26px 24px 22px;
     }
-    .hero:before,
-    .hero:after{
-      content:"";
-      position:absolute;
-      border-radius:50%;
-      pointer-events:none;
-      opacity:.18;
-      background:rgba(255,255,255,.35);
-      filter:blur(2px);
-    }
-    .hero:before{ width:220px; height:220px; right:-50px; top:-70px; }
-    .hero:after{ width:170px; height:170px; left:-40px; bottom:-80px; }
-    .heroTop{
-      position:relative;
-      z-index:1;
-      display:flex;
-      justify-content:space-between;
-      gap:16px;
-      align-items:flex-start;
-      flex-wrap:wrap;
-    }
-    .titleBlock h1{
+    .title{
       margin:0;
-      font-size:clamp(28px,4vw,42px);
-      line-height:1.2;
-      letter-spacing:.04em;
+      font-size:clamp(28px, 4vw, 40px);
+      line-height:1.25;
       font-weight:1000;
+      letter-spacing:.03em;
     }
-    .subLine{
-      margin-top:8px;
-      font-size:14px;
-      opacity:.92;
-      letter-spacing:.12em;
-      font-weight:800;
+    .metaGrid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:14px;
+    }
+    .metaCard{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px 16px;
+    }
+    .metaLabel{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:900;
+      margin-bottom:6px;
+    }
+    .metaValue{
+      font-size:18px;
+      font-weight:1000;
+      line-height:1.45;
     }
     .heroActions{
+      margin-top:16px;
       display:flex;
       gap:10px;
       flex-wrap:wrap;
-      align-self:flex-end;
     }
-    .btn{
-      appearance:none;
-      border:none;
-      text-decoration:none;
-      cursor:pointer;
+    .actionBtn{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      gap:8px;
       min-height:44px;
-      padding:0 16px;
-      border-radius:999px;
-      font-size:14px;
+      padding:11px 16px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      text-decoration:none;
       font-weight:1000;
-      transition:transform .15s ease, opacity .15s ease, box-shadow .15s ease;
+      cursor:pointer;
     }
-    .btn:hover{ transform:translateY(-1px); }
-    .btnPrimary{ background:#fff; color:var(--brand); box-shadow:0 10px 24px rgba(0,0,0,.12); }
-    .btnGhost{ background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.28); }
-
-    .heroInfo{
-      position:relative;
-      z-index:1;
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0, 1fr));
-      gap:14px;
-      margin-top:22px;
-    }
-    .infoCard{
-      background:rgba(255,255,255,.14);
-      border:1px solid rgba(255,255,255,.22);
-      border-radius:22px;
-      padding:16px 18px;
-      backdrop-filter:blur(4px);
-    }
-    .infoLabel{
-      font-size:13px;
-      letter-spacing:.08em;
-      font-weight:900;
-      opacity:.88;
-    }
-    .infoValue{
-      margin-top:7px;
-      font-size:18px;
-      line-height:1.55;
-      font-weight:1000;
+    .actionBtn.primary{
+      background:var(--brand);
+      color:#fff;
+      border-color:var(--brand);
     }
 
     .section{
-      margin-top:18px;
-      background:rgba(255,255,255,.92);
+      margin-top:20px;
+      background:var(--card);
       border:1px solid var(--line);
       border-radius:28px;
       box-shadow:var(--shadow);
-      padding:18px;
+      overflow:hidden;
     }
     .sectionHead{
       display:flex;
+      align-items:flex-start;
       justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      margin-bottom:16px;
-      flex-wrap:wrap;
+      gap:18px;
+      padding:20px 20px 16px;
+      border-bottom:1px solid rgba(231,226,219,.85);
     }
+    .sectionHead.aft{ background:linear-gradient(180deg, var(--aft), rgba(255,255,255,.85)); }
+    .sectionHead.eve{ background:linear-gradient(180deg, var(--eve), rgba(255,255,255,.88)); }
+    .sectionTitleWrap{ min-width:0; }
     .sectionTitle{
       margin:0;
-      font-size:26px;
-      font-weight:1000;
+      font-size:28px;
       line-height:1.2;
-    }
-    .timePill{
-      padding:10px 16px;
-      border-radius:999px;
-      font-size:14px;
       font-weight:1000;
-      white-space:nowrap;
-      border:1px solid transparent;
     }
-    .aftTheme{ background:linear-gradient(180deg, #f8fcff, #eef7ff); }
-    .aftTheme .timePill{ background:#dfefff; border-color:#c9def5; color:#1d4d76; }
-    .eveTheme{ background:linear-gradient(180deg, #fffaf8, #fff3f0); }
-    .eveTheme .timePill{ background:#ffe5dc; border-color:#f6cfc1; color:#93462a; }
+    .sectionTime{
+      margin-top:6px;
+      font-size:16px;
+      color:#314355;
+      font-weight:900;
+    }
+    .sectionActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .downloadBtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:42px;
+      padding:10px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      font-weight:1000;
+      cursor:pointer;
+    }
 
-    .programGrid{
+    .grid{
+      padding:18px;
       display:grid;
       grid-template-columns:repeat(3, minmax(0, 1fr));
       gap:16px;
     }
-    .programCard{
+    .card{
       position:relative;
-      min-height:184px;
-      border-radius:24px;
+      border-radius:22px;
       background:#fff;
-      border:1px solid #ebe6dd;
-      box-shadow:0 12px 26px rgba(15,23,42,.05);
+      border:1px solid var(--line);
+      box-shadow:0 8px 20px rgba(18, 24, 32, .05);
       padding:18px 18px 16px;
-      overflow:hidden;
+      min-height:164px;
     }
-    .programCard:before{
+    .card::before{
       content:"";
       position:absolute;
-      inset:0 auto 0 0;
-      width:7px;
-      background:linear-gradient(180deg, var(--brand) 0%, var(--brand-2) 100%);
+      left:0; right:0; top:0;
+      height:8px;
+      border-radius:22px 22px 0 0;
+      background:linear-gradient(90deg, rgba(31,122,90,.95), rgba(106,185,149,.88));
     }
-    .cardTop{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:10px;
-      margin-bottom:14px;
+    .section.eveningSec .card::before{
+      background:linear-gradient(90deg, rgba(217,127,60,.92), rgba(245,173,118,.88));
     }
-    .numBadge{
+    .num{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-width:52px;
-      height:52px;
+      min-width:46px;
+      height:46px;
       border-radius:16px;
-      background:linear-gradient(180deg, var(--soft), #e4f2eb);
+      background:var(--brand-2);
       color:var(--brand);
       font-size:22px;
       font-weight:1000;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
     }
-    .teacherTag{
-      max-width:72%;
-      padding:8px 12px;
+    .section.eveningSec .num{
+      background:#fff2e8;
+      color:#c56d22;
+    }
+    .joinTag{
+      position:absolute;
+      top:16px;
+      right:16px;
+      max-width:62%;
+      padding:7px 10px;
       border-radius:999px;
-      background:#fdf6df;
-      border:1px solid #efd99a;
-      color:#8a6413;
+      background:#fff6df;
+      color:#8b5b00;
+      border:1px solid #f3de9f;
       font-size:12px;
+      line-height:1.4;
       font-weight:1000;
-      line-height:1.35;
       text-align:right;
     }
     .performer{
-      font-size:24px;
-      line-height:1.3;
+      margin-top:18px;
+      font-size:26px;
+      line-height:1.25;
       font-weight:1000;
-      letter-spacing:.02em;
+      word-break:break-word;
     }
-    .songLabel{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:13px;
-      font-weight:900;
-      letter-spacing:.08em;
-    }
-    .songName{
-      margin-top:4px;
+    .song{
+      margin-top:10px;
       font-size:18px;
       line-height:1.45;
       font-weight:900;
+      color:#263443;
+      word-break:break-word;
     }
-
-    .emptyState{
-      padding:18px 10px;
+    .instructor{
+      margin-top:12px;
+      font-size:14px;
+      line-height:1.5;
       color:var(--muted);
       font-weight:900;
+      word-break:break-word;
     }
-
-    .posterWrap{ display:grid; gap:18px; }
-    .posterCard{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:28px;
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
-    .posterToolbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:16px;
-    }
-    .posterTitle{
-      margin:0;
-      font-size:24px;
-      font-weight:1000;
-    }
-    .toolBtns{ display:flex; flex-wrap:wrap; gap:10px; }
-    .btnPoster{
-      background:#ffffff;
-      color:var(--brand);
-      border:1px solid #d8e7df;
-      box-shadow:0 8px 20px rgba(21,94,75,.08);
-    }
-
-    .poster{
-      width:100%;
-      max-width:1120px;
-      margin:0 auto;
-      background:#fff;
-      border:1px solid #efe5d6;
-      border-radius:28px;
-      overflow:hidden;
-    }
-    .posterHead{
-      padding:26px 28px 20px;
-      color:#fff;
-      background:linear-gradient(135deg, rgba(21,94,75,.98) 0%, rgba(47,143,107,.94) 62%, rgba(199,155,53,.8) 100%);
-    }
-    .posterHead h3{
-      margin:0;
-      font-size:36px;
-      line-height:1.2;
-      font-weight:1000;
-      letter-spacing:.04em;
-    }
-    .posterSub{
-      margin-top:8px;
-      font-size:16px;
-      line-height:1.7;
-      font-weight:800;
-      opacity:.95;
-    }
-    .posterSession{
-      display:inline-flex;
-      margin-top:14px;
-      padding:10px 16px;
-      border-radius:999px;
-      background:rgba(255,255,255,.14);
-      border:1px solid rgba(255,255,255,.22);
-      font-weight:1000;
-      font-size:16px;
-    }
-    .posterBody{
-      padding:22px 22px 24px;
-      background:linear-gradient(180deg, #fffdf9, #fff);
-    }
-    .posterColumns{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0, 1fr));
-      gap:16px;
-    }
-    .posterCol{
-      border:1px solid #eee6d9;
-      border-radius:20px;
-      overflow:hidden;
-      background:#fff;
-    }
-    .posterRow{
-      display:grid;
-      grid-template-columns:72px minmax(0, 1fr);
-      gap:12px;
-      align-items:flex-start;
-      padding:14px 16px;
-      border-bottom:1px solid #f1ebdf;
-    }
-    .posterRow:last-child{ border-bottom:none; }
-    .posterRow:nth-child(even){ background:#fffaf0; }
-    .posterNo{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-height:48px;
-      border-radius:14px;
-      background:#eff7f2;
-      color:var(--brand);
-      font-size:22px;
-      font-weight:1000;
-    }
-    .posterPerformer{
-      font-size:20px;
-      line-height:1.35;
-      font-weight:1000;
-      color:#14212d;
-    }
-    .posterSong{
-      margin-top:6px;
+    .empty{
+      padding:28px 20px 30px;
+      color:var(--muted);
       font-size:15px;
-      line-height:1.5;
-      font-weight:800;
-      color:#374151;
-    }
-    .posterTeacher{
-      margin-top:8px;
-      display:inline-flex;
-      padding:6px 10px;
-      border-radius:999px;
-      background:#fdf6df;
-      border:1px solid #efd99a;
-      color:#8a6413;
-      font-size:12px;
-      font-weight:1000;
-    }
-
-    .helperError{
-      display:none;
-      margin-top:14px;
-      padding:12px 14px;
-      border-radius:16px;
-      background:#fff1f2;
-      border:1px solid #fecdd3;
-      color:#b42318;
       font-weight:900;
     }
 
-    @media (max-width:1100px){
-      .heroInfo{ grid-template-columns:1fr; }
-      .programGrid{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
-      .posterColumns{ grid-template-columns:1fr; }
+    .footerActions{
+      margin-top:18px;
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:rgba(17,24,39,.92);
+      color:#fff;
+      padding:12px 16px;
+      border-radius:14px;
+      font-size:14px;
+      font-weight:900;
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease;
+      z-index:9999;
+    }
+    .toast.show{ opacity:1; }
+
+    #exportStage{
+      position:fixed;
+      left:-200vw;
+      top:0;
+      width:1240px;
+      background:#fff;
+      z-index:-1;
+      pointer-events:none;
+    }
+    .exportSheet{
+      width:1240px;
+      min-height:1754px;
+      background:#fff;
+      color:#15202b;
+      padding:56px 58px 48px;
+      border:1px solid #e8e2da;
+    }
+    .exportTitle{
+      font-size:38px;
+      line-height:1.2;
+      font-weight:1000;
+      margin:0 0 18px;
+      letter-spacing:.03em;
+    }
+    .exportMeta{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:12px;
+      margin-bottom:22px;
+    }
+    .exportMetaBox{
+      border:1px solid #e8e2da;
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+    }
+    .exportMetaLabel{
+      font-size:13px;
+      font-weight:1000;
+      color:#667085;
+      margin-bottom:4px;
+    }
+    .exportMetaValue{
+      font-size:16px;
+      font-weight:1000;
+      line-height:1.4;
+    }
+    .exportScene{
+      display:flex;
+      align-items:baseline;
+      gap:12px;
+      margin:4px 0 18px;
+    }
+    .exportSceneTitle{
+      font-size:28px;
+      line-height:1.2;
+      font-weight:1000;
+      margin:0;
+    }
+    .exportSceneTime{
+      font-size:18px;
+      line-height:1.4;
+      font-weight:900;
+      color:#425466;
+    }
+    .exportGrid{
+      display:grid;
+      gap:10px;
+    }
+    .exportItem{
+      border:1px solid #e8e2da;
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      break-inside:avoid;
+      position:relative;
+    }
+    .exportItemTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .exportNum{
+      font-weight:1000;
+      color:#1f7a5a;
+      flex:0 0 auto;
+    }
+    .exportJoin{
+      font-size:12px;
+      line-height:1.35;
+      font-weight:1000;
+      color:#8b5b00;
+      text-align:right;
+    }
+    .exportPerformer{
+      margin-top:6px;
+      font-weight:1000;
+      line-height:1.28;
+      word-break:break-word;
+    }
+    .exportSong{
+      margin-top:4px;
+      line-height:1.4;
+      font-weight:900;
+      word-break:break-word;
+    }
+    .exportInstructor{
+      margin-top:5px;
+      line-height:1.35;
+      color:#5f6c7b;
+      font-weight:900;
+      word-break:break-word;
+    }
+
+    @media (max-width:980px){
+      .metaGrid{ grid-template-columns:1fr; }
+      .sectionHead{ flex-direction:column; }
+      .sectionActions{ justify-content:flex-start; }
+      .grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width:720px){
-      .wrap{ padding:14px 12px 34px; }
-      .hero{ padding:22px 16px 18px; border-radius:24px; }
-      .section,.posterCard{ padding:14px; border-radius:22px; }
-      .programGrid{ grid-template-columns:1fr; gap:12px; }
-      .programCard{ min-height:auto; padding:16px 14px 15px; }
-      .numBadge{ min-width:46px; height:46px; font-size:20px; }
+      .wrap{ padding:16px 12px 28px; }
+      .hero{ padding:20px 16px 18px; border-radius:22px; }
+      .metaValue{ font-size:17px; }
+      .section{ border-radius:22px; }
+      .sectionHead{ padding:16px 16px 14px; }
+      .sectionTitle{ font-size:22px; }
+      .sectionTime{ font-size:15px; }
+      .grid{
+        padding:14px;
+        grid-template-columns:1fr;
+        gap:12px;
+      }
+      .card{
+        padding:16px 16px 14px;
+        min-height:auto;
+      }
       .performer{ font-size:22px; }
-      .songName{ font-size:17px; }
-      .posterHead{ padding:18px 16px 16px; }
-      .posterHead h3{ font-size:24px; }
-      .posterSub{ font-size:14px; }
-      .posterBody{ padding:12px; }
-      .posterRow{ grid-template-columns:58px minmax(0,1fr); gap:10px; padding:12px 12px; }
-      .posterNo{ font-size:18px; min-height:42px; }
-      .posterPerformer{ font-size:17px; }
-      .posterSong{ font-size:14px; }
-      .sectionTitle,.posterTitle{ font-size:22px; }
+      .song{ font-size:17px; }
+      .joinTag{
+        position:static;
+        display:inline-flex;
+        margin-top:12px;
+        margin-left:auto;
+        max-width:100%;
+      }
     }
   </style>
 </head>
 <body>
   <div class="wrap" id="top">
     <section class="hero">
-      <div class="heroTop">
-        <div class="titleBlock">
-          <h1>柚子樂器音樂成果展節目單</h1>
-          <div class="subLine">YUZU MUSIC RECITAL PROGRAM</div>
+      <h1 class="title">柚子樂器音樂成果展節目單</h1>
+
+      <div class="metaGrid">
+        <div class="metaCard">
+          <div class="metaLabel">活動日期</div>
+          <div class="metaValue">2026 年 3 月 29 日（星期日）</div>
         </div>
-        <div class="heroActions">
-          <a class="btn btnPrimary" href="#posterAfternoon">下午場歌單</a>
-          <a class="btn btnGhost" href="#posterEvening">晚上場歌單</a>
+        <div class="metaCard">
+          <div class="metaLabel">活動地點</div>
+          <div class="metaValue">豐原太平洋百貨</div>
+        </div>
+        <div class="metaCard">
+          <div class="metaLabel">活動時間</div>
+          <div class="metaValue">下午場 13:00–16:00<br>晚上場 17:30–20:30</div>
         </div>
       </div>
 
-      <div class="heroInfo">
-        <div class="infoCard">
-          <div class="infoLabel">活動日期</div>
-          <div class="infoValue">2026 年 3 月 29 日（星期日）</div>
-        </div>
-        <div class="infoCard">
-          <div class="infoLabel">活動地點</div>
-          <div class="infoValue">豐原太平洋百貨</div>
-        </div>
-        <div class="infoCard">
-          <div class="infoLabel">活動時間</div>
-          <div class="infoValue">下午場 13:00–16:00<br>晚上場 17:30–20:30</div>
-        </div>
+      <div class="heroActions">
+        <a class="actionBtn primary" href="index.html">回到報名表</a>
+        <a class="actionBtn" href="#afternoonSection">下午場</a>
+        <a class="actionBtn" href="#eveningSection">晚上場</a>
       </div>
     </section>
 
-    <section class="section aftTheme">
-      <div class="sectionHead">
-        <h2 class="sectionTitle">下午場節目單｜13:00–16:00</h2>
-        <div class="timePill">Afternoon Session</div>
-      </div>
-      <div id="afternoonGrid" class="programGrid"></div>
-    </section>
-
-    <section class="section eveTheme">
-      <div class="sectionHead">
-        <h2 class="sectionTitle">晚上場節目單｜17:30–20:30</h2>
-        <div class="timePill">Evening Session</div>
-      </div>
-      <div id="eveningGrid" class="programGrid"></div>
-    </section>
-
-    <section class="section">
-      <div class="sectionHead">
-        <h2 class="sectionTitle">海報版歌單</h2>
-      </div>
-      <div class="posterWrap">
-        <div class="posterCard" id="posterAfternoonWrap">
-          <div class="posterToolbar">
-            <h3 class="posterTitle">下午場歌單海報｜13:00–16:00</h3>
-            <div class="toolBtns">
-              <button class="btn btnPoster" type="button" data-export="jpg" data-target="posterAfternoon">下載 JPG</button>
-              <button class="btn btnPoster" type="button" data-export="pdf" data-target="posterAfternoon">下載 PDF</button>
-            </div>
-          </div>
-          <div class="poster" id="posterAfternoon"></div>
+    <section class="section" id="afternoonSection">
+      <div class="sectionHead aft">
+        <div class="sectionTitleWrap">
+          <h2 class="sectionTitle">下午場節目單</h2>
+          <div class="sectionTime">13:00–16:00</div>
         </div>
-
-        <div class="posterCard" id="posterEveningWrap">
-          <div class="posterToolbar">
-            <h3 class="posterTitle">晚上場歌單海報｜17:30–20:30</h3>
-            <div class="toolBtns">
-              <button class="btn btnPoster" type="button" data-export="jpg" data-target="posterEvening">下載 JPG</button>
-              <button class="btn btnPoster" type="button" data-export="pdf" data-target="posterEvening">下載 PDF</button>
-            </div>
-          </div>
-          <div class="poster" id="posterEvening"></div>
+        <div class="sectionActions">
+          <button class="downloadBtn" type="button" id="aftJpgBtn">下載 JPG</button>
+          <button class="downloadBtn" type="button" id="aftPdfBtn">下載 PDF</button>
         </div>
       </div>
-      <div id="errorBox" class="helperError"></div>
+      <div id="aftGrid" class="grid"></div>
     </section>
+
+    <section class="section eveningSec" id="eveningSection">
+      <div class="sectionHead eve">
+        <div class="sectionTitleWrap">
+          <h2 class="sectionTitle">晚上場節目單</h2>
+          <div class="sectionTime">17:30–20:30</div>
+        </div>
+        <div class="sectionActions">
+          <button class="downloadBtn" type="button" id="eveJpgBtn">下載 JPG</button>
+          <button class="downloadBtn" type="button" id="evePdfBtn">下載 PDF</button>
+        </div>
+      </div>
+      <div id="eveGrid" class="grid"></div>
+    </section>
+
+    <div class="footerActions">
+      <a class="actionBtn primary" href="#top">回到最上方</a>
+    </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <div id="exportStage"></div>
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
+    const EVENT_DATE = "2026 年 3 月 29 日（星期日）";
+    const EVENT_LOCATION = "豐原太平洋百貨";
+    const EVENT_TIMES = {
+      afternoon: "13:00–16:00",
+      evening: "17:30–20:30"
+    };
+
+    let aftData = [];
+    let eveData = [];
 
     function esc(s){
       s = String(s ?? "");
       return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
 
+    function showToast(msg){
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(()=> el.classList.remove("show"), 2200);
+    }
+
+    function normalizeTeacherName(name){
+      name = String(name || "").trim();
+      if(!name) return "";
+      return /老師$/.test(name) ? name : (name + "老師");
+    }
+
     function jsonp(url){
       return new Promise((resolve, reject)=>{
         const cb = "cb_" + Math.random().toString(36).slice(2);
         const s = document.createElement("script");
-        const timer = setTimeout(()=>{ cleanup(); reject(new Error("timeout")); }, 20000);
+        const timer = setTimeout(()=>{ cleanup(); reject(new Error("timeout")); }, 15000);
         function cleanup(){ clearTimeout(timer); delete window[cb]; s.remove(); }
         window[cb] = (data)=>{ cleanup(); resolve(data); };
         s.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb;
@@ -513,242 +515,161 @@
       });
     }
 
-    function parseTimeValue(v){
-      if(v == null || v === "") return Number.MAX_SAFE_INTEGER;
-      if(typeof v === "number") return v;
-      const t = new Date(v).getTime();
-      return Number.isFinite(t) ? t : Number.MAX_SAFE_INTEGER;
+    function cardHtml(it, idx){
+      const instructor = it.instructor ? `<div class="instructor">指導老師：${esc(normalizeTeacherName(it.instructor))}</div>` : "";
+      const joinTag = it.teacherJoinText ? `<div class="joinTag">${esc(it.teacherJoinText)}</div>` : "";
+      return `
+        <article class="card">
+          <div class="num">${idx + 1}</div>
+          ${joinTag}
+          <div class="performer">${esc(it.name || "")}</div>
+          <div class="song">${esc(it.song || "")}</div>
+          ${instructor}
+        </article>
+      `;
     }
 
-    function formatTeacherLabel(name){
-      const raw = String(name || "").trim();
-      if(!raw) return "老師一同表演";
-      return /老師$/.test(raw) ? `${raw}一同表演` : `${raw}老師一同表演`;
-    }
-
-    function canShowTeacher(item){
-      return !!(item && (item.withTeacher || String(item.teacherName || "").trim()));
-    }
-
-    function wouldExceedMax(list, item, maxConsecutive){
-      const type = String(item.type || "").trim();
-      if(!type || !list.length) return false;
-      let streak = 0;
-      for(let i = list.length - 1; i >= 0; i--){
-        const prevType = String(list[i].type || "").trim();
-        if(prevType === type) streak++;
-        else break;
-      }
-      return streak >= maxConsecutive;
-    }
-
-    function reorderByTypeAndTime(list, maxConsecutive){
-      const remaining = list.slice();
-      const result = [];
-      while(remaining.length){
-        let pickIndex = remaining.findIndex(item => !wouldExceedMax(result, item, maxConsecutive));
-        if(pickIndex < 0) pickIndex = 0;
-        result.push(remaining.splice(pickIndex, 1)[0]);
-      }
-      return result;
-    }
-
-    function arrangeProgram(list){
-      const normalized = (list || []).map((item, index)=>({
-        ...item,
-        _index:index,
-        _created:parseTimeValue(item.createdAt)
-      }));
-
-      normalized.sort((a,b)=>{
-        if(a._created !== b._created) return a._created - b._created;
-        return a._index - b._index;
-      });
-
-      const front = [];
-      const middle = [];
-      const back = [];
-
-      normalized.forEach(item=>{
-        const frontPref = !!item.front && !item.back;
-        const backPref = !!item.back && !item.front;
-        if(frontPref) front.push(item);
-        else if(backPref) back.push(item);
-        else middle.push(item);
-      });
-
-      const orderedFront = reorderByTypeAndTime(front, 3);
-      const orderedMiddle = reorderByTypeAndTime(middle, 3);
-      const orderedBack = reorderByTypeAndTime(back, 3);
-      return orderedFront.concat(orderedMiddle, orderedBack);
-    }
-
-    function renderCards(list){
+    function renderGrid(el, list){
       if(!list || !list.length){
-        return `<div class="emptyState">目前尚無節目資料</div>`;
-      }
-      return list.map((item, idx)=>{
-        const teacher = canShowTeacher(item) ? `<div class="teacherTag">${esc(formatTeacherLabel(item.teacherName))}</div>` : ``;
-        return `
-          <article class="programCard">
-            <div class="cardTop">
-              <div class="numBadge">${idx + 1}</div>
-              ${teacher}
-            </div>
-            <div class="performer">${esc(item.name || "")}</div>
-            <div class="songLabel">演出曲目</div>
-            <div class="songName">${esc(item.song || "")}</div>
-          </article>
-        `;
-      }).join("");
-    }
-
-    function splitPosterColumns(list){
-      const half = Math.ceil((list || []).length / 2);
-      return [list.slice(0, half), list.slice(half)];
-    }
-
-    function renderPoster(targetId, sessionTitle, sessionTime, list){
-      const target = document.getElementById(targetId);
-      if(!target) return;
-
-      if(!list || !list.length){
-        target.innerHTML = `
-          <div class="posterHead">
-            <h3>柚子樂器音樂成果展節目單</h3>
-            <div class="posterSub">活動日期｜2026 年 3 月 29 日（星期日）<br>活動地點｜豐原太平洋百貨</div>
-            <div class="posterSession">${esc(sessionTitle)}｜${esc(sessionTime)}</div>
-          </div>
-          <div class="posterBody"><div class="emptyState">目前尚無節目資料</div></div>
-        `;
+        el.innerHTML = `<div class="empty">目前尚無節目資料</div>`;
         return;
       }
+      el.innerHTML = list.map((it, idx) => cardHtml(it, idx)).join("");
+    }
 
-      const [left, right] = splitPosterColumns(list);
-      const renderCol = (col, startIndex) => {
-        if(!col.length) return `<div class="posterCol"></div>`;
+    function pickExportLayout(count){
+      if(count <= 12) return { cols:1, performer:28, song:20, instructor:15, pad:12, gap:12 };
+      if(count <= 22) return { cols:2, performer:22, song:16, instructor:13, pad:10, gap:10 };
+      if(count <= 32) return { cols:2, performer:18, song:14, instructor:12, pad:8, gap:8 };
+      return { cols:3, performer:15, song:12, instructor:11, pad:7, gap:7 };
+    }
+
+    function buildExportHtml(sceneKey, list){
+      const cfg = pickExportLayout((list || []).length || 1);
+      const sceneTitle = sceneKey === "afternoon" ? "下午場節目單" : "晚上場節目單";
+      const sceneTime = EVENT_TIMES[sceneKey];
+      const itemsHtml = (list || []).map((it, idx) => {
+        const instructor = it.instructor ? `<div class="exportInstructor" style="font-size:${cfg.instructor}px;">指導老師：${esc(normalizeTeacherName(it.instructor))}</div>` : "";
+        const join = it.teacherJoinText ? `<div class="exportJoin">${esc(it.teacherJoinText)}</div>` : "";
         return `
-          <div class="posterCol">
-            ${col.map((item, idx)=>{
-              const teacher = canShowTeacher(item)
-                ? `<div class="posterTeacher">${esc(formatTeacherLabel(item.teacherName))}</div>`
-                : ``;
-              return `
-                <div class="posterRow">
-                  <div class="posterNo">${startIndex + idx}</div>
-                  <div>
-                    <div class="posterPerformer">${esc(item.name || "")}</div>
-                    <div class="posterSong">${esc(item.song || "")}</div>
-                    ${teacher}
-                  </div>
-                </div>
-              `;
-            }).join("")}
+          <div class="exportItem" style="padding:${cfg.pad}px;">
+            <div class="exportItemTop">
+              <div class="exportNum" style="font-size:${Math.max(cfg.performer - 8, 14)}px;">${idx + 1}</div>
+              ${join}
+            </div>
+            <div class="exportPerformer" style="font-size:${cfg.performer}px;">${esc(it.name || "")}</div>
+            <div class="exportSong" style="font-size:${cfg.song}px;">${esc(it.song || "")}</div>
+            ${instructor}
           </div>
         `;
-      };
+      }).join("");
 
-      target.innerHTML = `
-        <div class="posterHead">
-          <h3>柚子樂器音樂成果展節目單</h3>
-          <div class="posterSub">活動日期｜2026 年 3 月 29 日（星期日）<br>活動地點｜豐原太平洋百貨</div>
-          <div class="posterSession">${esc(sessionTitle)}｜${esc(sessionTime)}</div>
-        </div>
-        <div class="posterBody">
-          <div class="posterColumns">
-            ${renderCol(left, 1)}
-            ${renderCol(right, left.length + 1)}
+      return `
+        <div class="exportSheet">
+          <h1 class="exportTitle">柚子樂器音樂成果展節目單</h1>
+
+          <div class="exportMeta">
+            <div class="exportMetaBox">
+              <div class="exportMetaLabel">活動日期</div>
+              <div class="exportMetaValue">${esc(EVENT_DATE)}</div>
+            </div>
+            <div class="exportMetaBox">
+              <div class="exportMetaLabel">活動地點</div>
+              <div class="exportMetaValue">${esc(EVENT_LOCATION)}</div>
+            </div>
+            <div class="exportMetaBox">
+              <div class="exportMetaLabel">活動時間</div>
+              <div class="exportMetaValue">${sceneTitle.replace("節目單","")} ${esc(sceneTime)}</div>
+            </div>
+          </div>
+
+          <div class="exportScene">
+            <h2 class="exportSceneTitle">${sceneTitle}</h2>
+            <div class="exportSceneTime">${sceneTime}</div>
+          </div>
+
+          <div class="exportGrid" style="grid-template-columns:repeat(${cfg.cols}, minmax(0, 1fr)); gap:${cfg.gap}px;">
+            ${itemsHtml || `<div class="exportItem">目前尚無節目資料</div>`}
           </div>
         </div>
       `;
     }
 
-    async function exportAsImage(elementId, filenameBase){
-      const node = document.getElementById(elementId);
-      if(!node) throw new Error("找不到輸出區塊");
-      if(typeof html2canvas !== "function") throw new Error("下載套件未載入完成");
-      const canvas = await html2canvas(node, {
-        backgroundColor: "#ffffff",
-        scale: 2,
-        useCORS: true,
-        logging: false
-      });
-      const link = document.createElement("a");
-      link.download = `${filenameBase}.jpg`;
-      link.href = canvas.toDataURL("image/jpeg", 0.96);
-      link.click();
-    }
-
-    async function exportAsPdf(elementId, filenameBase){
-      const node = document.getElementById(elementId);
-      if(!node) throw new Error("找不到輸出區塊");
-      if(typeof html2canvas !== "function") throw new Error("下載套件未載入完成");
-      if(!window.jspdf || !window.jspdf.jsPDF) throw new Error("PDF 套件未載入完成");
-
-      const canvas = await html2canvas(node, {
-        backgroundColor: "#ffffff",
-        scale: 2,
-        useCORS: true,
-        logging: false
-      });
-      const img = canvas.toDataURL("image/jpeg", 0.96);
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ orientation: canvas.width > canvas.height ? "l" : "p", unit: "pt", format: [canvas.width, canvas.height] });
-      pdf.addImage(img, "JPEG", 0, 0, canvas.width, canvas.height);
-      pdf.save(`${filenameBase}.pdf`);
-    }
-
-    function bindExportButtons(){
-      document.querySelectorAll("[data-export]").forEach(btn=>{
-        btn.addEventListener("click", async ()=>{
-          const kind = btn.dataset.export;
-          const target = btn.dataset.target;
-          const filenameBase = target === "posterAfternoon" ? "柚子樂器成果展_下午場節目單" : "柚子樂器成果展_晚上場節目單";
-          const original = btn.textContent;
-          btn.disabled = true;
-          btn.style.opacity = .7;
-          btn.textContent = kind === "jpg" ? "下載中…" : "轉出中…";
-          try{
-            if(kind === "jpg") await exportAsImage(target, filenameBase);
-            else await exportAsPdf(target, filenameBase);
-          }catch(err){
-            showError(err.message || String(err));
-          }finally{
-            btn.disabled = false;
-            btn.style.opacity = 1;
-            btn.textContent = original;
-          }
-        });
+    async function renderExportCanvas(sceneKey, list){
+      const stage = document.getElementById("exportStage");
+      stage.innerHTML = buildExportHtml(sceneKey, list);
+      await new Promise(r => setTimeout(r, 120));
+      const node = stage.firstElementChild;
+      return await html2canvas(node, {
+        scale:2,
+        useCORS:true,
+        backgroundColor:"#ffffff"
       });
     }
 
-    function showError(message){
-      const box = document.getElementById("errorBox");
-      box.style.display = "block";
-      box.textContent = `載入或下載失敗：${message}`;
+    function triggerDownload(dataUrl, fileName){
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    async function downloadScene(sceneKey, format){
+      const list = sceneKey === "afternoon" ? aftData : eveData;
+      const sceneLabel = sceneKey === "afternoon" ? "下午場" : "晚上場";
+      if(!window.html2canvas){
+        showToast("目前無法產生下載檔案");
+        return;
+      }
+      try{
+        showToast("正在準備下載檔案…");
+        const canvas = await renderExportCanvas(sceneKey, list);
+        if(format === "jpg"){
+          triggerDownload(canvas.toDataURL("image/jpeg", 0.96), `柚子樂器成果展節目單_${sceneLabel}.jpg`);
+        }else{
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
+          const pageW = pdf.internal.pageSize.getWidth();
+          const pageH = pdf.internal.pageSize.getHeight();
+          const imgW = canvas.width;
+          const imgH = canvas.height;
+          const ratio = Math.min(pageW / imgW, pageH / imgH);
+          const drawW = imgW * ratio;
+          const drawH = imgH * ratio;
+          const x = (pageW - drawW) / 2;
+          const y = (pageH - drawH) / 2;
+          pdf.addImage(canvas.toDataURL("image/jpeg", 0.96), "JPEG", x, y, drawW, drawH);
+          pdf.save(`柚子樂器成果展節目單_${sceneLabel}.pdf`);
+        }
+        showToast(`已開始下載 ${sceneLabel}`);
+      }catch(err){
+        console.error(err);
+        showToast("下載失敗，請稍後再試");
+      }
     }
 
     async function loadProgram(){
       try{
-        const data = await jsonp(SCRIPT_URL + "?mode=program");
-        if(!data || !data.ok) throw new Error((data && data.error) || "讀取失敗");
-
-        const afternoon = arrangeProgram(data.afternoon || []);
-        const evening = arrangeProgram(data.evening || []);
-
-        document.getElementById("afternoonGrid").innerHTML = renderCards(afternoon);
-        document.getElementById("eveningGrid").innerHTML = renderCards(evening);
-
-        renderPoster("posterAfternoon", "下午場節目單", "13:00–16:00", afternoon);
-        renderPoster("posterEvening", "晚上場節目單", "17:30–20:30", evening);
+        const data = await jsonp(`${SCRIPT_URL}?mode=program`);
+        if(!data || !data.ok) throw new Error((data && data.error) || "load failed");
+        aftData = Array.isArray(data.afternoon) ? data.afternoon : [];
+        eveData = Array.isArray(data.evening) ? data.evening : [];
+        renderGrid(document.getElementById("aftGrid"), aftData);
+        renderGrid(document.getElementById("eveGrid"), eveData);
       }catch(err){
-        showError(err.message || String(err));
-        document.getElementById("afternoonGrid").innerHTML = `<div class="emptyState">目前無法載入節目單</div>`;
-        document.getElementById("eveningGrid").innerHTML = `<div class="emptyState">目前無法載入節目單</div>`;
+        console.error(err);
+        document.getElementById("aftGrid").innerHTML = `<div class="empty">節目資料載入失敗</div>`;
+        document.getElementById("eveGrid").innerHTML = `<div class="empty">節目資料載入失敗</div>`;
       }
     }
 
-    bindExportButtons();
+    document.getElementById("aftJpgBtn").addEventListener("click", ()=> downloadScene("afternoon", "jpg"));
+    document.getElementById("aftPdfBtn").addEventListener("click", ()=> downloadScene("afternoon", "pdf"));
+    document.getElementById("eveJpgBtn").addEventListener("click", ()=> downloadScene("evening", "jpg"));
+    document.getElementById("evePdfBtn").addEventListener("click", ()=> downloadScene("evening", "pdf"));
+
     loadProgram();
   </script>
 </body>
