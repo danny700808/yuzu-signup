@@ -425,7 +425,7 @@
       position:fixed;
       left:-300vw;
       top:0;
-      width:1240px;
+      width:1080px;
       background:#fff;
       z-index:-1;
       pointer-events:none;
@@ -433,9 +433,10 @@
     .exportSheet{
       position:relative;
       overflow:hidden;
-      width:1240px;
-      min-height:1754px;
-      padding:48px 52px 42px;
+      width:1080px;
+      height:1080px;
+      padding:30px 34px 28px;
+      box-sizing:border-box;
       color:#1a2432;
       background:linear-gradient(180deg,#fffefb 0%,#fffaf2 100%);
       border:1px solid rgba(24,33,47,.10);
@@ -448,13 +449,13 @@
       pointer-events:none;
     }
     .exportSheet::before{
-      width:340px; height:340px;
-      right:-110px; top:-110px;
+      width:280px; height:280px;
+      right:-88px; top:-88px;
       opacity:.9;
     }
     .exportSheet::after{
-      width:300px; height:300px;
-      left:-120px; bottom:-130px;
+      width:240px; height:240px;
+      left:-96px; bottom:-104px;
       opacity:.82;
     }
     .exportSheet.afternoon{
@@ -485,9 +486,9 @@
     .exportHeader{
       position:relative;
       overflow:hidden;
-      border-radius:28px;
-      padding:24px 26px 22px;
-      margin-bottom:18px;
+      border-radius:24px;
+      padding:16px 18px 14px;
+      margin-bottom:10px;
       box-shadow:0 18px 36px rgba(18,24,32,.14);
     }
     .exportHeader.afternoon{
@@ -502,9 +503,9 @@
       backdrop-filter:blur(8px);
     }
     .exportBand{
-      height:9px;
+      height:8px;
       border-radius:999px;
-      margin-bottom:16px;
+      margin-bottom:10px;
     }
     .exportHeader.afternoon .exportBand{
       background:linear-gradient(90deg,var(--aft1),var(--aft2),#ff9f5b);
@@ -513,8 +514,8 @@
       background:linear-gradient(90deg,#8a4dff,#ff4d6d,#ffb86b);
     }
     .exportTitle{
-      margin:0 0 16px;
-      font-size:42px;
+      margin:0 0 10px;
+      font-size:32px;
       line-height:1.1;
       font-weight:1000;
       letter-spacing:.04em;
@@ -522,12 +523,12 @@
     .exportMeta{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-      margin-bottom:18px;
+      gap:8px;
+      margin-bottom:10px;
     }
     .exportMetaBox{
-      border-radius:18px;
-      padding:12px 14px;
+      border-radius:14px;
+      padding:8px 10px;
       backdrop-filter:blur(5px);
     }
     .exportHeader.afternoon .exportMetaBox{
@@ -541,48 +542,48 @@
       box-shadow:0 12px 24px rgba(0,0,0,.10);
     }
     .exportMetaLabel{
-      font-size:12px;
-      line-height:1.3;
+      font-size:10px;
+      line-height:1.25;
       font-weight:1000;
       letter-spacing:.08em;
-      margin-bottom:5px;
+      margin-bottom:3px;
       text-transform:uppercase;
       opacity:.82;
     }
     .exportMetaValue{
-      font-size:16px;
-      line-height:1.42;
+      font-size:13px;
+      line-height:1.35;
       font-weight:1000;
     }
     .exportScene{
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
-      gap:16px;
-      padding:0 4px 8px;
-      margin-bottom:12px;
+      gap:10px;
+      padding:0 2px 4px;
+      margin-bottom:8px;
     }
     .exportSceneTitle{
-      font-size:32px;
-      line-height:1.15;
+      font-size:24px;
+      line-height:1.12;
       font-weight:1000;
       margin:0;
       letter-spacing:.04em;
     }
     .exportSceneTime{
-      font-size:20px;
-      line-height:1.4;
+      font-size:16px;
+      line-height:1.3;
       font-weight:1000;
       opacity:.95;
     }
     .exportGrid{
       display:grid;
-      gap:10px;
+      gap:7px;
     }
     .exportItem{
       position:relative;
       overflow:hidden;
-      border-radius:20px;
+      border-radius:16px;
       break-inside:avoid;
       box-shadow:0 10px 22px rgba(18,24,32,.10);
     }
@@ -590,7 +591,7 @@
       content:"";
       position:absolute;
       left:0; right:0; top:0;
-      height:7px;
+      height:5px;
     }
     .exportSheet.afternoon .exportItem{
       background:rgba(255,255,255,.90);
@@ -627,10 +628,10 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-height:28px;
-      padding:6px 10px;
+      min-height:22px;
+      padding:4px 8px;
       border-radius:999px;
-      font-size:12px;
+      font-size:10px;
       line-height:1.3;
       font-weight:1000;
       text-align:right;
@@ -646,25 +647,25 @@
       border:1px solid rgba(255,194,117,.52);
     }
     .exportPerformer{
-      margin-top:8px;
-      line-height:1.2;
+      margin-top:5px;
+      line-height:1.15;
       font-weight:1000;
       word-break:break-word;
       letter-spacing:.02em;
     }
     .exportSong{
-      margin-top:5px;
-      line-height:1.4;
+      margin-top:3px;
+      line-height:1.3;
       font-weight:1000;
       word-break:break-word;
       opacity:.98;
     }
     .exportInstructor{
-      margin-top:7px;
+      margin-top:5px;
       display:inline-flex;
       align-items:center;
-      min-height:28px;
-      padding:6px 10px;
+      min-height:22px;
+      padding:4px 8px;
       border-radius:999px;
       line-height:1.35;
       font-weight:1000;
@@ -707,7 +708,7 @@
       .performer{ font-size:24px; }
       .song{ font-size:17px; }
       .joinTag{ max-width:72%; }
-      .exportSheet{ width:1240px; }
+      .exportSheet{ width:1080px; }
     }
   </style>
 </head>
@@ -848,10 +849,11 @@
     }
 
     function pickExportLayout(count){
-      if(count <= 12) return { cols:1, performer:29, song:21, instructor:15, pad:14, gap:12 };
-      if(count <= 22) return { cols:2, performer:22, song:16, instructor:13, pad:11, gap:10 };
-      if(count <= 32) return { cols:2, performer:18, song:14, instructor:12, pad:9, gap:8 };
-      return { cols:3, performer:15, song:12, instructor:11, pad:7, gap:7 };
+      if(count <= 8)  return { cols:2, performer:23, song:16, instructor:12, pad:11, gap:9 };
+      if(count <= 16) return { cols:2, performer:18, song:13, instructor:11, pad:9, gap:7 };
+      if(count <= 24) return { cols:3, performer:15, song:11, instructor:10, pad:7, gap:6 };
+      if(count <= 36) return { cols:4, performer:12, song:10, instructor:9, pad:6, gap:5 };
+      return { cols:4, performer:11, song:9, instructor:8, pad:5, gap:4 };
     }
 
     function buildExportHtml(sceneKey, list){
