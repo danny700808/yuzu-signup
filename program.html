@@ -435,11 +435,18 @@
       overflow:hidden;
       width:1080px;
       height:1080px;
-      padding:30px 34px 28px;
+      padding:0;
       box-sizing:border-box;
       color:#1a2432;
       background:linear-gradient(180deg,#fffefb 0%,#fffaf2 100%);
       border:1px solid rgba(24,33,47,.10);
+    }
+    .exportInner{
+      position:absolute;
+      left:34px;
+      top:30px;
+      width:calc(100% - 68px);
+      transform-origin:top left;
     }
     .exportSheet::before,
     .exportSheet::after{
@@ -487,8 +494,8 @@
       position:relative;
       overflow:hidden;
       border-radius:24px;
-      padding:16px 18px 14px;
-      margin-bottom:10px;
+      padding:14px 16px 12px;
+      margin-bottom:8px;
       box-shadow:0 18px 36px rgba(18,24,32,.14);
     }
     .exportHeader.afternoon{
@@ -505,7 +512,7 @@
     .exportBand{
       height:8px;
       border-radius:999px;
-      margin-bottom:10px;
+      margin-bottom:8px;
     }
     .exportHeader.afternoon .exportBand{
       background:linear-gradient(90deg,var(--aft1),var(--aft2),#ff9f5b);
@@ -514,7 +521,7 @@
       background:linear-gradient(90deg,#8a4dff,#ff4d6d,#ffb86b);
     }
     .exportTitle{
-      margin:0 0 10px;
+      margin:0 0 8px;
       font-size:32px;
       line-height:1.1;
       font-weight:1000;
@@ -524,7 +531,7 @@
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
       gap:8px;
-      margin-bottom:10px;
+      margin-bottom:8px;
     }
     .exportMetaBox{
       border-radius:14px;
@@ -560,8 +567,8 @@
       align-items:flex-end;
       justify-content:space-between;
       gap:10px;
-      padding:0 2px 4px;
-      margin-bottom:8px;
+      padding:0 2px 2px;
+      margin-bottom:6px;
     }
     .exportSceneTitle{
       font-size:24px;
@@ -853,7 +860,20 @@
       if(count <= 16) return { cols:2, performer:18, song:13, instructor:11, pad:9, gap:7 };
       if(count <= 24) return { cols:3, performer:15, song:11, instructor:10, pad:7, gap:6 };
       if(count <= 36) return { cols:4, performer:12, song:10, instructor:9, pad:6, gap:5 };
-      return { cols:4, performer:11, song:9, instructor:8, pad:5, gap:4 };
+      if(count <= 48) return { cols:4, performer:10, song:8, instructor:7, pad:4, gap:4 };
+      return { cols:5, performer:9, song:7, instructor:6, pad:4, gap:3 };
+    }
+
+    function fitExportNode(node){
+      const inner = node.querySelector('.exportInner');
+      if(!inner) return;
+      inner.style.transform = 'scale(1)';
+      const availableW = node.clientWidth - 68;
+      const availableH = node.clientHeight - 58;
+      const neededW = Math.max(inner.scrollWidth, inner.getBoundingClientRect().width);
+      const neededH = Math.max(inner.scrollHeight, inner.getBoundingClientRect().height);
+      const scale = Math.min(1, availableW / Math.max(neededW, 1), availableH / Math.max(neededH, 1));
+      inner.style.transform = `scale(${scale.toFixed(4)})`;
     }
 
     function buildExportHtml(sceneKey, list){
@@ -880,33 +900,35 @@
 
       return `
         <div class="exportSheet ${sceneClass}">
-          <div class="exportHeader ${sceneClass}">
-            <div class="exportBand"></div>
-            <h1 class="exportTitle">柚子樂器音樂成果展節目單</h1>
+          <div class="exportInner">
+            <div class="exportHeader ${sceneClass}">
+              <div class="exportBand"></div>
+              <h1 class="exportTitle">柚子樂器音樂成果展節目單</h1>
 
-            <div class="exportMeta">
-              <div class="exportMetaBox">
-                <div class="exportMetaLabel">活動日期</div>
-                <div class="exportMetaValue">${esc(EVENT_DATE)}</div>
-              </div>
-              <div class="exportMetaBox">
-                <div class="exportMetaLabel">活動地點</div>
-                <div class="exportMetaValue">${esc(EVENT_LOCATION)}</div>
-              </div>
-              <div class="exportMetaBox">
-                <div class="exportMetaLabel">活動時間</div>
-                <div class="exportMetaValue">${sceneTitle.replace("節目單","")} ${esc(sceneTime)}</div>
+              <div class="exportMeta">
+                <div class="exportMetaBox">
+                  <div class="exportMetaLabel">活動日期</div>
+                  <div class="exportMetaValue">${esc(EVENT_DATE)}</div>
+                </div>
+                <div class="exportMetaBox">
+                  <div class="exportMetaLabel">活動地點</div>
+                  <div class="exportMetaValue">${esc(EVENT_LOCATION)}</div>
+                </div>
+                <div class="exportMetaBox">
+                  <div class="exportMetaLabel">活動時間</div>
+                  <div class="exportMetaValue">${sceneTitle.replace("節目單","")} ${esc(sceneTime)}</div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="exportScene">
-            <h2 class="exportSceneTitle">${sceneTitle}</h2>
-            <div class="exportSceneTime">${sceneTime}</div>
-          </div>
+            <div class="exportScene">
+              <h2 class="exportSceneTitle">${sceneTitle}</h2>
+              <div class="exportSceneTime">${sceneTime}</div>
+            </div>
 
-          <div class="exportGrid" style="grid-template-columns:repeat(${cfg.cols}, minmax(0, 1fr)); gap:${cfg.gap}px;">
-            ${itemsHtml || `<div class="exportItem" style="padding:${cfg.pad}px;">目前尚無節目資料</div>`}
+            <div class="exportGrid" style="grid-template-columns:repeat(${cfg.cols}, minmax(0, 1fr)); gap:${cfg.gap}px;">
+              ${itemsHtml || `<div class="exportItem" style="padding:${cfg.pad}px;">目前尚無節目資料</div>`}
+            </div>
           </div>
         </div>
       `;
@@ -917,6 +939,8 @@
       stage.innerHTML = buildExportHtml(sceneKey, list);
       await new Promise(r => setTimeout(r, 140));
       const node = stage.firstElementChild;
+      fitExportNode(node);
+      await new Promise(r => setTimeout(r, 60));
       return await html2canvas(node, {
         scale:2,
         useCORS:true,
