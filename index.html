@@ -3,308 +3,460 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>柚子樂器成果展｜報名</title>
+  <title>柚子樂器成果展報名表</title>
   <style>
+    :root{
+      --bg:#f6faf8;
+      --card:#ffffff;
+      --line:#d9e7e1;
+      --text:#16312a;
+      --muted:#5c746c;
+      --brand:#1f8f6d;
+      --brand2:#4fb79a;
+      --danger:#c84848;
+      --warn:#b27110;
+      --ok:#217a57;
+    }
     *{ box-sizing:border-box; }
-    html,body{ width:100%; overflow-x:hidden; }
-    body{ margin:0; font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif; background:#faf7f8; color:#222; }
-    .wrap{ max-width:860px; margin:24px auto; padding:16px; }
-    .card{ background:#fff; border:1px solid #eee; border-radius:16px; padding:18px; box-shadow:0 8px 22px rgba(0,0,0,.06); }
-    h1{ margin:0 0 10px; font-size:22px; }
-    .muted{ color:#666; font-size:13px; line-height:1.6; white-space:pre-wrap; }
-
-    label{ display:block; margin:12px 0 6px; font-weight:800; }
-    .reqStar::after{ content:" *"; color:#b00020; font-weight:1000; }
-    input,select,textarea{
-      width:100%; max-width:100%; display:block; padding:12px;
-      border:1px solid #ddd; border-radius:12px; font-size:16px; background:#fff; outline:none;
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg,#f3faf7 0%, #f9f5ef 100%);
     }
-    input:focus,select:focus,textarea:focus{ border-color:#9fb8b1; box-shadow:0 0 0 3px rgba(11,95,79,.18); }
-    textarea{ min-height:90px; resize:vertical; }
-
-    .row{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; }
-    @media (max-width:640px){ .row{ grid-template-columns:1fr; } }
-
-    :root{ --deep:#0b5f4f; --deep2:#0a5648; --danger:#b00020; }
-
-    .btn{ margin-top:14px; width:100%; padding:12px; border:0; border-radius:12px; font-size:16px; background:var(--deep); color:#fff; cursor:pointer; }
-    .btn:disabled{ opacity:.6; cursor:not-allowed; }
-    .btnSmall{ margin-top:10px; width:100%; padding:12px; border:0; border-radius:12px; font-size:15px; background:var(--deep2); color:#fff; cursor:pointer; }
-    .btnSmall.danger{
-  background:#b00020;
-}
-.btnSmall.danger:hover{
-  background:#8f001a;
-}
-
-    .ghost{ border:1px solid #d1d5db; background:#fff; color:#111827; }
-
-    .ok{ color:#0a7a3c; font-weight:900; }
-    .err{ color:var(--danger); font-weight:900; }
-
-    .box{ background:#f6fbf9; border:1px solid #d7efe7; border-radius:14px; padding:14px; margin-top:14px; }
-    .hr{ height:1px; background:#eee; margin:14px 0; }
-
-    #quotaText{
-      display:none;
-      margin-top:8px;
-      padding:10px 12px;
-      border-radius:12px;
-      background:#fff7f9;
-      border:1px solid #f0d7df;
-      font-weight:900;
-      color:#7b3a52;
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      padding:22px 14px 48px;
     }
-
+    .card,.doneOnly{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:0 14px 40px rgba(20,60,40,.08);
+    }
+    .card{ padding:20px; }
+    .doneOnly{ display:none; padding:22px; margin-top:18px; }
+    h1{
+      margin:0 0 6px;
+      font-size:30px;
+      line-height:1.2;
+      font-weight:1000;
+      letter-spacing:.02em;
+    }
+    .sub{
+      color:var(--muted);
+      line-height:1.7;
+      font-size:14px;
+    }
     .notice{
-      margin:12px 0 14px;
-      padding:14px;
+      margin-top:16px;
+      background:#f7fcfa;
+      border:1px solid #dbeee6;
+      border-radius:18px;
+      padding:14px 16px;
+    }
+    .notice ul{ margin:10px 0 0 18px; padding:0; line-height:1.8; }
+    .modeHint{
+      margin-top:14px;
+      padding:12px 14px;
       border-radius:14px;
-      border:1px solid #dbeafe;
-      background:#eff6ff;
-      color:#1f2937;
+      background:#f8fbff;
+      border:1px solid #dce7f6;
+      color:#32506f;
+      font-weight:700;
     }
-    .notice h2{ margin:0 0 8px; font-size:16px; font-weight:1000; }
-    .notice ol{ margin:0 0 10px 18px; padding:0; line-height:1.7; font-size:13px; color:#374151; }
-
-    .agreeRow{
-      display:flex; gap:10px; align-items:flex-start;
-      padding:12px; border-radius:12px; border:1px solid #c7d2fe; background:#ffffff;
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
     }
-    .agreeRow input[type="checkbox"]{ width:20px; height:20px; margin-top:2px; }
-    .agreeText{ font-size:14px; line-height:1.6; color:#111827; font-weight:900; }
-    .agreeHint{ display:block; margin-top:4px; font-weight:700; color:#6b7280; font-size:12px; }
-
-    .locked{ opacity:.55; pointer-events:none; filter:grayscale(.2); }
-
-    /* 必填錯誤標示 */
-    .fieldErr{ border-color: var(--danger) !important; box-shadow:0 0 0 3px rgba(176,0,32,.12) !important; }
-    .fieldHint{ margin-top:6px; font-size:12px; color:var(--danger); font-weight:900; }
-
-    /* 偏好勾選 */
-    .prefBox{
-      margin-top:12px;
-      border:1px solid #e5e7eb;
-      background:#f9fafb;
+    label{
+      display:block;
+      margin:16px 0 7px;
+      font-weight:900;
+      font-size:14px;
+    }
+    .req::after{ content:" *"; color:#d43f3f; }
+    input,select,textarea,button{
+      font:inherit;
+    }
+    input,select,textarea{
+      width:100%;
+      border:1px solid #cadad4;
+      border-radius:14px;
+      padding:12px 13px;
+      background:#fff;
+      color:var(--text);
+    }
+    textarea{
+      min-height:100px;
+      resize:vertical;
+    }
+    input.fieldErr, select.fieldErr, textarea.fieldErr{
+      border-color:#e35d5d;
+      background:#fff7f7;
+    }
+    .fieldHint{
+      color:#c84c4c;
+      font-size:12px;
+      margin-top:5px;
+      font-weight:700;
+    }
+    .agree{
+      margin-top:16px;
+      padding:14px;
+      border:1px dashed #c9ddd5;
+      border-radius:16px;
+      background:#fcfffe;
+    }
+    .agree label{
+      margin:0;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      font-weight:800;
+    }
+    .agree input{
+      width:auto;
+      margin-top:2px;
+    }
+    .quotaText{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.7;
+    }
+    .sectionTitle{
+      margin-top:22px;
+      font-size:20px;
+      font-weight:1000;
+      padding-top:18px;
+      border-top:1px solid #edf3ef;
+    }
+    .hint{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.7;
+      margin-top:6px;
+    }
+    .performerList{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:8px;
+    }
+    .performerRow{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      align-items:center;
+    }
+    .smallBtn,.miniBtn{
+      border:none;
+      cursor:pointer;
       border-radius:12px;
+      font-weight:900;
+    }
+    .smallBtn{
+      padding:10px 14px;
+      background:#eef7f3;
+      color:#215946;
+    }
+    .smallBtn.danger{
+      background:#fff0f0;
+      color:#a94040;
+    }
+    .performanceCard{
+      margin-top:14px;
+      border:1px solid #dfeae5;
+      background:#fcfffd;
+      border-radius:18px;
+      padding:14px;
+    }
+    .performanceHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    .performanceTitle{
+      font-size:17px;
+      font-weight:1000;
+    }
+    .audioBox{
+      margin-top:10px;
       padding:12px;
+      border-radius:14px;
+      background:#f7fbf9;
+      border:1px solid #dce8e3;
     }
-    .prefTitle{ font-weight:1000; margin:0 0 8px; }
-    .prefHint{ font-size:12px; color:#6b7280; font-weight:800; margin-top:6px; }
-    .prefRow{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
-    .prefRow label{ margin:0; font-weight:900; display:flex; align-items:center; gap:8px; }
-    .prefRow input{ width:18px; height:18px; }
-
-    /* 音檔區（沿用你原本） */
-    .slot{ border:1px solid #d7efe7; background:#fff; border-radius:14px; padding:12px; margin-top:12px; }
-    .slotTitle{ font-weight:900; margin:0 0 10px; font-size:16px; display:flex; justify-content:space-between; gap:10px; }
-    .pill{ font-size:12px; font-weight:900; padding:4px 10px; border-radius:999px; border:1px solid #e5e7eb; background:#f9fafb; color:#6b7280; }
-    .pill.ok{ background:#ecfdf3; border-color:#b7e4c7; color:#0a7a3c; }
-    .fileRow{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .fileRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
     .fileBtn{
-      display:inline-flex; align-items:center; justify-content:center;
-      padding:14px 16px; border-radius:12px; border:1px solid #cfe9e1;
-      background:#eaf7f3; color:#1f2937; font-weight:900; cursor:pointer; min-width:160px;
-      user-select:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:40px;
+      padding:0 14px;
+      border:none;
+      cursor:pointer;
+      border-radius:12px;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:#fff;
+      font-weight:900;
     }
-    .fileName{ color:#374151; font-size:14px; word-break:break-word; flex:1; min-width:180px; }
-    .miniActions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    .miniBtn{ border:1px solid #d1d5db; background:#fff; color:#111827; border-radius:10px; padding:8px 10px; font-weight:900; font-size:13px; cursor:pointer; }
-    .miniBtn.danger{ border-color:#fecaca; color:#b91c1c; background:#fff; }
-    .miniBtn.on{ background:#fee2e2; border-color:#fecaca; color:#b91c1c; }
-    .slotMsg{ margin-top:10px; font-size:13px; white-space:pre-wrap; }
-
-    /* 完成頁 */
-    .doneOnly{ display:none; border:1px solid #b7e4c7; background:#ecfdf3; border-radius:14px; padding:16px; margin-top:16px; }
-    .doneTitle{ font-weight:1000; color:#0a7a3c; font-size:22px; margin:0; }
-    .doneBody{ margin-top:10px; color:#374151; font-size:14px; line-height:1.7; white-space:pre-wrap; }
-    .doneActions{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
-    @media (max-width:640px){ .doneActions{ grid-template-columns:1fr; } }
-
-    /* 滿額彈窗 */
-    .modalMask{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; padding:18px; z-index:9999; }
-    .modal{ width:min(520px, 100%); background:#fff; border-radius:16px; border:1px solid #eee; box-shadow:0 18px 40px rgba(0,0,0,.25); padding:16px; }
-    .modal h3{ margin:0 0 8px; font-size:18px; }
-    .modal p{ margin:0; color:#374151; line-height:1.7; font-size:14px; white-space:pre-wrap; }
-    .modalActions{ display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; }
-    .modalActions a,.modalActions button{ flex:1; min-width:160px; text-align:center; text-decoration:none; border-radius:12px; padding:12px; font-weight:900; cursor:pointer; }
-    .aClose{ background:#fff; color:#111827; border:1px solid #d1d5db; }
-    .aDeep{ background:var(--deep); color:#fff; border:0; }
+    .fileName{
+      flex:1;
+      min-width:180px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+      word-break:break-all;
+    }
+    .miniActions{
+      margin-top:10px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .miniBtn{
+      padding:9px 12px;
+      background:#eef7f3;
+      color:#245444;
+    }
+    .miniBtn.danger{
+      background:#fff2f2;
+      color:#a14040;
+    }
+    .miniBtn.on{
+      background:#ffdede;
+      color:#8f2e2e;
+    }
+    .slotMsg{
+      margin-top:10px;
+      font-size:13px;
+      white-space:pre-wrap;
+    }
+    .muted{ color:var(--muted); }
+    .ok{ color:var(--ok); font-weight:900; }
+    .err{ color:#c14141; font-weight:900; }
+    .btnRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:22px;
+    }
+    .btn{
+      min-height:48px;
+      padding:0 18px;
+      border:none;
+      cursor:pointer;
+      border-radius:14px;
+      font-weight:1000;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:#fff;
+      box-shadow:0 12px 26px rgba(31,143,109,.18);
+    }
+    .btn.secondary{
+      background:#eef7f3;
+      color:#245444;
+      box-shadow:none;
+    }
+    #msg{
+      margin-top:14px;
+      min-height:24px;
+      line-height:1.7;
+      font-size:14px;
+    }
+    .doneTitle{
+      margin:0;
+      font-size:24px;
+      font-weight:1000;
+    }
+    .doneBody{
+      margin-top:10px;
+      line-height:1.9;
+      white-space:pre-wrap;
+    }
+    .doneActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+    .modalMask{
+      position:fixed;
+      inset:0;
+      background:rgba(15,25,22,.48);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:50;
+    }
+    .modal{
+      width:min(460px,100%);
+      background:#fff;
+      border-radius:20px;
+      padding:20px;
+      border:1px solid #dfe7e2;
+    }
+    .modal h3{ margin:0 0 10px; font-size:24px; }
+    .modalActions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+    .aDeep,.aClose{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+      padding:0 16px;
+      border-radius:12px;
+      text-decoration:none;
+      font-weight:1000;
+      border:none;
+      cursor:pointer;
+    }
+    .aDeep{ background:var(--brand); color:#fff; }
+    .aClose{ background:#eef4f1; color:#23483c; }
+    @media (max-width:720px){
+      .row{ grid-template-columns:1fr; }
+      h1{ font-size:26px; }
+      .performerRow{ grid-template-columns:1fr; }
+    }
   </style>
 </head>
-
 <body>
 <div class="wrap">
   <div class="card" id="mainCard">
-    <h1>柚子樂器成果展｜報名</h1>
-    <div class="muted" id="modeHint"></div>
+    <h1>柚子樂器成果展報名表</h1>
+    <div class="sub">現在已改成：一次填資料、一次把最多 3 首表演一起送出。每一首都可以各自決定要不要附伴奏音檔。</div>
 
-    <form id="f">
-      <div class="notice">
-        <h2>填表須知（請先閱讀並勾選）</h2>
-        <ol>
-          <li><b>音檔最多 3 個</b>：請依序上傳 <b>音檔1 → 音檔2 → 音檔3</b>，<b>不用改檔名</b>（系統自動命名）。</li>
-          <li><b>可修改/可覆蓋</b>：資料填錯可用信件連結回到修改頁，音檔可覆蓋重傳或刪除。</li>
-          <li><b>現場設備</b>：提供 <b>電鋼琴、爵士鼓</b>；其餘樂器與設備請自行準備。</li>
-          <li><b>自彈自唱麥克風架</b>：現場提供 <b>3 支麥克風架</b>（依現場安排使用）。</li>
-          <li><b>音訊/供電</b>：現場無提供音箱 <b>有6 組 DI Box</b>、效果器 <b>110V 電源</b>；自備設備的電源/變壓器請自行準備。</li>
-          <li><b>反送監聽</b>：提供 <b>5 顆反送</b>（其中 <b>1 顆固定給爵士鼓</b>）。</li>
-          <li><b>木吉他收音</b>：木吉他請使用 <b>自己的拾音器/拾音系統</b>。</li>
-          <li><b>上台規範</b>：老師請在台下等候，由舞台人員協助學生,一同表演除外</li>
-          <li><b>特殊需求</b>：若需特殊設備/音訊需求，請在「需求/備註」填寫。</li>
-        </ol>
+    <div class="notice">
+      <div style="font-weight:1000;">填表提醒</div>
+      <ul>
+        <li>每一筆報名最多可填 <b>3 首表演</b>。</li>
+        <li>每一首表演都可以 <b>獨立附 MP3 音檔</b>，也可以不附。</li>
+        <li>表演者名單請一位一位新增，節目單會依你填的名字逐一列出。</li>
+        <li>送出後，系統會寄一封可回到修改頁的信，之後仍可修改或取消。</li>
+      </ul>
+    </div>
 
-        <div class="agreeRow">
-          <input id="agree" type="checkbox" name="我已閱讀並同意填表須知" value="是" required>
-          <div>
-            <div class="agreeText">我已閱讀並同意以上填表須知（未勾選無法填寫）</div>
-            <span class="agreeHint">勾選後才會解鎖表單內容</span>
-          </div>
+    <div class="modeHint" id="modeHint"></div>
+
+    <form id="f" novalidate>
+      <div class="agree">
+        <label><input type="checkbox" id="agree"> 我已閱讀並同意填表須知，且確認資料與音檔皆可直接作為成果展節目與後續整理使用。</label>
+      </div>
+
+      <label class="req">場次</label>
+      <select name="場次" required id="sessionField">
+        <option value="">請選擇</option>
+        <option>下午場 13:00~16:00</option>
+        <option>晚上場 17:30~20:30</option>
+      </select>
+      <div class="quotaText" id="quotaText"></div>
+
+      <label class="req">表演項目</label>
+      <select name="表演項目" required>
+        <option value="">請選擇</option>
+        <option>熱音樂團</option>
+        <option>輕音樂團</option>
+        <option>吉他彈唱</option>
+        <option>鋼琴獨奏</option>
+        <option>鋼琴雙人</option>
+        <option>小提琴</option>
+        <option>中國笛</option>
+        <option>長笛木笛直笛</option>
+        <option>爵士鼓獨奏</option>
+        <option>鋼琴彈唱</option>
+        <option>二胡</option>
+        <option>琵琶</option>
+        <option>其他</option>
+      </select>
+
+      <div class="sectionTitle">表演者資料</div>
+      <div class="hint">團名可不填；表演者請一位一位新增，節目單會照這裡顯示。</div>
+
+      <label>團名（選填）</label>
+      <input type="text" id="groupName" name="團名" placeholder="例：柚子樂器木吉他社">
+
+      <label class="req">表演者名單</label>
+      <div id="performerList" class="performerList"></div>
+      <div class="btnRow" style="margin-top:10px;">
+        <button class="smallBtn" type="button" id="btnAddPerformer">＋ 新增表演者</button>
+      </div>
+      <input type="hidden" name="表演者名單" id="performerListHidden">
+      <input type="hidden" name="表演者姓名/團名" id="performerDisplayHidden">
+
+      <div class="row">
+        <div>
+          <label class="req">舞台總表演人數</label>
+          <input name="舞台總表演人數" required inputmode="numeric" placeholder="例：2 / 4">
+        </div>
+        <div>
+          <label class="req">聯絡電話</label>
+          <input name="聯絡電話" required inputmode="tel" placeholder="例：0952-010146">
         </div>
       </div>
 
-      <div id="formBody" class="locked">
-        <label class="reqStar">場次</label>
-        <select name="場次" id="sessionSel" required>
-          <option value="">請選擇</option>
-          <option>下午場 13:00~16:00</option>
-          <option>晚上場 17:30~20:30</option>
-        </select>
-        <div id="quotaText"></div>
+      <label class="req">聯絡人信箱</label>
+      <input name="聯絡人信箱" type="email" required placeholder="example@example.com">
 
-        <label class="reqStar">表演項目（請選最接近的類型）</label>
-        <select name="表演項目" required>
-          <option value="">請選擇</option>
-          <option>熱音樂團</option>
-          <option>輕音樂團</option>
-          <option>吉他彈唱</option>
-          <option>鋼琴獨奏</option>
-          <option>鋼琴雙人</option>
-          <option>小提琴</option>
-          <option>中國笛</option>
-          <option>長笛木笛直笛</option>
-          <option>爵士鼓獨奏</option>
-          <option>鋼琴彈唱</option>
-          <option>二胡</option>
-          <option>琵琶</option>
-          <option>其他</option>
-        </select>
+      <label>老師是否一同表演</label>
+      <select name="老師是否一同表演">
+        <option value="">請選擇</option>
+        <option>是</option>
+        <option>否</option>
+      </select>
 
-        <label class="reqStar">表演者姓名 / 團名（若為雙人/多人，請用「、」分隔；不知道團名可填表演者姓名）</label>
-        <input name="表演者姓名/團名" required placeholder="例：王小明、陳小華 / @@吉他社">
+      <label>老師一起的方式（沒有就留空）</label>
+      <input name="老師一起的方式" placeholder="例：鋼琴伴奏">
 
-        <div class="prefBox">
-          <div class="prefTitle">特殊次序偏好（沒有需求就不要勾選,給需要的人）</div>
-          <div class="prefRow">
-            <label><input type="checkbox" id="prefFront" name="希望靠前10組" value="是"> 希望靠前 10 組</label>
-            <label><input type="checkbox" id="prefBack"  name="希望靠後10組" value="是"> 希望靠後 10 組</label>
-          </div>
-          <div class="prefHint">提示：兩個選項擇一即可；若都不勾選，將由系統安排。</div>
-        </div>
+      <label>指導老師姓名</label>
+      <input name="指導老師姓名" placeholder="例：黃明廷">
 
-        <div class="row">
-          <div>
-            <label class="reqStar">舞台總表演人數</label>
-            <input name="舞台總表演人數" required inputmode="numeric" placeholder="例：2 / 4">
-          </div>
-          <div>
-            <label class="reqStar">聯絡電話</label>
-            <input name="聯絡電話" required inputmode="tel" placeholder="例：0952-010146">
-          </div>
-        </div>
+      <label>需求 / 備註</label>
+      <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
 
-        <label class="reqStar">表演歌名/名稱</label>
-        <input name="表演歌名/名稱" required placeholder="例：浪流連">
+      <div class="sectionTitle">表演曲目與伴奏音檔</div>
+      <div class="hint">第 1 首必填；第 2、3 首可自由決定要不要填。每首都可各自上傳 1 個 MP3 音檔。</div>
 
-        <label class="reqStar">聯絡人信箱（老師代報也填老師信箱）</label>
-        <input name="聯絡人信箱" type="email" required placeholder="example@example.com">
+      <div id="performanceArea"></div>
 
-        <label>老師是否一同表演</label>
-        <select name="老師是否一同表演">
-          <option value="">請選擇</option>
-          <option>是</option>
-          <option>否</option>
-        </select>
+      <div class="sectionTitle">特殊次序偏好</div>
+      <div class="hint">沒有需求就不要勾選，兩個選項只能擇一。</div>
+      <div class="row">
+        <label style="margin:10px 0 0; font-weight:800;"><input type="checkbox" id="prefFront" name="希望靠前10組" value="是" style="width:auto; margin-right:8px;"> 希望靠前 10 組</label>
+        <label style="margin:10px 0 0; font-weight:800;"><input type="checkbox" id="prefBack" name="希望靠後10組" value="是" style="width:auto; margin-right:8px;"> 希望靠後 10 組</label>
+      </div>
 
-        <label>老師一起的方式（沒有就留空）</label>
-        <input name="老師一起的方式" placeholder="例：鋼琴伴奏">
+      <div class="btnRow">
+        <button class="btn" type="submit" id="btnMain">送出報名資料</button>
+        <button class="btn secondary" type="button" id="btnCancel" style="display:none;">取消本次報名</button>
+      </div>
 
-        <label>老師姓名(代報填)</label>
-        <input name="老師姓名(代報填)" placeholder="例：黃明廷">
-
-        <label>需求/備註</label>
-        <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
-
-        <button class="btn" type="submit" id="btnMain">下一步｜添加音檔</button>
-        <p id="msg" class="muted"></p>
-
-        <button class="btnSmall danger" type="button" id="btnCancel" style="display:none;">取消本次報名</button>
-
-        <div class="box" id="audioBox" style="display:none;">
-          <div style="font-weight:1000;font-size:18px;">添加音檔（MP3 ≤ 20MB，最多 3 個）</div>
-          <div class="muted" style="margin-top:6px;">檔名會自動加上「下午/晚上」前綴與音檔序號，無需自行改名。</div>
-
-          <div class="slot">
-            <div class="slotTitle"><span>音檔 1</span><span id="pill1" class="pill">尚未上傳</span></div>
-            <input id="file1" type="file" accept="audio/mpeg,.mp3" style="display:none;">
-            <div class="fileRow">
-              <div class="fileBtn" data-pick="1">選擇檔案</div>
-              <div class="fileName" id="name1">尚未選取檔案</div>
-            </div>
-            <div class="miniActions">
-              <button type="button" class="miniBtn" id="view1" style="display:none;">檢視</button>
-              <button type="button" class="miniBtn danger" id="del1" style="display:none;">刪除</button>
-            </div>
-            <div class="slotMsg muted" id="m1"></div>
-          </div>
-
-          <div class="slot">
-            <div class="slotTitle"><span>音檔 2</span><span id="pill2" class="pill">尚未上傳</span></div>
-            <input id="file2" type="file" accept="audio/mpeg,.mp3" style="display:none;">
-            <div class="fileRow">
-              <div class="fileBtn" data-pick="2">選擇檔案</div>
-              <div class="fileName" id="name2">尚未選取檔案</div>
-            </div>
-            <div class="miniActions">
-              <button type="button" class="miniBtn" id="view2" style="display:none;">檢視</button>
-              <button type="button" class="miniBtn danger" id="del2" style="display:none;">刪除</button>
-            </div>
-            <div class="slotMsg muted" id="m2"></div>
-          </div>
-
-          <div class="slot">
-            <div class="slotTitle"><span>音檔 3</span><span id="pill3" class="pill">尚未上傳</span></div>
-            <input id="file3" type="file" accept="audio/mpeg,.mp3" style="display:none;">
-            <div class="fileRow">
-              <div class="fileBtn" data-pick="3">選擇檔案</div>
-              <div class="fileName" id="name3">尚未選取檔案</div>
-            </div>
-            <div class="miniActions">
-              <button type="button" class="miniBtn" id="view3" style="display:none;">檢視</button>
-              <button type="button" class="miniBtn danger" id="del3" style="display:none;">刪除</button>
-            </div>
-            <div class="slotMsg muted" id="m3"></div>
-          </div>
-
-          <div class="hr"></div>
-
-          <button type="button" class="btn" id="btnUploadAll">上傳所有音樂檔</button>
-          <button type="button" class="btnSmall ghost" id="btnNoAudio">我不需要音樂檔</button>
-        </div>
-              </div>
+      <p id="msg" class="muted"></p>
     </form>
   </div>
 
   <div class="doneOnly" id="doneCard">
     <h2 class="doneTitle">✅ 已完成</h2>
     <div class="doneBody" id="doneBody"></div>
-
-    <!-- ✅ 按你的需求：最重要兩個放前面 -->
     <div class="doneActions">
-      <button class="btn" id="btnGoProgram">查看表演名單</button>
-      <button class="btn" id="btnBackForm">回到報名表（新增下一位）</button>
-      <button class="btnSmall" id="btnGoOfficial">前往官網</button>
-      <button class="btnSmall" id="btnGoLine">加入官方 LINE</button>
+      <button class="btn" id="btnGoProgram" type="button">查看表演名單</button>
+      <button class="btn" id="btnBackForm" type="button">回到報名表（新增下一位）</button>
+      <button class="btn secondary" id="btnGoOfficial" type="button">前往官網</button>
+      <button class="btn secondary" id="btnGoLine" type="button">加入官方 LINE</button>
     </div>
   </div>
 </div>
@@ -315,7 +467,6 @@
     <p id="fullText"></p>
     <div class="modalActions">
       <a class="aDeep" href="index.html">回到報名表</a>
-      <a class="aDeep" href="https://www.mingtinghuang.com/" target="_blank">前往官網</a>
       <button class="aClose" id="btnClose" type="button">我知道了</button>
     </div>
   </div>
@@ -325,7 +476,6 @@
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
   var OFFICIAL_URL = "https://www.mingtinghuang.com/";
   var LINE_URL = "https://lin.ee/ABY1yil";
-  var COUNTDOWN_SECONDS = 20;
 
   function programUrl(){ try{ return new URL("program.html", location.href).href; }catch(e){ return "program.html"; } }
 
@@ -334,71 +484,45 @@
   var qToken = (params.get("token") || "").trim();
   var isEditMode = !!(qRegId && qToken);
 
-  var modeHint = document.getElementById("modeHint");
-  modeHint.textContent = isEditMode
-    ? "目前為【修改模式】— 可直接修改資料、重傳音檔覆蓋；也可取消本次報名。"
-    : "請先閱讀並勾選填表須知，再填寫報名資料。";
-
-  // lock
-  var agree = document.getElementById("agree");
-  var formBody = document.getElementById("formBody");
-  function syncLock(){ if(agree.checked) formBody.classList.remove("locked"); else formBody.classList.add("locked"); }
-  agree.addEventListener("change", syncLock);
-  syncLock();
-  if(isEditMode){ agree.checked = true; syncLock(); }
-
-  // 偏好互斥
-  var prefFront = document.getElementById("prefFront");
-  var prefBack  = document.getElementById("prefBack");
-  function syncPref(){
-    if(prefFront.checked) prefBack.checked = false;
-    if(prefBack.checked) prefFront.checked = false;
-  }
-  prefFront.addEventListener("change", syncPref);
-  prefBack.addEventListener("change", syncPref);
-
-  // elements
   var f = document.getElementById("f");
+  var agree = document.getElementById("agree");
   var msg = document.getElementById("msg");
-  var btnMain = document.getElementById("btnMain");
-  var audioBox = document.getElementById("audioBox");
-  var btnUploadAll = document.getElementById("btnUploadAll");
-  var btnNoAudio = document.getElementById("btnNoAudio");
   var quotaText = document.getElementById("quotaText");
-  var btnCancel = document.getElementById("btnCancel");
-  if(isEditMode) btnCancel.style.display = "block";
-
-  // done
   var doneCard = document.getElementById("doneCard");
   var doneBody = document.getElementById("doneBody");
-  var btnGoProgram = document.getElementById("btnGoProgram");
-  var btnBackForm  = document.getElementById("btnBackForm");
-  var btnGoOfficial= document.getElementById("btnGoOfficial");
-  var btnGoLine    = document.getElementById("btnGoLine");
-
-  btnGoProgram.addEventListener("click", function(){ stopCountdown(); location.href = programUrl(); });
-  btnBackForm.addEventListener("click",  function(){ stopCountdown(); location.href = location.origin + location.pathname; });
-  btnGoOfficial.addEventListener("click",function(){ stopCountdown(); location.href = OFFICIAL_URL; });
-  btnGoLine.addEventListener("click",    function(){ stopCountdown(); location.href = LINE_URL; });
-
-  // full modal
+  var modeHint = document.getElementById("modeHint");
   var fullMask = document.getElementById("fullMask");
-  var fullText = document.getElementById("fullText");
-  document.getElementById("btnClose").addEventListener("click", function(){ fullMask.style.display="none"; });
-  fullMask.addEventListener("click", function(e){ if(e.target === fullMask) fullMask.style.display="none"; });
-  var FULL_MSG =
-"謝謝您的報名！目前此場次名額已滿，我們先暫停受理。\n" +
-"若您希望候補/詢問加開場次，請加入官方 LINE。\n" +
-"最新資訊也會同步更新在官網。";
-  function showFullModal(){ fullText.textContent = FULL_MSG; fullMask.style.display = "flex"; }
+  var btnMain = document.getElementById("btnMain");
+  var btnCancel = document.getElementById("btnCancel");
+  var groupNameInput = document.getElementById("groupName");
+  var performerListWrap = document.getElementById("performerList");
+  var performerListHidden = document.getElementById("performerListHidden");
+  var performerDisplayHidden = document.getElementById("performerDisplayHidden");
+  var performanceArea = document.getElementById("performanceArea");
 
-  // jsonp
+  modeHint.textContent = isEditMode
+    ? "目前為【修改模式】— 可直接修改資料、替換音檔或取消本次報名。"
+    : "請先閱讀並勾選填表須知，再填寫報名資料。";
+
+  if(isEditMode) btnCancel.style.display = "";
+
+  document.getElementById("btnGoProgram").onclick = function(){ location.href = programUrl(); };
+  document.getElementById("btnBackForm").onclick = function(){ location.href = "index.html"; };
+  document.getElementById("btnGoOfficial").onclick = function(){ window.open(OFFICIAL_URL, "_blank"); };
+  document.getElementById("btnGoLine").onclick = function(){ window.open(LINE_URL, "_blank"); };
+  document.getElementById("btnClose").onclick = function(){ fullMask.style.display = "none"; };
+
+  function showFullModal(){
+    document.getElementById("fullText").textContent = "很抱歉，這個場次目前已額滿，請改選其他場次或稍後再試。";
+    fullMask.style.display = "flex";
+  }
+
   function jsonp(url){
     return new Promise(function(resolve, reject){
       var cb = "cb_" + Math.random().toString(36).slice(2);
       var s = document.createElement("script");
       var timer = setTimeout(function(){ cleanup(); reject(new Error("timeout")); }, 15000);
-      function cleanup(){ clearTimeout(timer); try{ delete window[cb]; }catch(e){} s.remove(); }
+      function cleanup(){ clearTimeout(timer); delete window[cb]; s.remove(); }
       window[cb] = function(data){ cleanup(); resolve(data); };
       s.src = url + (url.indexOf("?")>=0 ? "&" : "?") + "callback=" + cb;
       s.onerror = function(){ cleanup(); reject(new Error("load error")); };
@@ -406,281 +530,401 @@
     });
   }
 
+  var cloudConfig = { ok:false, cloudName:"", uploadPreset:"", maxItems:3, maxAudioMb:20 };
+  async function loadConfig(){
+    try{
+      var j = await jsonp(SCRIPT_URL + "?mode=config");
+      if(j && j.ok) cloudConfig = j;
+    }catch(e){}
+  }
+
   async function loadQuota(){
     try{
-      var data = await jsonp(SCRIPT_URL + "?mode=quota");
-      if(!data || !data.ok) throw new Error("quota");
-      var a = Number(data.afternoonRemain || 0);
-      var e = Number(data.eveningRemain || 0);
-      quotaText.style.display = "block";
-      quotaText.innerHTML = "可報名組數：下午場 <b>" + a + "</b> 組｜晚上場 <b>" + e + "</b> 組";
+      var q = await jsonp(SCRIPT_URL + "?mode=quota");
+      if(!q || !q.ok){ quotaText.textContent = "目前無法讀取剩餘名額"; return; }
+      quotaText.innerHTML =
+        "下午場剩餘：<b>" + q.afternoonRemain + "</b> 組<br>" +
+        "晚上場剩餘：<b>" + q.eveningRemain + "</b> 組";
     }catch(e){
-      quotaText.style.display = "none";
+      quotaText.textContent = "目前無法讀取剩餘名額";
     }
   }
   loadQuota();
+  document.getElementById("sessionField").addEventListener("change", loadQuota);
 
-  // ✅ 手機也記住：localStorage（只在非修改模式）
-  var LS_KEY = "yuzu_signup_draft_v2";
-  function collectDraft(){
-    var obj = {};
-    ["場次","表演項目","表演者姓名/團名","舞台總表演人數","聯絡電話","表演歌名/名稱","聯絡人信箱","老師是否一同表演","老師一起的方式","老師姓名(代報填)","需求/備註","希望靠前10組","希望靠後10組"]
-      .forEach(function(k){
-        var el = f.elements.namedItem(k);
-        if(!el) return;
-        if(el.type === "checkbox") obj[k] = el.checked ? "是" : "";
-        else obj[k] = el.value || "";
-      });
-    return obj;
-  }
-  function saveDraft(){
-    if(isEditMode) return;
-    try{ localStorage.setItem(LS_KEY, JSON.stringify(collectDraft())); }catch(e){}
-  }
-  function loadDraft(){
-    if(isEditMode) return;
-    try{
-      var raw = localStorage.getItem(LS_KEY);
-      if(!raw) return;
-      var d = JSON.parse(raw);
-      Object.keys(d||{}).forEach(function(k){
-        var el = f.elements.namedItem(k);
-        if(!el) return;
-        if(el.type === "checkbox") el.checked = (d[k] === "是");
-        else if(!el.value) el.value = d[k] || "";
-      });
-      syncPref();
-    }catch(e){}
-  }
-  loadDraft();
-  f.addEventListener("input", saveDraft);
-  f.addEventListener("change", saveDraft);
+  var slotState = {
+    1:{ exists:false, url:"", name:"", publicId:"" },
+    2:{ exists:false, url:"", name:"", publicId:"" },
+    3:{ exists:false, url:"", name:"", publicId:"" }
+  };
+  var deleteMark = {1:false,2:false,3:false};
 
-  // ✅ 必填提醒（捲動+紅框+訊息）
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" })[c];
+    });
+  }
+
+  function showDoneOnly(text){
+    document.getElementById("mainCard").style.display = "none";
+    doneCard.style.display = "block";
+    doneBody.textContent = text || "";
+    doneCard.scrollIntoView({ behavior:"smooth", block:"start" });
+  }
+
+  function fmtMB(b){
+    return (Math.round((b/(1024*1024))*100)/100).toFixed(2);
+  }
+
+  function syncPref(){
+    if(prefFront.checked && prefBack.checked){
+      if(syncPref.last === "front") prefBack.checked = false;
+      else prefFront.checked = false;
+    }
+  }
+  var prefFront = document.getElementById("prefFront");
+  var prefBack = document.getElementById("prefBack");
+  prefFront.addEventListener("change", function(){ syncPref.last = "front"; syncPref(); });
+  prefBack.addEventListener("change", function(){ syncPref.last = "back"; syncPref(); });
+
+  function createPerformerRow(value){
+    var row = document.createElement("div");
+    row.className = "performerRow";
+    row.innerHTML =
+      '<input type="text" class="performerInput" placeholder="例：王小明" value="' + esc(value || "") + '">' +
+      '<button type="button" class="smallBtn danger">刪除</button>';
+    row.querySelector("button").addEventListener("click", function(){
+      if(performerListWrap.querySelectorAll(".performerRow").length <= 1){
+        row.querySelector("input").value = "";
+        return;
+      }
+      row.remove();
+    });
+    performerListWrap.appendChild(row);
+  }
+
+  document.getElementById("btnAddPerformer").addEventListener("click", function(){
+    createPerformerRow("");
+  });
+  createPerformerRow("");
+
+  function getPerformerNames(){
+    return Array.from(document.querySelectorAll(".performerInput"))
+      .map(function(el){ return String(el.value || "").trim(); })
+      .filter(Boolean);
+  }
+
+  function buildPerformerDisplay(groupName, names){
+    var lines = [];
+    groupName = String(groupName || "").trim();
+    if(groupName) lines.push(groupName);
+    (names || []).forEach(function(n){ lines.push(n); });
+    return lines.join("\n");
+  }
+
+  function syncPerformerHidden(){
+    var names = getPerformerNames();
+    performerListHidden.value = names.join("\n");
+    performerDisplayHidden.value = buildPerformerDisplay(groupNameInput.value, names);
+    return names;
+  }
+  groupNameInput.addEventListener("input", syncPerformerHidden);
+  performerListWrap.addEventListener("input", syncPerformerHidden);
+
+  function buildPerformanceCards(){
+    performanceArea.innerHTML = "";
+    for(var i=1;i<=3;i++){
+      var card = document.createElement("div");
+      card.className = "performanceCard";
+      card.innerHTML =
+        '<div class="performanceHead">' +
+          '<div class="performanceTitle">第 ' + i + ' 首表演</div>' +
+          '<div class="muted">' + (i === 1 ? "必填" : "選填") + '</div>' +
+        '</div>' +
+        '<label class="' + (i===1 ? 'req' : '') + '">表演歌名 / 名稱</label>' +
+        '<input type="text" name="' + (i===1 ? '表演歌名/名稱' : '表演歌名/名稱' + i) + '" id="song' + i + '" placeholder="例：浪流連">' +
+        '<div class="audioBox">' +
+          '<div style="font-weight:900;">伴奏音檔（MP3，單檔 ≤ 20MB，可不附）</div>' +
+          '<div class="hint">這一首如果需要伴奏，就直接在這裡上傳。</div>' +
+          '<input id="file' + i + '" type="file" accept="audio/mpeg,.mp3" style="display:none;">' +
+          '<div class="fileRow">' +
+            '<button class="fileBtn" type="button" data-pick="' + i + '">選擇 MP3</button>' +
+            '<div class="fileName" id="name' + i + '">尚未選取檔案</div>' +
+          '</div>' +
+          '<div class="miniActions">' +
+            '<button type="button" class="miniBtn" id="view' + i + '" style="display:none;">檢視</button>' +
+            '<button type="button" class="miniBtn danger" id="del' + i + '" style="display:none;">刪除</button>' +
+          '</div>' +
+          '<div class="slotMsg muted" id="m' + i + '"></div>' +
+        '</div>';
+      performanceArea.appendChild(card);
+    }
+
+    document.querySelectorAll(".fileBtn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var slot = btn.getAttribute("data-pick");
+        document.getElementById("file" + slot).click();
+      });
+    });
+
+    [1,2,3].forEach(function(slot){
+      document.getElementById("file" + slot).addEventListener("change", function(){
+        var file = document.getElementById("file" + slot).files && document.getElementById("file" + slot).files[0];
+        document.getElementById("name" + slot).textContent = file ? (file.name + "（" + fmtMB(file.size) + " MB）") : "尚未選取檔案";
+        if(file){
+          deleteMark[slot] = false;
+          renderSlot(slot);
+        }
+      });
+      document.getElementById("del" + slot).addEventListener("click", function(){
+        deleteMark[slot] = !deleteMark[slot];
+        renderSlot(slot);
+      });
+    });
+
+    [1,2,3].forEach(renderSlot);
+  }
+  buildPerformanceCards();
+
+  function setSlotMsg(slot, text, isErr){
+    var el = document.getElementById("m" + slot);
+    el.className = "slotMsg " + (isErr ? "err" : "muted");
+    el.textContent = text || "";
+  }
+
+  function renderSlot(slot){
+    var view = document.getElementById("view" + slot);
+    var del = document.getElementById("del" + slot);
+
+    if(slotState[slot].exists){
+      view.style.display = "";
+      del.style.display = "";
+      view.onclick = function(){ window.open(slotState[slot].url, "_blank"); };
+    }else{
+      view.style.display = "none";
+      del.style.display = "none";
+    }
+
+    del.classList.toggle("on", !!deleteMark[slot]);
+    del.textContent = deleteMark[slot] ? "已標記刪除" : "刪除";
+  }
+
   function clearFieldErrors(){
     Array.from(f.querySelectorAll(".fieldErr")).forEach(function(el){ el.classList.remove("fieldErr"); });
     Array.from(f.querySelectorAll(".fieldHint")).forEach(function(el){ el.remove(); });
   }
+
   function markError(el, text){
+    if(!el) return;
     el.classList.add("fieldErr");
     var hint = document.createElement("div");
     hint.className = "fieldHint";
     hint.textContent = text;
     el.insertAdjacentElement("afterend", hint);
   }
+
+  function validateMp3(file){
+    if(!file) return "";
+    if(file.size > (cloudConfig.maxAudioMb || 20) * 1024 * 1024) return "檔案太大（上限 " + (cloudConfig.maxAudioMb || 20) + "MB）";
+    var lower = (file.name || "").toLowerCase();
+    var ok = (file.type === "audio/mpeg") || lower.slice(-4) === ".mp3";
+    return ok ? "" : "只接受 MP3（.mp3）";
+  }
+
   function validateRequired(){
     clearFieldErrors();
-    var firstBad = null;
-
-    function need(name, msgText){
-      var el = f.elements.namedItem(name);
-      if(!el) return;
-      var ok = true;
-      if(el.type === "checkbox") ok = el.checked;
-      else ok = !!String(el.value||"").trim();
-      if(!ok){
-        markError(el, msgText);
-        if(!firstBad) firstBad = el;
-      }
-    }
 
     if(!agree.checked){
       alert("請先勾選「我已閱讀並同意填表須知」。");
       return false;
     }
 
-    need("場次", "請選擇場次");
-    need("表演項目", "請選擇表演項目");
-    need("表演者姓名/團名", "請填寫表演者姓名/團名（多人用、分隔）");
-    need("舞台總表演人數", "請填寫舞台總表演人數");
-    need("聯絡電話", "請填寫聯絡電話");
-    need("表演歌名/名稱", "請填寫表演歌名/名稱");
-    need("聯絡人信箱", "請填寫聯絡人信箱");
+    var firstBad = null;
+    function need(el, text){
+      var ok = !!String(el && el.value || "").trim();
+      if(!ok){
+        markError(el, text);
+        if(!firstBad) firstBad = el;
+      }
+    }
+
+    need(f.elements.namedItem("場次"), "請選擇場次");
+    need(f.elements.namedItem("表演項目"), "請選擇表演項目");
+    need(f.elements.namedItem("舞台總表演人數"), "請填寫舞台總表演人數");
+    need(f.elements.namedItem("聯絡電話"), "請填寫聯絡電話");
+    need(f.elements.namedItem("聯絡人信箱"), "請填寫聯絡人信箱");
+    need(document.getElementById("song1"), "請填寫第 1 首表演歌名");
+
+    var names = syncPerformerHidden();
+    if(!names.length){
+      var target = document.querySelector(".performerInput");
+      markError(target, "請至少填 1 位表演者");
+      if(!firstBad) firstBad = target;
+    }
+
+    for(var s=1;s<=3;s++){
+      var song = document.getElementById("song" + s).value.trim();
+      var file = document.getElementById("file" + s).files && document.getElementById("file" + s).files[0];
+      var mp3Err = validateMp3(file);
+      if(mp3Err){
+        setSlotMsg(s, mp3Err, true);
+        if(!firstBad) firstBad = document.getElementById("song" + s);
+      }else{
+        setSlotMsg(s, "");
+      }
+      if(file && !song){
+        markError(document.getElementById("song" + s), "這一首有附音檔，請填歌名");
+        if(!firstBad) firstBad = document.getElementById("song" + s);
+      }
+    }
 
     if(firstBad){
-      firstBad.scrollIntoView({behavior:"smooth", block:"center"});
+      firstBad.scrollIntoView({ behavior:"smooth", block:"center" });
       return false;
     }
     return true;
   }
 
-  // done page
-  var countdownTimer=null, left=COUNTDOWN_SECONDS;
-  function stopCountdown(){ if(countdownTimer){ clearInterval(countdownTimer); countdownTimer=null; } }
-  function showDoneOnly(text){
-    document.getElementById("mainCard").style.display = "none";
-    doneCard.style.display = "block";
-    doneCard.scrollIntoView({behavior:"smooth", block:"start"});
-    stopCountdown();
-    left = COUNTDOWN_SECONDS;
-    doneBody.textContent = (text||"") + "\n" + COUNTDOWN_SECONDS + " 秒後將自動前往官網（倒數：" + left + "）";
-    countdownTimer = setInterval(function(){
-      left -= 1;
-      doneBody.textContent = (text||"") + "\n" + COUNTDOWN_SECONDS + " 秒後將自動前往官網（倒數：" + left + "）";
-      if(left<=0){ stopCountdown(); location.href = OFFICIAL_URL; }
-    },1000);
-  }
-
-  // ===== 音檔（保留你原本的流程）=====
-  function fmtMB(n){ return (Math.round((n/(1024*1024))*100)/100).toFixed(2); }
-  var current = { regId:"", token:"" };
-  var slotInfo = {1:{exists:false,url:"",name:""},2:{exists:false,url:"",name:""},3:{exists:false,url:"",name:""}};
-  var deleteMark = {1:false,2:false,3:false};
-
-  function setSlotMsg(slot, text, isErr){
-    var el = document.getElementById("m"+slot);
-    el.className = "slotMsg " + (isErr ? "err" : "muted");
-    el.textContent = text || "";
-  }
-  function renderSlot(slot){
-    var pill = document.getElementById("pill"+slot);
-    var view = document.getElementById("view"+slot);
-    var del = document.getElementById("del"+slot);
-
-    if(slotInfo[slot].exists){
-      pill.className = "pill ok"; pill.textContent = "已上傳";
-      view.style.display = ""; del.style.display = "";
-      view.onclick = function(){ window.open(slotInfo[slot].url, "_blank"); };
-    }else{
-      pill.className = "pill"; pill.textContent = "尚未上傳";
-      view.style.display = "none"; del.style.display = "none";
+  async function uploadCloudinary(slot, file){
+    if(!cloudConfig.cloudName || !cloudConfig.uploadPreset){
+      throw new Error("Cloudinary 尚未設定 cloudName / uploadPreset");
     }
-    del.classList.toggle("on", !!deleteMark[slot]);
-    del.textContent = deleteMark[slot] ? "已標記刪除" : "刪除";
-  }
 
-  document.querySelectorAll(".fileBtn").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      var slot = btn.getAttribute("data-pick");
-      document.getElementById("file"+slot).click();
-    });
-  });
+    setSlotMsg(slot, "上傳音檔中…");
+    var formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", cloudConfig.uploadPreset);
 
-  [1,2,3].forEach(function(slot){
-    document.getElementById("file"+slot).addEventListener("change", function(){
-      var file = document.getElementById("file"+slot).files && document.getElementById("file"+slot).files[0];
-      var nameEl = document.getElementById("name"+slot);
-      if(!file){ nameEl.textContent="尚未選取檔案"; return; }
-      nameEl.textContent = file.name + "（" + fmtMB(file.size) + " MB）";
-      deleteMark[slot] = false;
-      renderSlot(slot);
-    });
-    var del = document.getElementById("del"+slot);
-    del.addEventListener("click", function(){ deleteMark[slot] = !deleteMark[slot]; renderSlot(slot); });
-  });
-
-  function validateMp3(file){
-    if(!file) return null;
-    if(file.size > 20*1024*1024) return "檔案太大（上限 20MB）";
-    var lower = (file.name||"").toLowerCase();
-    var ok = (file.type==="audio/mpeg") || lower.slice(-4)===".mp3";
-    if(!ok) return "只接受 MP3（.mp3）";
-    return null;
-  }
-
-  function arrayBufferToBase64(buf){
-    var bytes = new Uint8Array(buf);
-    var bin = "";
-    var step = 0x8000;
-    for(var i=0;i<bytes.length;i+=step){
-      var chunk = bytes.subarray(i, i+step);
-      var arr = new Array(chunk.length);
-      for(var j=0;j<chunk.length;j++) arr[j] = chunk[j];
-      bin += String.fromCharCode.apply(null, arr);
-    }
-    return btoa(bin);
-  }
-
-  async function uploadOne(slot, file){
-    setSlotMsg(slot, "建立上傳通道…");
-    var startRes = await fetch(SCRIPT_URL, {
+    var resp = await fetch("https://api.cloudinary.com/v1_1/" + encodeURIComponent(cloudConfig.cloudName) + "/auto/upload", {
       method:"POST",
-      headers:{ "Content-Type":"text/plain;charset=utf-8" },
-      body: JSON.stringify({ mode:"startUpload", regId: current.regId, token: current.token, slot:slot, totalBytes:file.size, originalName:file.name })
-    }).then(function(r){ return r.json(); });
+      body: formData
+    });
+    var j = await resp.json();
+    if(!resp.ok || !j || !j.secure_url){
+      throw new Error((j && (j.error && j.error.message)) || "Cloudinary 上傳失敗");
+    }
 
-    if(!startRes.ok) throw new Error(startRes.error || "建立上傳通道失敗");
-    var uploadUrl = startRes.uploadUrl;
-    var chunkSize = 1024*1024;
-    var offset = 0;
+    setSlotMsg(slot, "✅ 音檔已上傳");
+    return {
+      url: j.secure_url || "",
+      name: (j.original_filename ? (j.original_filename + (file.name.toLowerCase().endsWith(".mp3") ? ".mp3" : "")) : file.name) || file.name || "",
+      publicId: j.public_id || ""
+    };
+  }
 
-    while(offset < file.size){
-      var next = Math.min(offset+chunkSize, file.size);
-      var buf = await file.slice(offset, next).arrayBuffer();
-      var b64 = arrayBufferToBase64(buf);
-      var pct = Math.round((next/file.size)*100);
-      setSlotMsg(slot, "上傳中… " + pct + "%");
+  function buildPayloadFromForm(){
+    syncPerformerHidden();
+    var data = {};
+    var fd = new FormData(f);
+    fd.forEach(function(v, k){ data[k] = v; });
+    data["我已閱讀並同意填表須知"] = agree.checked ? "是" : "";
+    data["團名"] = groupNameInput.value.trim();
+    data["表演者名單"] = performerListHidden.value;
+    data["表演者姓名/團名"] = performerDisplayHidden.value;
+    return data;
+  }
 
-      var chunkRes = await fetch(SCRIPT_URL, {
-        method:"POST",
-        headers:{ "Content-Type":"text/plain;charset=utf-8" },
-        body: JSON.stringify({ mode:"uploadChunk", regId: current.regId, token: current.token, slot:slot, uploadUrl:uploadUrl, start:offset, end:next-1, total:file.size, chunkBase64:b64 })
-      }).then(function(r){ return r.json(); });
-
-      if(!chunkRes.ok) throw new Error(chunkRes.error || "分段上傳失敗");
-      if(chunkRes.done){
-        slotInfo[slot].exists = true;
-        slotInfo[slot].url = chunkRes.fileUrl || "";
-        slotInfo[slot].name = chunkRes.fileName || "";
-        renderSlot(slot);
-        setSlotMsg(slot, "✅ 已上傳完成");
-        return;
+  async function prepareSlotPayload(data){
+    var needCloudinary = false;
+    [1,2,3].forEach(function(s){
+      var file = document.getElementById("file" + s).files && document.getElementById("file" + s).files[0];
+      if(file) needCloudinary = true;
+    });
+    if(needCloudinary){
+      await loadConfig();
+      if(!cloudConfig.cloudName || !cloudConfig.uploadPreset){
+        throw new Error("Cloudinary 尚未設定，請先在 Apps Script 填入 CLOUDINARY_CLOUD_NAME 與 CLOUDINARY_UPLOAD_PRESET");
       }
-      offset = next;
     }
-  }
 
-  async function deleteSlot(slot){
-    setSlotMsg(slot, "刪除中…");
-    var j = await fetch(SCRIPT_URL, {
-      method:"POST",
-      headers:{ "Content-Type":"text/plain;charset=utf-8" },
-      body: JSON.stringify({ mode:"deleteSlot", regId: current.regId, token: current.token, slot:slot })
-    }).then(function(r){ return r.json(); });
+    for(var s=1;s<=3;s++){
+      var songKey = s === 1 ? "表演歌名/名稱" : ("表演歌名/名稱" + s);
+      var song = String(data[songKey] || "").trim();
+      var file = document.getElementById("file" + s).files && document.getElementById("file" + s).files[0];
 
-    if(!j.ok) throw new Error(j.error || "刪除失敗");
-    slotInfo[slot] = {exists:false,url:"",name:""};
-    renderSlot(slot);
-    setSlotMsg(slot, "✅ 已刪除");
+      if(!song){
+        data["音檔" + s + "連結"] = "";
+        data["音檔" + s + "檔名"] = "";
+        data["音檔" + s + "雲端ID"] = "";
+        continue;
+      }
+
+      if(file){
+        var uploaded = await uploadCloudinary(s, file);
+        data["音檔" + s + "連結"] = uploaded.url;
+        data["音檔" + s + "檔名"] = uploaded.name;
+        data["音檔" + s + "雲端ID"] = uploaded.publicId;
+        continue;
+      }
+
+      if(deleteMark[s]){
+        data["音檔" + s + "連結"] = "";
+        data["音檔" + s + "檔名"] = "";
+        data["音檔" + s + "雲端ID"] = "";
+        continue;
+      }
+
+      if(slotState[s].exists){
+        data["音檔" + s + "連結"] = slotState[s].url || "";
+        data["音檔" + s + "檔名"] = slotState[s].name || "";
+        data["音檔" + s + "雲端ID"] = slotState[s].publicId || "";
+      }else{
+        data["音檔" + s + "連結"] = "";
+        data["音檔" + s + "檔名"] = "";
+        data["音檔" + s + "雲端ID"] = "";
+      }
+    }
+
+    return data;
   }
 
   async function loadExisting(){
     if(!isEditMode) return;
     try{
       var data = await jsonp(SCRIPT_URL + "?mode=read&regId=" + encodeURIComponent(qRegId) + "&token=" + encodeURIComponent(qToken));
-      if(!data || !data.ok) throw new Error((data && data.error) ? data.error : "read failed");
+      if(!data || !data.ok) throw new Error((data && data.error) || "載入失敗");
 
-      current.regId = qRegId;
-      current.token = qToken;
-
+      agree.checked = true;
       var map = data.data || {};
       Object.keys(map).forEach(function(k){
+        if(k === "團名"){ groupNameInput.value = map[k] || ""; return; }
+        if(k === "表演者名單" || k === "表演者姓名/團名") return;
         var el = f.elements.namedItem(k);
         if(!el) return;
         if(el.type === "checkbox") el.checked = (map[k] === "是");
-        else el.value = (map[k]==null ? "" : String(map[k]));
+        else el.value = (map[k] == null ? "" : String(map[k]));
       });
-      syncPref();
+
+      performerListWrap.innerHTML = "";
+      var names = String(map["表演者名單"] || "").split(/\r?\n+/).map(function(x){ return x.trim(); }).filter(Boolean);
+      if(!names.length){
+        names = String(map["表演者姓名/團名"] || "").split(/\r?\n+/).map(function(x){ return x.trim(); }).filter(Boolean);
+      }
+      if(!names.length) names = [""];
+      names.forEach(function(n){ createPerformerRow(n); });
+      syncPerformerHidden();
 
       var slots = data.slots || {};
       [1,2,3].forEach(function(s){
         var info = slots[String(s)] || {};
-        slotInfo[s].exists = !!info.exists;
-        slotInfo[s].url = info.url || "";
-        slotInfo[s].name = info.name || "";
+        slotState[s] = {
+          exists: !!info.exists,
+          url: info.url || "",
+          name: info.name || "",
+          publicId: info.publicId || ""
+        };
         deleteMark[s] = false;
-        document.getElementById("name"+s).textContent = slotInfo[s].exists ? (slotInfo[s].name || "（已上傳）") : "尚未選取檔案";
-        document.getElementById("file"+s).value = "";
-        setSlotMsg(s,"");
+        document.getElementById("name" + s).textContent = slotState[s].exists ? (slotState[s].name || "（已上傳）") : "尚未選取檔案";
+        document.getElementById("file" + s).value = "";
+        setSlotMsg(s, "");
         renderSlot(s);
       });
 
-      audioBox.style.display = "block";
-      msg.className="ok";
-      msg.textContent = "✅ 已載入資料（修改模式）— 你可以直接改資料並重傳音檔覆蓋；也可取消本次報名。";
-      btnMain.textContent = "儲存資料｜前往音檔";
+      syncPref();
+      msg.className = "ok";
+      msg.textContent = "✅ 已載入資料（修改模式）— 你可以直接改資料並送出。";
     }catch(e){
-      msg.className="err";
+      msg.className = "err";
       msg.textContent = "載入修改資料失敗：" + e.message;
     }
   }
@@ -704,34 +948,32 @@
       if(!j.ok) throw new Error(j.error || "取消失敗");
       showDoneOnly("✅ 已取消本次報名。\n名額已釋出。");
     }catch(e){
-      msg.className="err";
-      msg.textContent="取消失敗：" + e.message;
+      msg.className = "err";
+      msg.textContent = "取消失敗：" + e.message;
       btnCancel.disabled = false;
     }
   });
 
   f.addEventListener("submit", async function(ev){
     ev.preventDefault();
-
-    // ✅ 你要的：沒填必填就提示、捲動、紅框
     if(!validateRequired()) return;
 
-    msg.className="muted";
-    msg.textContent="送出中…";
+    msg.className = "muted";
+    msg.textContent = "處理中…";
     btnMain.disabled = true;
 
-    var data = {};
-    var fd = new FormData(f);
-    fd.forEach(function(v,k){ data[k] = v; });
-    data["我已閱讀並同意填表須知"] = agree.checked ? "是" : "";
-
-    if(isEditMode){
-      data.mode="update"; data.regId=qRegId; data.token=qToken;
-    }else{
-      data.mode="create";
-    }
-
     try{
+      var data = buildPayloadFromForm();
+      data = await prepareSlotPayload(data);
+
+      if(isEditMode){
+        data.mode = "update";
+        data.regId = qRegId;
+        data.token = qToken;
+      }else{
+        data.mode = "create";
+      }
+
       var j = await fetch(SCRIPT_URL, {
         method:"POST",
         headers:{ "Content-Type":"text/plain;charset=utf-8" },
@@ -739,83 +981,23 @@
       }).then(function(r){ return r.json(); });
 
       if(!j.ok){
-        msg.className="err";
-        msg.textContent="送出失敗：" + (j.error||"unknown");
-        if((j.error||"").indexOf("名額已滿") !== -1) showFullModal();
+        msg.className = "err";
+        msg.textContent = "送出失敗：" + (j.error || "unknown");
+        if((j.error || "").indexOf("名額已滿") !== -1) showFullModal();
         return;
       }
 
-      msg.className="ok";
-      msg.textContent = isEditMode
-        ? "✅ 修改已儲存！你可以在下方重傳音檔覆蓋（或略過）。"
-        : "✅ 報名已完成！請在下方添加音檔（或略過）。";
-
-      current.regId = j.regId;
-      current.token = j.token;
-
-      audioBox.style.display = "block";
-      audioBox.scrollIntoView({behavior:"smooth", block:"start"});
-      loadQuota();
-
-      // 新報名成功後，草稿可清掉（避免下一位帶入舊資料）
-      if(!isEditMode){
-        try{ localStorage.removeItem(LS_KEY); }catch(e){}
-      }
+      showDoneOnly(isEditMode
+        ? "✅ 資料已更新。\n如需再次修改，請回到信件中的修改連結。"
+        : "✅ 報名已完成。\n系統會寄送一封確認信到你填寫的信箱，之後可由信中的連結回到修改頁。"
+      );
     }catch(e){
-      msg.className="err";
-      msg.textContent="送出失敗：" + e.message;
+      msg.className = "err";
+      msg.textContent = "送出失敗：" + e.message;
     }finally{
       btnMain.disabled = false;
     }
   });
-
-  btnNoAudio.addEventListener("click", function(){
-    showDoneOnly("✅ 已完成。\n如需修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。");
-  });
-
-  btnUploadAll.addEventListener("click", async function(){
-    if(!current.regId || !current.token){
-      msg.className="err";
-      msg.textContent="請先完成報名/儲存。";
-      return;
-    }
-
-    var files = {
-      1:(document.getElementById("file1").files && document.getElementById("file1").files[0]) || null,
-      2:(document.getElementById("file2").files && document.getElementById("file2").files[0]) || null,
-      3:(document.getElementById("file3").files && document.getElementById("file3").files[0]) || null
-    };
-
-    if(!files[1] && !files[2] && !files[3]){
-      setSlotMsg(1,"請至少選擇 1 個音檔再上傳。", true);
-      return;
-    }
-
-    for(var s=1;s<=3;s++){
-      var er = validateMp3(files[s]);
-      if(er){ setSlotMsg(s, er, true); return; }
-    }
-
-    try{
-      for(var s2=1;s2<=3;s2++){
-        if(deleteMark[s2] && !files[s2]) await deleteSlot(s2);
-      }
-      for(var s3=1;s3<=3;s3++){
-        if(files[s3]) await uploadOne(s3, files[s3]);
-      }
-      showDoneOnly("✅ 已完成。\n如需修改資料或補上傳/重傳音檔覆蓋，請到信件內點選「回到修改頁」。");
-    }catch(e){
-      msg.className="err";
-      msg.textContent="上傳失敗：" + e.message;
-    }
-  });
-
-  [1,2,3].forEach(function(s){ renderSlot(s); });
 </script>
 </body>
 </html>
-
-
-
-
-
