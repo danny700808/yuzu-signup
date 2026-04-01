@@ -211,16 +211,6 @@
       color:#fff;
       font-weight:900;
     }
-
-    .fileInputGhost{
-      position:absolute !important;
-      left:-9999px !important;
-      width:1px !important;
-      height:1px !important;
-      opacity:0 !important;
-      overflow:hidden !important;
-      pointer-events:none !important;
-    }
     .fileName{
       flex:1;
       min-width:180px;
@@ -457,8 +447,8 @@
       <label class="req">聯絡人信箱</label>
       <input name="聯絡人信箱" type="email" required placeholder="example@example.com">
 
-      <label>老師是否一同表演</label>
-      <select name="老師是否一同表演">
+      <label class="req">老師是否一同表演</label>
+      <select name="老師是否一同表演" required>
         <option value="">請選擇</option>
         <option>是</option>
         <option>否</option>
@@ -467,7 +457,7 @@
       <label>老師一起的方式（沒有就留空）</label>
       <input name="老師一起的方式" placeholder="例：鋼琴伴奏">
 
-      <label>指導老師姓名</label>
+      <label>指導老師姓名（選填，會顯示在節目單上）</label>
       <input name="指導老師姓名" placeholder="例：黃明廷">
 
       <label>希望與誰相近安排（選填）</label>
@@ -482,7 +472,7 @@
       </div>
 
       <div class="sectionTitle">設備需求</div>
-      <div class="hint">請一項一項填寫，方便現場快速整理。沒有可留空。</div>
+      <div class="hint">請一項一項填寫，方便現場快速整理。其他需求也請統一寫在下方的補充欄位。</div>
       <div class="row">
         <div>
           <label>設備需求 1</label>
@@ -506,11 +496,8 @@
       <label>設備需求 5</label>
       <input name="設備需求5" placeholder="例：爵士鼓椅 1 張">
 
-      <label>設備需求補充</label>
-      <textarea name="設備需求補充" placeholder="其他需要補充的設備說明…"></textarea>
-
-      <label>需求 / 備註</label>
-      <textarea name="需求/備註" placeholder="想補充的內容…"></textarea>
+      <label>設備需求補充／其他需求</label>
+      <textarea name="設備需求補充" placeholder="設備需求補充、其他需求都寫在這裡…"></textarea>
 
       <div class="sectionTitle">表演曲目與伴奏音檔</div>
       <div class="hint">第 1 首必填；第 2、3 首可自由決定要不要填。每首都可各自上傳 1 個 MP3 音檔。</div>
@@ -527,9 +514,9 @@
           <div class="audioBox">
             <div style="font-weight:900;">伴奏音檔（MP3，單檔 ≤ 20MB，可不附）</div>
             <div class="hint">這一首如果需要伴奏，就直接在這裡上傳。</div>
-            <input id="file1" class="fileInputGhost" type="file" accept="audio/mpeg,.mp3">
+            <input id="file1" type="file" accept="audio/mpeg,.mp3" style="display:none;">
             <div class="fileRow">
-              <label class="fileBtn" for="file1">選擇 MP3</label>
+              <button class="fileBtn" type="button" data-pick="1">選擇 MP3</button>
               <div class="fileName" id="name1">尚未選取檔案</div>
             </div>
             <div class="miniActions">
@@ -550,9 +537,9 @@
           <div class="audioBox">
             <div style="font-weight:900;">伴奏音檔（MP3，單檔 ≤ 20MB，可不附）</div>
             <div class="hint">這一首如果需要伴奏，就直接在這裡上傳。</div>
-            <input id="file2" class="fileInputGhost" type="file" accept="audio/mpeg,.mp3">
+            <input id="file2" type="file" accept="audio/mpeg,.mp3" style="display:none;">
             <div class="fileRow">
-              <label class="fileBtn" for="file2">選擇 MP3</label>
+              <button class="fileBtn" type="button" data-pick="2">選擇 MP3</button>
               <div class="fileName" id="name2">尚未選取檔案</div>
             </div>
             <div class="miniActions">
@@ -573,9 +560,9 @@
           <div class="audioBox">
             <div style="font-weight:900;">伴奏音檔（MP3，單檔 ≤ 20MB，可不附）</div>
             <div class="hint">這一首如果需要伴奏，就直接在這裡上傳。</div>
-            <input id="file3" class="fileInputGhost" type="file" accept="audio/mpeg,.mp3">
+            <input id="file3" type="file" accept="audio/mpeg,.mp3" style="display:none;">
             <div class="fileRow">
-              <label class="fileBtn" for="file3">選擇 MP3</label>
+              <button class="fileBtn" type="button" data-pick="3">選擇 MP3</button>
               <div class="fileName" id="name3">尚未選取檔案</div>
             </div>
             <div class="miniActions">
@@ -809,6 +796,14 @@
   performerListWrap.addEventListener("input", syncPerformerHidden);
 
   function bindPerformanceCards(){
+    document.querySelectorAll(".fileBtn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var slot = btn.getAttribute("data-pick");
+        var input = document.getElementById("file" + slot);
+        if(input) input.click();
+      });
+    });
+
     [1,2,3].forEach(function(slot){
       var fileEl = document.getElementById("file" + slot);
       var delEl = document.getElementById("del" + slot);
@@ -897,6 +892,7 @@
     need(f.elements.namedItem("舞台總表演人數"), "請填寫舞台總表演人數");
     need(f.elements.namedItem("聯絡電話"), "請填寫聯絡電話");
     need(f.elements.namedItem("聯絡人信箱"), "請填寫聯絡人信箱");
+    need(f.elements.namedItem("老師是否一同表演"), "請選擇老師是否一同表演");
     need(document.getElementById("song1"), "請填寫第 1 首表演歌名");
 
     var names = syncPerformerHidden();

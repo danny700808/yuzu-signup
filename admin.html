@@ -103,7 +103,7 @@
       </div>
 
       <div class="actionRow" style="margin-top:16px;">
-        <button class="btn secondary" id="btnExcel" type="button">下載 Excel</button>
+        <button class="btn secondary" id="btnExcel" type="button">下載 A4 名單</button>
         <button class="btn secondary" id="btnAudioZip" type="button">下載全部音檔 ZIP</button>
         <button class="btn danger" id="btnClearData" type="button">一鍵清空報名資料</button>
         <button class="btn danger" id="btnClearAll" type="button">清空資料＋刪除雲端音檔</button>
@@ -184,51 +184,92 @@
     return String(session || "").indexOf("下午") >= 0 ? "下午場" : (String(session || "").indexOf("晚上") >= 0 ? "晚上場" : "其他場次");
   }
 
+  function sessionLabel(session){
+    return sessionFolder(session);
+  }
+
+  function yesNo(v){
+    return v ? "是" : "否";
+  }
+
   function performerMainName(it){
     var raw = String(it.performerDisplay || "").replace(/\n+/g, " ").trim();
     return safeName(raw || "未命名表演者");
   }
 
-  function buildExcelHtml(items){
-    var rows = [['順序','場次','表演項目','表演者','團名','指導老師','老師一起','希望排一起','靠前','靠後','曲目1','曲目2','曲目3','設備需求','設備需求補充','備註','報名編號']];
+  function buildPrintableHtml(items){
+    var grouped = { "下午場": [], "晚上場": [], "其他場次": [] };
     items.forEach(function(it){
-      rows.push([
-        it.order || '',
-        it.session || '',
-        it.type || '',
-        String(it.performerDisplay || '').replace(/\n/g, '／'),
-        it.groupName || '',
-        it.teacherName || '',
-        it.teacherJoinText || '',
-        it.preferredWith || '',
-        it.front ? '是' : '',
-        it.back ? '是' : '',
-        (it.songs || [])[0] || '',
-        (it.songs || [])[1] || '',
-        (it.songs || [])[2] || '',
-        (it.equipmentList || []).join('、'),
-        it.equipmentExtra || '',
-        it.note || '',
-        it.regId || ''
-      ]);
+      grouped[sessionLabel(it.session)].push(it);
     });
 
-    var html = '<html><head><meta charset="utf-8"></head><body><table border="1">';
-    rows.forEach(function(row, ri){
-      html += '<tr>' + row.map(function(cell){
-        var tag = ri === 0 ? 'th' : 'td';
-        return '<' + tag + '>' + esc(cell) + '</' + tag + '>';
-      }).join('') + '</tr>';
-    });
-    html += '</table></body></html>';
-    return html;
+    function rowHtml(it){
+      var songs = [ (it.songs || [])[0] || '', (it.songs || [])[1] || '', (it.songs || [])[2] || '' ];
+      var equipList = (it.equipmentList || []).join('、');
+      return '<tr>'
+        + '<td>' + esc(it.order || '') + '</td>'
+        + '<td>' + esc(sessionLabel(it.session)) + '</td>'
+        + '<td>' + esc(it.type || '') + '</td>'
+        + '<td>' + esc(String(it.performerDisplay || '').replace(/\n/g, '／')) + '</td>'
+        + '<td>' + esc(yesNo(!!it.teacherJoin)) + '</td>'
+        + '<td>' + esc(songs[0]) + '</td>'
+        + '<td>' + esc(songs[1]) + '</td>'
+        + '<td>' + esc(songs[2]) + '</td>'
+        + '<td style="white-space:pre-wrap;">' + esc(equipList) + '</td>'
+        + '<td style="white-space:pre-wrap;">' + esc(it.equipmentExtra || '') + '</td>'
+        + '</tr>';
+    }
+
+    function sectionHtml(title, list){
+      if(!list.length) return '';
+      return '<section class="pageSection">'
+        + '<div class="sectionTitle">' + esc(title) + '</div>'
+        + '<table>'
+        + '<thead><tr>'
+        + '<th style="width:42px;">順序</th>'
+        + '<th style="width:68px;">場次</th>'
+        + '<th style="width:86px;">表演項目</th>'
+        + '<th>表演者</th>'
+        + '<th style="width:52px;">老師一起</th>'
+        + '<th style="width:82px;">曲目1</th>'
+        + '<th style="width:82px;">曲目2</th>'
+        + '<th style="width:82px;">曲目3</th>'
+        + '<th style="width:132px;">設備需求</th>'
+        + '<th style="width:132px;">其他需求</th>'
+        + '</tr></thead>'
+        + '<tbody>' + list.map(rowHtml).join('') + '</tbody>'
+        + '</table>'
+        + '</section>';
+    }
+
+    return '<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>柚子樂器_管理名單_A4</title>'
+      + '<style>'
+      + '@page{size:A4 portrait;margin:10mm;}'
+      + 'body{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#17352b;background:#fff;}'
+      + '.wrap{padding:8px 0 0;}'
+      + '.title{font-size:18px;font-weight:1000;margin:0 0 8px;}'
+      + '.sub{font-size:12px;color:#5e786d;margin:0 0 10px;}'
+      + '.pageSection{break-inside:avoid;page-break-inside:avoid;margin:0 0 12px;}'
+      + '.pageSection + .pageSection{page-break-before:always;}'
+      + '.sectionTitle{font-size:15px;font-weight:1000;margin:0 0 8px;padding:7px 10px;border:1px solid #d8e7df;border-radius:10px;background:#f7fbf9;}'
+      + 'table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;}'
+      + 'th,td{border:1px solid #cfded8;padding:6px 7px;vertical-align:top;line-height:1.45;word-break:break-word;}'
+      + 'th{background:#eef7f3;font-weight:1000;text-align:left;}'
+      + 'tbody tr:nth-child(even){background:#fbfffd;}'
+      + '</style></head><body><div class="wrap">'
+      + '<h1 class="title">柚子樂器成果展｜管理名單</h1>'
+      + '<p class="sub">此檔已排成 A4 直式版面，可直接開啟後列印。</p>'
+      + sectionHtml('下午場', grouped['下午場'])
+      + sectionHtml('晚上場', grouped['晚上場'])
+      + sectionHtml('其他場次', grouped['其他場次'])
+      + '</div></body></html>';
   }
 
   async function downloadExcel(){
     if(!needItems()) return;
-    var html = buildExcelHtml(state.items);
-    var blob = new Blob(["\ufeff" + html], { type: "application/vnd.ms-excel;charset=utf-8" });
-    downloadBlob("管理資料.xls", blob);
+    var html = buildPrintableHtml(state.items);
+    var blob = new Blob(["\ufeff" + html], { type: "text/html;charset=utf-8" });
+    downloadBlob("管理名單_A4.html", blob);
   }
 
   async function downloadAudioZip(){
@@ -322,7 +363,7 @@
     var equipCount = 0;
     items.forEach(function(it){
       audioCount += (it.audioFiles || []).length;
-      if((it.equipmentList || []).length || it.equipmentExtra || it.note) equipCount += 1;
+      if((it.equipmentList || []).length || it.equipmentExtra) equipCount += 1;
     });
     document.getElementById("sumCount").textContent = String(items.length);
     document.getElementById("sumAudio").textContent = String(audioCount);
@@ -349,16 +390,16 @@
         + '<div class="itemTop">'
           + '<div>'
             + '<div class="title">' + esc(it.order) + '. ' + esc(it.performerDisplay || '未命名').replace(/\n/g, '<br>') + '</div>'
-            + '<div class="meta">場次：' + esc(it.session) + '｜曲目：' + esc((it.songs || []).join('／')) + '</div>'
+            + '<div class="meta">場次：' + esc(sessionLabel(it.session)) + '｜曲目：' + esc((it.songs || []).join('／')) + '</div>'
           + '</div>'
           + '<div class="badge">' + esc(it.type || '未分類') + '</div>'
         + '</div>'
         + '<div class="pillRow">'
+          + '<span class="pill">老師是否一起：' + esc(yesNo(!!it.teacherJoin)) + '</span>'
           + '<span class="pill">指導老師：' + esc(it.teacherName || '未填') + '</span>'
-          + '<span class="pill">希望排一起：' + esc(it.preferredWith || '無') + '</span>'
         + '</div>'
         + '<div class="secTitle">設備需求</div>'
-        + '<div class="textBlock">' + esc(equipText) + (it.equipmentExtra ? ('\n補充：' + esc(it.equipmentExtra)) : '') + (it.note ? ('\n備註：' + esc(it.note)) : '') + '</div>'
+        + '<div class="textBlock">' + esc(equipText) + (it.equipmentExtra ? ('\n其他需求：' + esc(it.equipmentExtra)) : '') + '</div>'
         + '<div class="secTitle">音檔</div>'
         + '<div class="audioList">' + audioHtml + '</div>';
       list.appendChild(card);
