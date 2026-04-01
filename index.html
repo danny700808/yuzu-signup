@@ -500,13 +500,6 @@
 
       <div id="performanceArea"></div>
 
-      <div class="sectionTitle">特殊次序偏好</div>
-      <div class="hint">沒有需求就不要勾選，兩個選項只能擇一。</div>
-      <div class="row">
-        <label style="margin:10px 0 0; font-weight:800;"><input type="checkbox" id="prefFront" name="希望靠前10組" value="是" style="width:auto; margin-right:8px;"> 希望靠前 10 組</label>
-        <label style="margin:10px 0 0; font-weight:800;"><input type="checkbox" id="prefBack" name="希望靠後10組" value="是" style="width:auto; margin-right:8px;"> 希望靠後 10 組</label>
-      </div>
-
       <div class="progressWrap" id="submitProgressWrap">
         <div class="progressTop">
           <span id="submitProgressText">準備送出…</span>
@@ -1060,10 +1053,13 @@
     msg.className = "muted";
     msg.textContent = "處理中…";
     btnMain.disabled = true;
+    setProgress(8, "正在整理報名資料…");
 
     try{
       var data = buildPayloadFromForm();
+      setProgress(18, "正在檢查欄位與音檔…");
       data = await prepareSlotPayload(data);
+      setProgress(82, "正在送出報名資料…");
 
       if(isEditMode){
         data.mode = "update";
@@ -1078,6 +1074,7 @@
         headers:{ "Content-Type":"text/plain;charset=utf-8" },
         body: JSON.stringify(data)
       }).then(function(r){ return r.json(); });
+      setProgress(96, "正在完成最後確認…");
 
       if(!j.ok){
         msg.className = "err";
