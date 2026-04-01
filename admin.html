@@ -65,61 +65,68 @@
     .empty{margin-top:16px;padding:18px;border:1px dashed #d5e5dd;border-radius:18px;color:var(--muted);text-align:center}
     .err{color:#b44040;font-weight:900;margin-top:12px;white-space:pre-wrap}
     .ok{color:#217a57;font-weight:900;margin-top:12px;white-space:pre-wrap}
+    .adminGate{max-width:540px;margin:0 auto;}
+    .hidden{display:none !important;}
     @media (max-width:860px){.grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="card">
-    <h1>管理者下載區</h1>
-    <div class="sub">這一頁是給管理者快速整理用。輸入密碼後，可以下載 Excel、把全部音檔打包成 ZIP，也可以一鍵清空報名資料。</div>
+  <div class="card adminGate">
+    <h1>管理者下載</h1>
 
-    <div class="grid">
+    <div class="grid" style="grid-template-columns:1fr auto;align-items:end;">
       <div>
         <label>管理者密碼</label>
         <input id="pwd" type="password" placeholder="請輸入管理者密碼">
       </div>
       <div>
-        <label>場次篩選</label>
-        <select id="sessionFilter">
-          <option value="">全部場次</option>
-          <option value="下午場 13:00~16:00">下午場 13:00~16:00</option>
-          <option value="晚上場 17:30~20:30">晚上場 17:30~20:30</option>
-        </select>
-      </div>
-      <div>
         <label>&nbsp;</label>
         <div class="topRow">
-          <button class="btn" id="btnLoad" type="button">載入管理資料</button>
+          <button class="btn" id="btnLoad" type="button">進入</button>
           <a class="btn secondary" href="program.html">回節目單</a>
         </div>
       </div>
     </div>
 
-    <div class="actionRow" style="margin-top:16px;">
-      <button class="btn secondary" id="btnExcel" type="button">下載 Excel</button>
-      <button class="btn secondary" id="btnAudioZip" type="button">下載全部音檔 ZIP</button>
-      <button class="btn danger" id="btnClearData" type="button">一鍵清空報名資料</button>
-      <button class="btn danger" id="btnClearAll" type="button">清空資料＋刪除雲端音檔</button>
-    </div>
-    <div class="infoBox">
-      <div style="font-weight:900;">排序與衝突規則</div>
-      <div class="sub" style="margin-top:6px;">
-        1. 以「希望與誰排在一起」優先。<br>
-        2. 若「排在一起」和「靠前 / 靠後」衝突，以排在一起為主。<br>
-        3. 同級衝突時，以先報名者為主；另一方偏好降為參考。<br>
-        4. 下載音檔 ZIP 時，會依場次自動分成「下午場 / 晚上場」資料夾，檔名用「表演者名稱_曲目」命名。
+    <div id="adminPanel" class="hidden">
+      <div class="grid" style="margin-top:16px;">
+        <div>
+          <label>場次篩選</label>
+          <select id="sessionFilter">
+            <option value="">全部場次</option>
+            <option value="下午場 13:00~16:00">下午場 13:00~16:00</option>
+            <option value="晚上場 17:30~20:30">晚上場 17:30~20:30</option>
+          </select>
+        </div>
+        <div></div><div></div>
+      </div>
+
+      <div class="actionRow" style="margin-top:16px;">
+        <button class="btn secondary" id="btnExcel" type="button">下載 Excel</button>
+        <button class="btn secondary" id="btnAudioZip" type="button">下載全部音檔 ZIP</button>
+        <button class="btn danger" id="btnClearData" type="button">一鍵清空報名資料</button>
+        <button class="btn danger" id="btnClearAll" type="button">清空資料＋刪除雲端音檔</button>
+      </div>
+      <div class="infoBox">
+        <div style="font-weight:900;">排序與衝突規則</div>
+        <div class="sub" style="margin-top:6px;">
+          1. 以「希望與誰排在一起」優先。<br>
+          2. 若「排在一起」和「靠前 / 靠後」衝突，以排在一起為主。<br>
+          3. 同級衝突時，以先報名者為主；另一方偏好降為參考。<br>
+          4. 下載音檔 ZIP 時，會依場次自動分成「下午場 / 晚上場」資料夾，檔名用「表演者名稱_曲目」命名。
+        </div>
+      </div>
+
+      <div class="summaryRow" id="summaryRow" style="margin-top:16px; display:none;">
+        <div class="summaryCard"><div class="k">目前組數</div><div class="v" id="sumCount">0</div></div>
+        <div class="summaryCard"><div class="k">有音檔的首數</div><div class="v" id="sumAudio">0</div></div>
+        <div class="summaryCard"><div class="k">有設備需求的組數</div><div class="v" id="sumEquip">0</div></div>
       </div>
     </div>
 
-    <div class="summaryRow" id="summaryRow" style="margin-top:16px; display:none;">
-      <div class="summaryCard"><div class="k">目前組數</div><div class="v" id="sumCount">0</div></div>
-      <div class="summaryCard"><div class="k">有音檔的首數</div><div class="v" id="sumAudio">0</div></div>
-      <div class="summaryCard"><div class="k">有設備需求的組數</div><div class="v" id="sumEquip">0</div></div>
-    </div>
-
-    <div id="msg" class="sub" style="margin-top:14px;">請先輸入管理者密碼，再按「載入管理資料」。</div>
-    <div id="list" class="list"></div>
+    <div id="msg" class="sub" style="margin-top:14px;">請輸入管理者密碼後再進入。</div>
+    <div id="list" class="list hidden"></div>
   </div>
 </div>
 
@@ -127,6 +134,8 @@
 <script>
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
   var state = { password:"", session:"", items:[] };
+  var adminPanel = document.getElementById("adminPanel");
+  var listEl = document.getElementById("list");
 
   function esc(s){
     return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
@@ -303,7 +312,9 @@
   }
 
   function render(items){
-    var list = document.getElementById("list");
+    adminPanel.classList.remove("hidden");
+    listEl.classList.remove("hidden");
+    var list = listEl;
     list.innerHTML = "";
     document.getElementById("summaryRow").style.display = items.length ? "flex" : "none";
 
