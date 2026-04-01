@@ -72,7 +72,7 @@
 <div class="wrap">
   <div class="card">
     <h1>管理者下載區</h1>
-    <div class="sub">這一頁是給管理者快速整理用。輸入密碼後，可以下載設備需求清單、音檔清單，也可以直接查看每一組目前上傳的音檔連結。</div>
+    <div class="sub">這一頁是給管理者快速整理用。輸入密碼後，可以下載 Excel、把全部音檔打包成 ZIP，也可以一鍵清空報名資料。</div>
 
     <div class="grid">
       <div>
@@ -97,10 +97,19 @@
     </div>
 
     <div class="actionRow" style="margin-top:16px;">
-      <button class="btn secondary" id="btnEquipTxt" type="button">下載設備需求 TXT</button>
-      <button class="btn secondary" id="btnEquipCsv" type="button">下載設備需求 CSV</button>
-      <button class="btn secondary" id="btnAudioTxt" type="button">下載音檔清單 TXT</button>
-      <button class="btn secondary" id="btnAudioCsv" type="button">下載音檔清單 CSV</button>
+      <button class="btn secondary" id="btnExcel" type="button">下載 Excel</button>
+      <button class="btn secondary" id="btnAudioZip" type="button">下載全部音檔 ZIP</button>
+      <button class="btn danger" id="btnClearData" type="button">一鍵清空報名資料</button>
+      <button class="btn danger" id="btnClearAll" type="button">清空資料＋刪除雲端音檔</button>
+    </div>
+    <div class="infoBox">
+      <div style="font-weight:900;">排序與衝突規則</div>
+      <div class="sub" style="margin-top:6px;">
+        1. 以「希望與誰排在一起」優先。<br>
+        2. 若「排在一起」和「靠前 / 靠後」衝突，以排在一起為主。<br>
+        3. 同級衝突時，以先報名者為主；另一方偏好降為參考。<br>
+        4. 下載音檔 ZIP 時，會依場次自動分成「下午場 / 晚上場」資料夾，檔名用「表演者名稱_曲目」命名。
+      </div>
     </div>
 
     <div class="summaryRow" id="summaryRow" style="margin-top:16px; display:none;">
@@ -114,6 +123,7 @@
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
   var state = { password:"", session:"", items:[] };
@@ -143,8 +153,8 @@
     el.textContent = text || "";
   }
 
-  function downloadText(fileName, content, mime){
-    var blob = new Blob([content], { type: mime || "text/plain;charset=utf-8" });
+
+  function downloadBlob(fileName, blob){
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
     a.href = url;
@@ -155,83 +165,141 @@
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
   }
 
-  function csvCell(v){
-    v = String(v == null ? "" : v);
-    if(/[",\n]/.test(v)) return '"' + v.replace(/"/g, '""') + '"';
-    return v;
+  function safeName(s){
+    s = String(s == null ? "" : s).trim();
+    if(!s) return "未命名";
+    return s.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, " ").trim();
   }
 
-  function buildEquipmentTxt(items){
-    var lines = [];
-    lines.push("柚子樂器｜設備需求清單");
-    lines.push("場次篩選：" + (state.session || "全部場次"));
-    lines.push("");
-    items.forEach(function(it){
-      lines.push(it.order + ". " + (it.performerDisplay || "未命名").replace(/\n/g, "／"));
-      lines.push("場次：" + it.session);
-      lines.push("曲目：" + (it.songs || []).join("／"));
-      lines.push("指導老師：" + (it.teacherName || ""));
-      lines.push("希望排一起：" + (it.preferredWith || ""));
-      lines.push("設備：" + ((it.equipmentList || []).join("、") || "無"));
-      lines.push("設備補充：" + (it.equipmentExtra || ""));
-      lines.push("備註：" + (it.note || ""));
-      lines.push("");
-    });
-    return lines.join("\n");
+  function sessionFolder(session){
+    return String(session || "").indexOf("下午") >= 0 ? "下午場" : (String(session || "").indexOf("晚上") >= 0 ? "晚上場" : "其他場次");
   }
 
-  function buildAudioTxt(items){
-    var lines = [];
-    lines.push("柚子樂器｜音檔清單");
-    lines.push("場次篩選：" + (state.session || "全部場次"));
-    lines.push("");
-    items.forEach(function(it){
-      lines.push(it.order + ". " + (it.performerDisplay || "未命名").replace(/\n/g, "／"));
-      lines.push("場次：" + it.session);
-      lines.push("曲目：" + (it.songs || []).join("／"));
-      (it.audioFiles || []).forEach(function(a){
-        lines.push("- 第" + a.slot + "首｜" + (a.song || "") + "｜" + (a.name || "未命名音檔"));
-        lines.push("  " + (a.url || ""));
-      });
-      if(!(it.audioFiles || []).length) lines.push("- 無音檔");
-      lines.push("");
-    });
-    return lines.join("\n");
+  function performerMainName(it){
+    var raw = String(it.performerDisplay || "").replace(/\n+/g, " ").trim();
+    return safeName(raw || "未命名表演者");
   }
 
-  function buildEquipmentCsv(items){
-    var rows = [["順序","場次","表演者","曲目","指導老師","希望排一起","設備需求","設備需求補充","備註"]];
+  function buildExcelHtml(items){
+    var rows = [['順序','場次','表演項目','表演者','團名','指導老師','老師一起','希望排一起','靠前','靠後','曲目1','曲目2','曲目3','設備需求','設備需求補充','備註','報名編號']];
     items.forEach(function(it){
       rows.push([
-        it.order,
-        it.session,
-        (it.performerDisplay || "").replace(/\n/g, "／"),
-        (it.songs || []).join("／"),
-        it.teacherName || "",
-        it.preferredWith || "",
-        (it.equipmentList || []).join("、"),
-        it.equipmentExtra || "",
-        it.note || ""
+        it.order || '',
+        it.session || '',
+        it.type || '',
+        String(it.performerDisplay || '').replace(/\n/g, '／'),
+        it.groupName || '',
+        it.teacherName || '',
+        it.teacherJoinText || '',
+        it.preferredWith || '',
+        it.front ? '是' : '',
+        it.back ? '是' : '',
+        (it.songs || [])[0] || '',
+        (it.songs || [])[1] || '',
+        (it.songs || [])[2] || '',
+        (it.equipmentList || []).join('、'),
+        it.equipmentExtra || '',
+        it.note || '',
+        it.regId || ''
       ]);
     });
-    return rows.map(function(row){ return row.map(csvCell).join(","); }).join("\n");
+
+    var html = '<html><head><meta charset="utf-8"></head><body><table border="1">';
+    rows.forEach(function(row, ri){
+      html += '<tr>' + row.map(function(cell){
+        var tag = ri === 0 ? 'th' : 'td';
+        return '<' + tag + '>' + esc(cell) + '</' + tag + '>';
+      }).join('') + '</tr>';
+    });
+    html += '</table></body></html>';
+    return html;
   }
 
-  function buildAudioCsv(items){
-    var rows = [["順序","場次","表演者","第1首歌名","第1首音檔","第1首連結","第2首歌名","第2首音檔","第2首連結","第3首歌名","第3首音檔","第3首連結"]];
-    items.forEach(function(it){
-      var bySlot = {1:{},2:{},3:{}};
-      (it.audioFiles || []).forEach(function(a){ bySlot[a.slot] = a || {}; });
-      rows.push([
-        it.order,
-        it.session,
-        (it.performerDisplay || "").replace(/\n/g, "／"),
-        bySlot[1].song || "", bySlot[1].name || "", bySlot[1].url || "",
-        bySlot[2].song || "", bySlot[2].name || "", bySlot[2].url || "",
-        bySlot[3].song || "", bySlot[3].name || "", bySlot[3].url || ""
-      ]);
-    });
-    return rows.map(function(row){ return row.map(csvCell).join(","); }).join("\n");
+  async function downloadExcel(){
+    if(!needItems()) return;
+    var html = buildExcelHtml(state.items);
+    var blob = new Blob(["\ufeff" + html], { type: "application/vnd.ms-excel;charset=utf-8" });
+    downloadBlob("管理資料.xls", blob);
+  }
+
+  async function downloadAudioZip(){
+    if(!needItems()) return;
+    if(typeof JSZip === "undefined"){
+      msg("ZIP 套件尚未載入完成，請稍後再試。", "err");
+      return;
+    }
+    msg("正在整理音檔 ZIP，請稍候…", "sub");
+    try{
+      var zip = new JSZip();
+      var used = {};
+      var total = 0;
+      for(var i=0;i<state.items.length;i++){
+        var it = state.items[i];
+        var folderName = sessionFolder(it.session);
+        var folder = zip.folder(folderName);
+        var baseName = performerMainName(it);
+        var audioFiles = it.audioFiles || [];
+        for(var j=0;j<audioFiles.length;j++){
+          var a = audioFiles[j] || {};
+          if(!a.url) continue;
+          var songName = safeName(a.song || ("第" + (a.slot || (j+1)) + "首"));
+          var fileName = baseName + "_" + songName + ".mp3";
+          var key = folderName + "/" + fileName;
+          var seq = 2;
+          while(used[key]){
+            fileName = baseName + "_" + songName + "_" + seq + ".mp3";
+            key = folderName + "/" + fileName;
+            seq++;
+          }
+          used[key] = true;
+          var resp = await fetch(a.url);
+          if(!resp.ok) throw new Error("抓取音檔失敗：" + fileName);
+          var buf = await resp.arrayBuffer();
+          folder.file(fileName, buf);
+          total++;
+        }
+      }
+      if(!total) throw new Error("目前沒有可下載的音檔。");
+      var blob = await zip.generateAsync({ type:"blob" });
+      downloadBlob("柚子樂器_全部音檔.zip", blob);
+      msg("✅ 已產生 ZIP，共 " + total + " 首音檔。", "ok");
+    }catch(e){
+      msg("下載 ZIP 失敗：" + e.message, "err");
+    }
+  }
+
+  async function clearAll(deleteCloud){
+    var password = document.getElementById("pwd").value.trim();
+    if(!password){
+      msg("請先輸入管理者密碼。", "err");
+      return;
+    }
+    var step1 = window.prompt(deleteCloud ? "最後確認：請輸入 CLEAR-YUZU-ALL 才會清空資料並刪除雲端音檔" : "最後確認：請輸入 CLEAR-YUZU-ALL 才會清空所有報名資料");
+    if(step1 !== "CLEAR-YUZU-ALL"){
+      msg("已取消：確認文字不正確或未輸入。", "err");
+      return;
+    }
+    var step2 = window.confirm(deleteCloud ? "這個動作會清空工作表，並嘗試刪除 Cloudinary 音檔。確定繼續？" : "這個動作會清空工作表第 2 列以下所有報名資料。確定繼續？");
+    if(!step2){
+      msg("已取消清空動作。", "err");
+      return;
+    }
+
+    msg("清空中…", "sub");
+    try{
+      var url = SCRIPT_URL
+        + "?mode=adminClearAll"
+        + "&password=" + encodeURIComponent(password)
+        + "&confirmText=" + encodeURIComponent("CLEAR-YUZU-ALL")
+        + "&deleteCloud=" + (deleteCloud ? "1" : "0");
+      var j = await jsonp(url);
+      if(!j || !j.ok) throw new Error((j && j.error) || "清空失敗");
+      state.items = [];
+      render([]);
+      msg("✅ 清空完成。已清空 " + (j.clearedRows || 0) + " 筆" + (deleteCloud ? ("，已嘗試刪除雲端音檔 " + (j.deletedCloudCount || 0) + " 個") : "") + "。", "ok");
+    }catch(e){
+      msg("清空失敗：" + e.message, "err");
+    }
   }
 
   function render(items){
@@ -320,22 +388,10 @@
   }
 
   document.getElementById("btnLoad").addEventListener("click", loadData);
-  document.getElementById("btnEquipTxt").addEventListener("click", function(){
-    if(!needItems()) return;
-    downloadText("設備需求清單.txt", buildEquipmentTxt(state.items), "text/plain;charset=utf-8");
-  });
-  document.getElementById("btnEquipCsv").addEventListener("click", function(){
-    if(!needItems()) return;
-    downloadText("設備需求清單.csv", buildEquipmentCsv(state.items), "text/csv;charset=utf-8");
-  });
-  document.getElementById("btnAudioTxt").addEventListener("click", function(){
-    if(!needItems()) return;
-    downloadText("音檔清單.txt", buildAudioTxt(state.items), "text/plain;charset=utf-8");
-  });
-  document.getElementById("btnAudioCsv").addEventListener("click", function(){
-    if(!needItems()) return;
-    downloadText("音檔清單.csv", buildAudioCsv(state.items), "text/csv;charset=utf-8");
-  });
+  document.getElementById("btnExcel").addEventListener("click", downloadExcel);
+  document.getElementById("btnAudioZip").addEventListener("click", downloadAudioZip);
+  document.getElementById("btnClearData").addEventListener("click", function(){ clearAll(false); });
+  document.getElementById("btnClearAll").addEventListener("click", function(){ clearAll(true); });
 </script>
 </body>
 </html>
