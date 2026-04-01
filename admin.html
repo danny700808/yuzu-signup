@@ -103,7 +103,7 @@
       </div>
 
       <div class="actionRow" style="margin-top:16px;">
-        <button class="btn secondary" id="btnExcel" type="button">下載 A4 名單</button>
+        <button class="btn secondary" id="btnExcel" type="button">下載 A4 清單</button>
         <button class="btn secondary" id="btnAudioZip" type="button">下載全部音檔 ZIP</button>
         <button class="btn danger" id="btnClearData" type="button">一鍵清空報名資料</button>
         <button class="btn danger" id="btnClearAll" type="button">清空資料＋刪除雲端音檔</button>
@@ -114,7 +114,7 @@
           1. 以「希望與誰排在一起」優先。<br>
           2. 若「排在一起」和「靠前 / 靠後」衝突，以排在一起為主。<br>
           3. 同級衝突時，以先報名者為主；另一方偏好降為參考。<br>
-          4. 下載音檔 ZIP 時，會依場次自動分成「下午場 / 晚上場」資料夾，檔名用「表演者名稱_曲目」命名。
+          4. 下載 A4 清單時，會用目前節目排序輸出，內容只保留現場最需要的重點欄位。
         </div>
       </div>
 
@@ -184,92 +184,72 @@
     return String(session || "").indexOf("下午") >= 0 ? "下午場" : (String(session || "").indexOf("晚上") >= 0 ? "晚上場" : "其他場次");
   }
 
-  function sessionLabel(session){
-    return sessionFolder(session);
-  }
-
-  function yesNo(v){
-    return v ? "是" : "否";
-  }
-
   function performerMainName(it){
     var raw = String(it.performerDisplay || "").replace(/\n+/g, " ").trim();
     return safeName(raw || "未命名表演者");
   }
 
-  function buildPrintableHtml(items){
-    var grouped = { "下午場": [], "晚上場": [], "其他場次": [] };
+  function shortSessionName(session){
+    session = String(session || '');
+    if(session.indexOf('下午') >= 0) return '下午場';
+    if(session.indexOf('晚上') >= 0) return '晚上場';
+    return session || '未分類';
+  }
+
+  function buildExcelHtml(items){
+    var grouped = {};
     items.forEach(function(it){
-      grouped[sessionLabel(it.session)].push(it);
+      var key = shortSessionName(it.session);
+      if(!grouped[key]) grouped[key] = [];
+      grouped[key].push(it);
     });
 
-    function rowHtml(it){
-      var songs = [ (it.songs || [])[0] || '', (it.songs || [])[1] || '', (it.songs || [])[2] || '' ];
-      var equipList = (it.equipmentList || []).join('、');
-      return '<tr>'
-        + '<td>' + esc(it.order || '') + '</td>'
-        + '<td>' + esc(sessionLabel(it.session)) + '</td>'
-        + '<td>' + esc(it.type || '') + '</td>'
-        + '<td>' + esc(String(it.performerDisplay || '').replace(/\n/g, '／')) + '</td>'
-        + '<td>' + esc(yesNo(!!it.teacherJoin)) + '</td>'
-        + '<td>' + esc(songs[0]) + '</td>'
-        + '<td>' + esc(songs[1]) + '</td>'
-        + '<td>' + esc(songs[2]) + '</td>'
-        + '<td style="white-space:pre-wrap;">' + esc(equipList) + '</td>'
-        + '<td style="white-space:pre-wrap;">' + esc(it.equipmentExtra || '') + '</td>'
-        + '</tr>';
-    }
-
-    function sectionHtml(title, list){
-      if(!list.length) return '';
-      return '<section class="pageSection">'
-        + '<div class="sectionTitle">' + esc(title) + '</div>'
-        + '<table>'
-        + '<thead><tr>'
-        + '<th style="width:42px;">順序</th>'
-        + '<th style="width:68px;">場次</th>'
-        + '<th style="width:86px;">表演項目</th>'
+    function td(v, cls){ return '<td class="' + (cls||'') + '">' + esc(v == null ? '' : v).replace(/\n/g,'<br>') + '</td>'; }
+    function tableFor(title, list){
+      var html = '<h2>' + esc(title) + '</h2>';
+      html += '<table><thead><tr>'
+        + '<th style="width:52px;">順序</th>'
+        + '<th style="width:88px;">場次</th>'
+        + '<th style="width:110px;">表演項目</th>'
         + '<th>表演者</th>'
-        + '<th style="width:52px;">老師一起</th>'
-        + '<th style="width:82px;">曲目1</th>'
-        + '<th style="width:82px;">曲目2</th>'
-        + '<th style="width:82px;">曲目3</th>'
-        + '<th style="width:132px;">設備需求</th>'
-        + '<th style="width:132px;">其他需求</th>'
-        + '</tr></thead>'
-        + '<tbody>' + list.map(rowHtml).join('') + '</tbody>'
-        + '</table>'
-        + '</section>';
+        + '<th style="width:74px;">老師一起</th>'
+        + '<th>曲目</th>'
+        + '<th>設備需求</th>'
+        + '<th>設備需求補充／其他需求</th>'
+        + '</tr></thead><tbody>';
+      (list || []).forEach(function(it){
+        var songText = (it.songs || []).map(function(s, idx){ return (idx + 1) + '. ' + s; }).join('\n');
+        var equipText = (it.equipmentList || []).join('、') || '無';
+        html += '<tr>'
+          + td(it.order || '', 'c')
+          + td(shortSessionName(it.session), 'c')
+          + td(it.type || '')
+          + td(String(it.performerDisplay || '').replace(/\n/g, '\n'))
+          + td(it.teacherJoin ? '是' : '否', 'c')
+          + td(songText)
+          + td(equipText)
+          + td(it.equipmentExtra || '')
+          + '</tr>';
+      });
+      html += '</tbody></table>';
+      return html;
     }
 
-    return '<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>柚子樂器_管理名單_A4</title>'
-      + '<style>'
-      + '@page{size:A4 portrait;margin:10mm;}'
-      + 'body{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#17352b;background:#fff;}'
-      + '.wrap{padding:8px 0 0;}'
-      + '.title{font-size:18px;font-weight:1000;margin:0 0 8px;}'
-      + '.sub{font-size:12px;color:#5e786d;margin:0 0 10px;}'
-      + '.pageSection{break-inside:avoid;page-break-inside:avoid;margin:0 0 12px;}'
-      + '.pageSection + .pageSection{page-break-before:always;}'
-      + '.sectionTitle{font-size:15px;font-weight:1000;margin:0 0 8px;padding:7px 10px;border:1px solid #d8e7df;border-radius:10px;background:#f7fbf9;}'
-      + 'table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;}'
-      + 'th,td{border:1px solid #cfded8;padding:6px 7px;vertical-align:top;line-height:1.45;word-break:break-word;}'
-      + 'th{background:#eef7f3;font-weight:1000;text-align:left;}'
-      + 'tbody tr:nth-child(even){background:#fbfffd;}'
-      + '</style></head><body><div class="wrap">'
-      + '<h1 class="title">柚子樂器成果展｜管理名單</h1>'
-      + '<p class="sub">此檔已排成 A4 直式版面，可直接開啟後列印。</p>'
-      + sectionHtml('下午場', grouped['下午場'])
-      + sectionHtml('晚上場', grouped['晚上場'])
-      + sectionHtml('其他場次', grouped['其他場次'])
-      + '</div></body></html>';
+    var html = '<!doctype html><html><head><meta charset="utf-8"><title>柚子樂器管理清單</title><style>'
+      + '@page{size:A4 portrait;margin:10mm;}body{font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#17352b;margin:0;font-size:12px;line-height:1.5;}h1{font-size:20px;margin:0 0 6px;}h2{font-size:16px;margin:16px 0 8px;} .sub{color:#5e786d;margin-bottom:8px;}table{width:100%;border-collapse:collapse;table-layout:fixed;margin-bottom:12px;}th,td{border:1px solid #9fb8ae;padding:6px 7px;vertical-align:top;word-break:break-word;}th{background:#eef7f3;font-weight:900;text-align:left;}td.c{text-align:center;} .note{margin-top:8px;color:#5e786d;font-size:11px;} </style></head><body>'
+      + '<h1>柚子樂器成果展管理清單</h1>'
+      + '<div class="sub">依目前節目排序輸出，可直接用 A4 列印。</div>'
+      + tableFor('下午場', grouped['下午場'] || [])
+      + tableFor('晚上場', grouped['晚上場'] || [])
+      + '</body></html>';
+    return html;
   }
 
   async function downloadExcel(){
     if(!needItems()) return;
-    var html = buildPrintableHtml(state.items);
+    var html = buildExcelHtml(state.items);
     var blob = new Blob(["\ufeff" + html], { type: "text/html;charset=utf-8" });
-    downloadBlob("管理名單_A4.html", blob);
+    downloadBlob("柚子樂器_A4管理清單.html", blob);
   }
 
   async function downloadAudioZip(){
@@ -363,7 +343,7 @@
     var equipCount = 0;
     items.forEach(function(it){
       audioCount += (it.audioFiles || []).length;
-      if((it.equipmentList || []).length || it.equipmentExtra) equipCount += 1;
+      if((it.equipmentList || []).length || it.equipmentExtra || it.note) equipCount += 1;
     });
     document.getElementById("sumCount").textContent = String(items.length);
     document.getElementById("sumAudio").textContent = String(audioCount);
@@ -390,16 +370,15 @@
         + '<div class="itemTop">'
           + '<div>'
             + '<div class="title">' + esc(it.order) + '. ' + esc(it.performerDisplay || '未命名').replace(/\n/g, '<br>') + '</div>'
-            + '<div class="meta">場次：' + esc(sessionLabel(it.session)) + '｜曲目：' + esc((it.songs || []).join('／')) + '</div>'
+            + '<div class="meta">場次：' + esc(it.session) + '｜曲目：' + esc((it.songs || []).join('／')) + '</div>'
           + '</div>'
           + '<div class="badge">' + esc(it.type || '未分類') + '</div>'
         + '</div>'
         + '<div class="pillRow">'
-          + '<span class="pill">老師是否一起：' + esc(yesNo(!!it.teacherJoin)) + '</span>'
-          + '<span class="pill">指導老師：' + esc(it.teacherName || '未填') + '</span>'
+          + '<span class="pill">老師一起：' + esc(it.teacherJoin ? '是' : '否') + '</span>'
         + '</div>'
         + '<div class="secTitle">設備需求</div>'
-        + '<div class="textBlock">' + esc(equipText) + (it.equipmentExtra ? ('\n其他需求：' + esc(it.equipmentExtra)) : '') + '</div>'
+        + '<div class="textBlock">' + esc(equipText) + (it.equipmentExtra ? ('\n補充／其他需求：' + esc(it.equipmentExtra)) : '') + '</div>'
         + '<div class="secTitle">音檔</div>'
         + '<div class="audioList">' + audioHtml + '</div>';
       list.appendChild(card);
