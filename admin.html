@@ -283,8 +283,8 @@
       msg("請先輸入管理者密碼。", "err");
       return;
     }
-    var step1 = window.prompt(deleteCloud ? "最後確認：請輸入 CLEAR-YUZU-ALL 才會清空資料並刪除雲端音檔" : "最後確認：請輸入 CLEAR-YUZU-ALL 才會清空所有報名資料");
-    if(step1 !== "CLEAR-YUZU-ALL"){
+    var step1 = window.prompt(deleteCloud ? "最後確認：請輸入 youZI111 才會清空資料並刪除雲端音檔" : "最後確認：請輸入 youZI111 才會清空所有報名資料");
+    if(step1 !== "youZI111"){
       msg("已取消：確認文字不正確或未輸入。", "err");
       return;
     }
@@ -299,7 +299,7 @@
       var url = SCRIPT_URL
         + "?mode=adminClearAll"
         + "&password=" + encodeURIComponent(password)
-        + "&confirmText=" + encodeURIComponent("CLEAR-YUZU-ALL")
+        + "&confirmText=" + encodeURIComponent("youZI111")
         + "&deleteCloud=" + (deleteCloud ? "1" : "0");
       var j = await jsonp(url);
       if(!j || !j.ok) throw new Error((j && j.error) || "清空失敗");
