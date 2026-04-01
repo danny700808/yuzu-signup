@@ -464,13 +464,6 @@
       <input name="希望與誰排在一起" placeholder="例：王小明／柚子樂器木吉他社">
       <div class="hint">填想安排在相近位置的對象名稱即可；系統會盡量安排在相近組別。</div>
 
-      <div class="sectionTitle">特殊次序偏好</div>
-      <div class="hint">沒有需求就不要勾選，兩個選項只能擇一。</div>
-      <div class="row">
-        <label style="margin:10px 0 0; font-weight:800;"><input type="checkbox" id="prefFront" name="希望靠前10組" value="是" style="width:auto; margin-right:8px;"> 希望靠前 10 組</label>
-        <label style="margin:10px 0 0; font-weight:800;"><input type="checkbox" id="prefBack" name="希望靠後10組" value="是" style="width:auto; margin-right:8px;"> 希望靠後 10 組</label>
-      </div>
-
       <div class="sectionTitle">設備需求</div>
       <div class="hint">請一項一項填寫，方便現場快速整理。沒有可留空。</div>
       <div class="row">
@@ -505,78 +498,7 @@
       <div class="sectionTitle">表演曲目與伴奏音檔</div>
       <div class="hint">第 1 首必填；第 2、3 首可自由決定要不要填。每首都可各自上傳 1 個 MP3 音檔。</div>
 
-      
-      <div id="performanceArea">
-        <div class="performanceCard">
-          <div class="performanceHead">
-            <div class="performanceTitle">第 1 首表演</div>
-            <div class="muted">必填</div>
-          </div>
-          <label class="req">表演歌名 / 名稱</label>
-          <input type="text" name="表演歌名/名稱" id="song1" placeholder="例：浪流連">
-          <div class="audioBox">
-            <div style="font-weight:900;">伴奏音檔（MP3，單檔 ≤ 20MB，可不附）</div>
-            <div class="hint">這一首如果需要伴奏，就直接在這裡上傳。</div>
-            <input id="file1" type="file" accept="audio/mpeg,.mp3" style="display:none;">
-            <div class="fileRow">
-              <button class="fileBtn" type="button" data-pick="1">選擇 MP3</button>
-              <div class="fileName" id="name1">尚未選取檔案</div>
-            </div>
-            <div class="miniActions">
-              <button type="button" class="miniBtn" id="view1" style="display:none;">檢視</button>
-              <button type="button" class="miniBtn danger" id="del1" style="display:none;">刪除</button>
-            </div>
-            <div class="slotMsg muted" id="m1"></div>
-          </div>
-        </div>
-
-        <div class="performanceCard">
-          <div class="performanceHead">
-            <div class="performanceTitle">第 2 首表演</div>
-            <div class="muted">選填</div>
-          </div>
-          <label>表演歌名 / 名稱</label>
-          <input type="text" name="表演歌名/名稱2" id="song2" placeholder="例：小幸運">
-          <div class="audioBox">
-            <div style="font-weight:900;">伴奏音檔（MP3，單檔 ≤ 20MB，可不附）</div>
-            <div class="hint">這一首如果需要伴奏，就直接在這裡上傳。</div>
-            <input id="file2" type="file" accept="audio/mpeg,.mp3" style="display:none;">
-            <div class="fileRow">
-              <button class="fileBtn" type="button" data-pick="2">選擇 MP3</button>
-              <div class="fileName" id="name2">尚未選取檔案</div>
-            </div>
-            <div class="miniActions">
-              <button type="button" class="miniBtn" id="view2" style="display:none;">檢視</button>
-              <button type="button" class="miniBtn danger" id="del2" style="display:none;">刪除</button>
-            </div>
-            <div class="slotMsg muted" id="m2"></div>
-          </div>
-        </div>
-
-        <div class="performanceCard">
-          <div class="performanceHead">
-            <div class="performanceTitle">第 3 首表演</div>
-            <div class="muted">選填</div>
-          </div>
-          <label>表演歌名 / 名稱</label>
-          <input type="text" name="表演歌名/名稱3" id="song3" placeholder="例：晴天">
-          <div class="audioBox">
-            <div style="font-weight:900;">伴奏音檔（MP3，單檔 ≤ 20MB，可不附）</div>
-            <div class="hint">這一首如果需要伴奏，就直接在這裡上傳。</div>
-            <input id="file3" type="file" accept="audio/mpeg,.mp3" style="display:none;">
-            <div class="fileRow">
-              <button class="fileBtn" type="button" data-pick="3">選擇 MP3</button>
-              <div class="fileName" id="name3">尚未選取檔案</div>
-            </div>
-            <div class="miniActions">
-              <button type="button" class="miniBtn" id="view3" style="display:none;">檢視</button>
-              <button type="button" class="miniBtn danger" id="del3" style="display:none;">刪除</button>
-            </div>
-            <div class="slotMsg muted" id="m3"></div>
-          </div>
-        </div>
-      </div>
-
+      <div id="performanceArea"></div>
 
       <div class="progressWrap" id="submitProgressWrap">
         <div class="progressTop">
@@ -851,7 +773,7 @@
 
     [1,2,3].forEach(renderSlot);
   }
-  // 已改成直接寫在 HTML，避免上線後偶發不顯示。
+  buildPerformanceCards();
 
   function setSlotMsg(slot, text, isErr){
     var el = document.getElementById("m" + slot);
@@ -1126,22 +1048,18 @@
 
   f.addEventListener("submit", async function(ev){
     ev.preventDefault();
-    setProgress(10, "正在整理報名資料…");
-    if(!validateRequired()){
-      resetProgress();
-      return;
-    }
+    if(!validateRequired()) return;
 
     msg.className = "muted";
     msg.textContent = "處理中…";
     btnMain.disabled = true;
+    setProgress(8, "正在整理報名資料…");
 
     try{
-      setProgress(20, "正在檢查欄位與音檔…");
       var data = buildPayloadFromForm();
-
-      setProgress(35, "正在準備音檔與附件…");
+      setProgress(18, "正在檢查欄位與音檔…");
       data = await prepareSlotPayload(data);
+      setProgress(82, "正在送出報名資料…");
 
       if(isEditMode){
         data.mode = "update";
@@ -1151,12 +1069,12 @@
         data.mode = "create";
       }
 
-      setProgress(78, "正在送出報名資料…");
       var j = await fetch(SCRIPT_URL, {
         method:"POST",
         headers:{ "Content-Type":"text/plain;charset=utf-8" },
         body: JSON.stringify(data)
       }).then(function(r){ return r.json(); });
+      setProgress(96, "正在完成最後確認…");
 
       if(!j.ok){
         msg.className = "err";
@@ -1165,9 +1083,6 @@
         return;
       }
 
-      setProgress(92, "正在完成最後確認…");
-      await new Promise(function(resolve){ setTimeout(resolve, 220); });
-      setProgress(100, "完成");
       showDoneOnly(isEditMode
         ? "✅ 資料已更新。\n如需再次修改，請回到信件中的修改連結。"
         : "✅ 報名已完成。\n系統會寄送一封確認信到你填寫的信箱，之後可由信中的連結回到修改頁。"

@@ -194,13 +194,13 @@
       color:var(--aftText);
       background:
         radial-gradient(circle at 8% 18%, rgba(255,255,255,.28), transparent 18%),
-        linear-gradient(135deg, #d8f8ec 0%, #fff0bf 52%, #fff9ef 100%);
+        linear-gradient(135deg, #dff7ef 0%, #fff2d2 52%, #fff8ea 100%);
     }
     .sectionHead.eve{
       color:var(--eveText);
       background:
         radial-gradient(circle at 90% 18%, rgba(255,255,255,.16), transparent 16%),
-        linear-gradient(135deg, #20123f 0%, #5f20d9 34%, #ff5577 70%, #ffb86b 100%);
+        linear-gradient(135deg, #29194e 0%, #6d1df8 36%, #ff4d6d 72%, #ffae63 100%);
     }
     .sectionTitleWrap{ min-width:0; }
     .sectionKicker{
@@ -353,20 +353,8 @@
       border-color:rgba(255,189,84,.46);
       box-shadow:0 8px 16px rgba(255,144,85,.18);
     }
-    .performerLabel,
-    .songLabel{
-      margin-top:12px;
-      font-size:12px;
-      font-weight:1000;
-      letter-spacing:.08em;
-      color:var(--muted);
-    }
-    .section.eveningSec .performerLabel,
-    .section.eveningSec .songLabel{
-      color:#7a658f;
-    }
     .performer{
-      margin-top:6px;
+      margin-top:20px;
       font-size:28px;
       line-height:1.18;
       font-weight:1000;
@@ -723,14 +711,14 @@
       .sectionTitle{ font-size:24px; }
       .grid{
         padding:14px;
-        grid-template-columns:repeat(2,minmax(0,1fr));
+        grid-template-columns:1fr;
         gap:12px;
       }
-      .card{ min-height:auto; padding:14px 14px 13px; border-radius:20px; }
-      .num{ min-width:42px; height:42px; font-size:19px; padding:0 10px; border-radius:16px; }
-      .performer{ font-size:20px; margin-top:14px; line-height:1.22; }
-      .song{ font-size:15px; line-height:1.45; }
-      .joinTag{ max-width:78%; font-size:11px; padding:7px 10px; }
+      .card{ min-height:auto; padding:16px 16px 14px; border-radius:22px; }
+      .num{ min-width:46px; height:46px; font-size:21px; }
+      .performer{ font-size:24px; }
+      .song{ font-size:17px; }
+      .joinTag{ max-width:72%; }
       .exportSheet{ width:1080px; }
     }
   </style>
@@ -857,9 +845,7 @@
             <div class="num">${idx + 1}</div>
             ${joinTag}
           </div>
-          <div class="performerLabel">表演者</div>
           <div class="performer">${esc(it.name || "")}</div>
-          <div class="songLabel">表演曲目</div>
           <div class="song">${esc(it.song || "")}</div>
           ${instructor}
         </article>
