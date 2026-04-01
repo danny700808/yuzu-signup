@@ -103,7 +103,8 @@
       </div>
 
       <div class="actionRow" style="margin-top:16px;">
-        <button class="btn secondary" id="btnExcel" type="button">下載 A4 清單</button>
+        <button class="btn secondary" id="btnExcelPreview" type="button">查看 A4 管理清單</button>
+        <button class="btn secondary" id="btnExcelPrint" type="button">直接列印 A4 管理清單</button>
         <button class="btn secondary" id="btnAudioZip" type="button">下載全部音檔 ZIP</button>
         <button class="btn danger" id="btnClearData" type="button">一鍵清空報名資料</button>
         <button class="btn danger" id="btnClearAll" type="button">清空資料＋刪除雲端音檔</button>
@@ -114,7 +115,7 @@
           1. 以「希望與誰排在一起」優先。<br>
           2. 若「排在一起」和「靠前 / 靠後」衝突，以排在一起為主。<br>
           3. 同級衝突時，以先報名者為主；另一方偏好降為參考。<br>
-          4. 下載 A4 清單時，會用目前節目排序輸出，內容只保留現場最需要的重點欄位。
+          4. A4 清單可選擇「查看」或「直接列印」，都會用目前節目排序輸出。
         </div>
       </div>
 
@@ -196,7 +197,7 @@
     return session || '未分類';
   }
 
-  function buildExcelHtml(items){
+  function buildExcelHtml(items, autoPrint){
     var grouped = {};
     items.forEach(function(it){
       var key = shortSessionName(it.session);
@@ -235,21 +236,31 @@
       return html;
     }
 
+    var printScript = autoPrint
+      ? '<script>window.addEventListener("load",function(){setTimeout(function(){window.print();},250);});<\/script>'
+      : '';
+
     var html = '<!doctype html><html><head><meta charset="utf-8"><title>柚子樂器管理清單</title><style>'
-      + '@page{size:A4 portrait;margin:10mm;}body{font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#17352b;margin:0;font-size:12px;line-height:1.5;}h1{font-size:20px;margin:0 0 6px;}h2{font-size:16px;margin:16px 0 8px;} .sub{color:#5e786d;margin-bottom:8px;}table{width:100%;border-collapse:collapse;table-layout:fixed;margin-bottom:12px;}th,td{border:1px solid #9fb8ae;padding:6px 7px;vertical-align:top;word-break:break-word;}th{background:#eef7f3;font-weight:900;text-align:left;}td.c{text-align:center;} .note{margin-top:8px;color:#5e786d;font-size:11px;} </style></head><body>'
-      + '<h1>柚子樂器成果展管理清單</h1>'
-      + '<div class="sub">依目前節目排序輸出，可直接用 A4 列印。</div>'
+      + '@page{size:A4 portrait;margin:10mm;}body{font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:#17352b;margin:0;font-size:12px;line-height:1.5;}h1{font-size:20px;margin:0 0 6px;}h2{font-size:16px;margin:16px 0 8px;} .sub{color:#5e786d;margin-bottom:8px;}table{width:100%;border-collapse:collapse;table-layout:fixed;margin-bottom:12px;}th,td{border:1px solid #9fb8ae;padding:6px 7px;vertical-align:top;word-break:break-word;}th{background:#eef7f3;font-weight:900;text-align:left;}td.c{text-align:center;} .note{margin-top:8px;color:#5e786d;font-size:11px;} .topbar{margin:0 0 12px;display:flex;gap:8px;align-items:center;justify-content:space-between;} .printBtn{display:inline-block;padding:8px 12px;border-radius:10px;background:#208763;color:#fff;text-decoration:none;font-weight:900;} @media print {.topbar{display:none;}} </style></head><body>'
+      + '<div class="topbar"><div><h1 style="margin:0;">柚子樂器成果展管理清單</h1><div class="sub" style="margin:4px 0 0;">依目前節目排序輸出，可直接用 A4 列印。</div></div><a class="printBtn" href="#" onclick="window.print();return false;">列印此頁</a></div>'
       + tableFor('下午場', grouped['下午場'] || [])
       + tableFor('晚上場', grouped['晚上場'] || [])
+      + printScript
       + '</body></html>';
     return html;
   }
 
-  async function downloadExcel(){
+  function openA4Page(autoPrint){
     if(!needItems()) return;
-    var html = buildExcelHtml(state.items);
-    var blob = new Blob(["\ufeff" + html], { type: "text/html;charset=utf-8" });
-    downloadBlob("柚子樂器_A4管理清單.html", blob);
+    var html = buildExcelHtml(state.items, !!autoPrint);
+    var w = window.open('', '_blank');
+    if(!w){
+      msg("瀏覽器擋住新視窗，請允許跳出視窗後再試。", "err");
+      return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
   }
 
   async function downloadAudioZip(){
@@ -273,11 +284,12 @@
           var a = audioFiles[j] || {};
           if(!a.url) continue;
           var songName = safeName(a.song || ("第" + (a.slot || (j+1)) + "首"));
-          var fileName = baseName + "_" + songName + ".mp3";
+          var orderPrefix = it.order ? String(it.order).padStart(2, "0") + "_" : "";
+          var fileName = orderPrefix + baseName + "_" + songName + ".mp3";
           var key = folderName + "/" + fileName;
           var seq = 2;
           while(used[key]){
-            fileName = baseName + "_" + songName + "_" + seq + ".mp3";
+            fileName = orderPrefix + baseName + "_" + songName + "_" + seq + ".mp3";
             key = folderName + "/" + fileName;
             seq++;
           }
@@ -419,7 +431,8 @@
   }
 
   document.getElementById("btnLoad").addEventListener("click", loadData);
-  document.getElementById("btnExcel").addEventListener("click", downloadExcel);
+  document.getElementById("btnExcelPreview").addEventListener("click", function(){ openA4Page(false); });
+  document.getElementById("btnExcelPrint").addEventListener("click", function(){ openA4Page(true); });
   document.getElementById("btnAudioZip").addEventListener("click", downloadAudioZip);
   document.getElementById("btnClearData").addEventListener("click", function(){ clearAll(false); });
   document.getElementById("btnClearAll").addEventListener("click", function(){ clearAll(true); });

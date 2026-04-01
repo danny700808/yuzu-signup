@@ -707,6 +707,46 @@
       border:1px solid rgba(255,255,255,.16);
     }
 
+
+    .songLines{margin-top:10px;display:grid;gap:6px;}
+    .songLine{display:block;padding:8px 10px;border-radius:12px;background:rgba(101,31,255,.06);color:#452a78;font-size:15px;line-height:1.45;font-weight:1000;word-break:break-word;}
+    .songLine::before{content:"♪ ";}
+
+    .exportA4Wrap{width:794px;margin:0 auto;display:grid;gap:18px;}
+    .exportA4Page{position:relative;width:794px;min-height:1123px;background:#fff;padding:26px 24px 24px;color:#1b2838;box-sizing:border-box;overflow:hidden;}
+    .exportA4Page.afternoon{background:linear-gradient(180deg,#fffef8 0%,#fff9ee 100%);}
+    .exportA4Page.evening{background:linear-gradient(180deg,#fff8ff 0%,#fff4fb 100%);}
+    .exportA4Head{border-radius:22px;padding:16px 18px 14px;margin-bottom:12px;border:1px solid rgba(24,33,47,.10);box-shadow:0 12px 24px rgba(18,24,32,.08);}
+    .exportA4Page.afternoon .exportA4Head{background:linear-gradient(135deg,#dff9ee 0%,#fff3c8 55%,#fffdfa 100%);}
+    .exportA4Page.evening .exportA4Head{background:linear-gradient(135deg,#2d1660 0%,#6a25e8 38%,#ff5b7b 76%,#ffbe76 100%);color:#fff7f3;}
+    .exportA4Band{height:7px;border-radius:999px;margin-bottom:10px;}
+    .exportA4Page.afternoon .exportA4Band{background:linear-gradient(90deg,#37b388,#ffd178,#ff9861);}
+    .exportA4Page.evening .exportA4Band{background:linear-gradient(90deg,#9d67ff,#ff5b7b,#ffbe76);}
+    .exportA4Title{margin:0;font-size:28px;line-height:1.15;font-weight:1000;letter-spacing:.04em;}
+    .exportA4Meta{margin-top:10px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+    .exportA4MetaBox{border-radius:14px;padding:8px 10px;border:1px solid rgba(24,33,47,.08);background:rgba(255,255,255,.76);}
+    .exportA4Page.evening .exportA4MetaBox{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.12);}
+    .exportA4MetaLabel{font-size:10px;line-height:1.25;font-weight:1000;letter-spacing:.08em;margin-bottom:3px;opacity:.85;}
+    .exportA4MetaValue{font-size:12px;line-height:1.35;font-weight:1000;}
+    .exportA4Scene{margin-top:10px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;}
+    .exportA4Scene h2{margin:0;font-size:24px;line-height:1.1;font-weight:1000;}
+    .exportA4SceneTime{font-size:15px;font-weight:1000;}
+    .exportA4Grid{margin-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;}
+    .exportA4Item{position:relative;border:1px solid rgba(24,33,47,.10);border-radius:18px;padding:8px 10px 9px;background:rgba(255,255,255,.84);min-height:72px;box-shadow:0 8px 18px rgba(18,24,32,.06);}
+    .exportA4Page.afternoon .exportA4Item::before,.exportA4Page.evening .exportA4Item::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;border-radius:18px 18px 0 0;}
+    .exportA4Page.afternoon .exportA4Item::before{background:linear-gradient(90deg,#37b388,#ffd178,#ff9861);}
+    .exportA4Page.evening .exportA4Item::before{background:linear-gradient(90deg,#9d67ff,#ff5b7b,#ffbe76);}
+    .exportA4ItemTop{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding-top:2px;}
+    .exportA4Num{font-size:16px;line-height:1;font-weight:1000;color:#5a2dcb;min-width:24px;}
+    .exportA4Join{display:inline-flex;align-items:center;min-height:20px;padding:3px 7px;border-radius:999px;background:#fff3d8;border:1px solid rgba(245,193,82,.5);color:#8a5200;font-size:9px;line-height:1.25;font-weight:1000;text-align:right;}
+    .exportA4Names{margin-top:4px;font-size:13px;line-height:1.4;font-weight:1000;word-break:break-word;}
+    .exportA4Group{display:inline;color:#203245;}
+    .exportA4Members{display:inline;color:#203245;}
+    .exportA4SongList{margin-top:5px;font-size:11px;line-height:1.45;font-weight:1000;color:#8e3d83;word-break:break-word;}
+    .exportA4SongList .songSep{color:#d46c53;padding:0 4px;}
+    .exportA4Teacher{margin-top:5px;font-size:10px;line-height:1.4;font-weight:1000;color:#5c5873;word-break:break-word;}
+    .exportA4Footer{position:absolute;left:24px;right:24px;bottom:14px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#6d7887;}
+
     @media (max-width:1000px){
       .metaGrid{ grid-template-columns:1fr; }
       .sectionHead{ flex-direction:column; }
@@ -808,7 +848,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
-    let EVENT_DATE = "2026 年 3 月 29 日（星期日）";
+    let EVENT_DATE = "2026/03/29";
     let EVENT_LOCATION = "豐原太平洋百貨";
     let EVENT_TIMES = {
       afternoon: "13:00–16:00",
@@ -850,10 +890,38 @@
       });
     }
 
+    function songArray(it){
+      return Array.isArray(it.songs) ? it.songs.filter(Boolean) : (it.song ? [String(it.song)] : []);
+    }
+
     function songText(it){
-      const songs = Array.isArray(it.songs) ? it.songs.filter(Boolean) : [];
+      const songs = songArray(it);
       if(songs.length) return songs.map((s, i) => `${i + 1}. ${s}`).join("\n");
       return String(it.song || "");
+    }
+
+    function songHtml(it){
+      const songs = songArray(it);
+      if(!songs.length) return '<div class="songLine">未填曲目</div>';
+      return '<div class="songLines">' + songs.map(s => `<div class="songLine">${esc(s)}</div>`).join('') + '</div>';
+    }
+
+    function compactNamesHtml(it){
+      const raw = String(it.name || '').split(/\r?\n+/).map(x => x.trim()).filter(Boolean);
+      if(!raw.length) return '';
+      const groupName = raw.length > 1 ? raw[0] : '';
+      const members = raw.length > 1 ? raw.slice(1) : raw;
+      return `
+        <div class="exportA4Names">
+          ${groupName ? `<span class="exportA4Group">${esc(groupName)}</span><span class="songSep">｜</span>` : ''}
+          <span class="exportA4Members">${esc(members.join('、'))}</span>
+        </div>`;
+    }
+
+    function compactSongsHtml(it){
+      const songs = songArray(it);
+      if(!songs.length) return '<div class="exportA4SongList">未填曲目</div>';
+      return `<div class="exportA4SongList">${songs.map(esc).join('<span class="songSep">／</span>')}</div>`;
     }
 
     function cardHtml(it, idx){
@@ -868,7 +936,7 @@
           <div class="performerLabel">表演者</div>
           <div class="performer">${esc(it.name || "")}</div>
           <div class="songLabel">表演曲目</div>
-          <div class="song">${esc(songText(it))}</div>
+          ${songHtml(it)}
           ${instructor}
         </article>
       `;
@@ -882,97 +950,87 @@
       el.innerHTML = list.map((it, idx) => cardHtml(it, idx)).join("");
     }
 
-    function pickExportLayout(count){
-      if(count <= 8)  return { cols:2, performer:23, song:16, instructor:12, pad:11, gap:9 };
-      if(count <= 16) return { cols:2, performer:18, song:13, instructor:11, pad:9, gap:7 };
-      if(count <= 24) return { cols:3, performer:15, song:11, instructor:10, pad:7, gap:6 };
-      if(count <= 36) return { cols:4, performer:12, song:10, instructor:9, pad:6, gap:5 };
-      if(count <= 48) return { cols:4, performer:10, song:8, instructor:7, pad:4, gap:4 };
-      return { cols:5, performer:9, song:7, instructor:6, pad:4, gap:3 };
+    function chunkArray(arr, size){
+      const out = [];
+      for(let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+      return out.length ? out : [[]];
     }
 
-    function fitExportNode(node){
-      const inner = node.querySelector('.exportInner');
-      if(!inner) return;
-      inner.style.transform = 'scale(1)';
-      const availableW = node.clientWidth - 68;
-      const availableH = node.clientHeight - 58;
-      const neededW = Math.max(inner.scrollWidth, inner.getBoundingClientRect().width);
-      const neededH = Math.max(inner.scrollHeight, inner.getBoundingClientRect().height);
-      const scale = Math.min(1, availableW / Math.max(neededW, 1), availableH / Math.max(neededH, 1));
-      inner.style.transform = `scale(${scale.toFixed(4)})`;
-    }
-
-    function buildExportHtml(sceneKey, list){
-      const cfg = pickExportLayout((list || []).length || 1);
+    function buildExportPagesHtml(sceneKey, list){
       const isAfternoon = sceneKey === "afternoon";
+      const sceneLabel = isAfternoon ? "下午場" : "晚上場";
       const sceneTitle = isAfternoon ? "下午場節目單" : "晚上場節目單";
       const sceneTime = EVENT_TIMES[sceneKey];
       const sceneClass = isAfternoon ? "afternoon" : "evening";
-      const itemsHtml = (list || []).map((it, idx) => {
-        const instructor = it.instructor ? `<div class="exportInstructor" style="font-size:${cfg.instructor}px;">指導老師：${esc(normalizeTeacherName(it.instructor))}</div>` : "";
-        const join = it.teacherJoinText ? `<div class="exportJoin">${esc(it.teacherJoinText)}</div>` : "";
+      const pages = chunkArray(list || [], 24);
+      const html = pages.map((pageItems, pageIndex) => {
+        const itemsHtml = (pageItems || []).map((it, idx) => {
+          const realOrder = pageIndex * 24 + idx + 1;
+          const join = it.teacherJoinText ? `<div class="exportA4Join">${esc(it.teacherJoinText)}</div>` : '';
+          const teacherNote = it.instructor
+            ? `<div class="exportA4Teacher">指導老師：${esc(normalizeTeacherName(it.instructor))}${it.teacherJoinText ? '｜老師一同表演' : ''}</div>`
+            : (it.teacherJoinText ? `<div class="exportA4Teacher">${esc(it.teacherJoinText)}</div>` : '');
+          return `
+            <div class="exportA4Item">
+              <div class="exportA4ItemTop">
+                <div class="exportA4Num">${realOrder}</div>
+                ${join}
+              </div>
+              ${compactNamesHtml(it)}
+              ${compactSongsHtml(it)}
+              ${teacherNote}
+            </div>`;
+        }).join('');
+
         return `
-          <div class="exportItem" style="padding:${cfg.pad}px;">
-            <div class="exportItemTop">
-              <div class="exportNum" style="font-size:${Math.max(cfg.performer - 8, 14)}px;">${idx + 1}</div>
-              ${join}
-            </div>
-            <div class="exportPerformer" style="font-size:${cfg.performer}px;">${esc(it.name || "")}</div>
-            <div class="exportSong" style="font-size:${cfg.song}px;">${esc(songText(it))}</div>
-            ${instructor}
-          </div>
-        `;
-      }).join("");
-
-      return `
-        <div class="exportSheet ${sceneClass}">
-          <div class="exportInner">
-            <div class="exportHeader ${sceneClass}">
-              <div class="exportBand"></div>
-              <h1 class="exportTitle">柚子樂器音樂成果展節目單</h1>
-
-              <div class="exportMeta">
-                <div class="exportMetaBox">
-                  <div class="exportMetaLabel">活動日期</div>
-                  <div class="exportMetaValue">${esc(EVENT_DATE)}</div>
+          <section class="exportA4Page ${sceneClass}" data-scene="${sceneKey}" data-page="${pageIndex + 1}">
+            <div class="exportA4Head">
+              <div class="exportA4Band"></div>
+              <h1 class="exportA4Title">柚子樂器音樂成果展節目單</h1>
+              <div class="exportA4Meta">
+                <div class="exportA4MetaBox">
+                  <div class="exportA4MetaLabel">活動日期</div>
+                  <div class="exportA4MetaValue">${esc(EVENT_DATE)}</div>
                 </div>
-                <div class="exportMetaBox">
-                  <div class="exportMetaLabel">活動地點</div>
-                  <div class="exportMetaValue">${esc(EVENT_LOCATION)}</div>
+                <div class="exportA4MetaBox">
+                  <div class="exportA4MetaLabel">活動地點</div>
+                  <div class="exportA4MetaValue">${esc(EVENT_LOCATION)}</div>
                 </div>
-                <div class="exportMetaBox">
-                  <div class="exportMetaLabel">活動時間</div>
-                  <div class="exportMetaValue">${sceneTitle.replace("節目單","")} ${esc(sceneTime)}</div>
+                <div class="exportA4MetaBox">
+                  <div class="exportA4MetaLabel">活動時間</div>
+                  <div class="exportA4MetaValue">${esc(sceneLabel)} ${esc(sceneTime)}</div>
                 </div>
               </div>
+              <div class="exportA4Scene">
+                <h2>${sceneTitle}</h2>
+                <div class="exportA4SceneTime">${sceneTime}${pages.length > 1 ? `｜第 ${pageIndex + 1} / ${pages.length} 張` : ''}</div>
+              </div>
             </div>
-
-            <div class="exportScene">
-              <h2 class="exportSceneTitle">${sceneTitle}</h2>
-              <div class="exportSceneTime">${sceneTime}</div>
+            <div class="exportA4Grid">${itemsHtml || '<div class="exportA4Item">目前尚無節目資料</div>'}</div>
+            <div class="exportA4Footer">
+              <span>${sceneLabel}｜每張最多 24 組</span>
+              <span>柚子樂器成果展</span>
             </div>
-
-            <div class="exportGrid" style="grid-template-columns:repeat(${cfg.cols}, minmax(0, 1fr)); gap:${cfg.gap}px;">
-              ${itemsHtml || `<div class="exportItem" style="padding:${cfg.pad}px;">目前尚無節目資料</div>`}
-            </div>
-          </div>
-        </div>
-      `;
+          </section>`;
+      }).join('');
+      return `<div class="exportA4Wrap">${html}</div>`;
     }
 
-    async function renderExportCanvas(sceneKey, list){
+    async function renderExportPages(sceneKey, list){
       const stage = document.getElementById("exportStage");
-      stage.innerHTML = buildExportHtml(sceneKey, list);
-      await new Promise(r => setTimeout(r, 140));
-      const node = stage.firstElementChild;
-      fitExportNode(node);
-      await new Promise(r => setTimeout(r, 60));
-      return await html2canvas(node, {
-        scale:2,
-        useCORS:true,
-        backgroundColor:null
-      });
+      stage.innerHTML = buildExportPagesHtml(sceneKey, list);
+      await new Promise(r => setTimeout(r, 160));
+      const pages = Array.from(stage.querySelectorAll('.exportA4Page'));
+      const canvases = [];
+      for(const page of pages){
+        const canvas = await html2canvas(page, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff'
+        });
+        canvases.push(canvas);
+      }
+      return canvases;
     }
 
     function triggerDownload(dataUrl, fileName){
@@ -993,22 +1051,19 @@
       }
       try{
         showToast("正在準備下載檔案…");
-        const canvas = await renderExportCanvas(sceneKey, list);
+        const canvases = await renderExportPages(sceneKey, list);
         if(format === "jpg"){
-          triggerDownload(canvas.toDataURL("image/jpeg", 0.96), `柚子樂器成果展節目單_${sceneLabel}.jpg`);
+          canvases.forEach((canvas, idx) => {
+            const suffix = canvases.length > 1 ? `_第${idx + 1}張` : "";
+            triggerDownload(canvas.toDataURL("image/jpeg", 0.96), `柚子樂器成果展節目單_${sceneLabel}${suffix}.jpg`);
+          });
         }else{
           const { jsPDF } = window.jspdf;
           const pdf = new jsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
-          const pageW = pdf.internal.pageSize.getWidth();
-          const pageH = pdf.internal.pageSize.getHeight();
-          const imgW = canvas.width;
-          const imgH = canvas.height;
-          const ratio = Math.min(pageW / imgW, pageH / imgH);
-          const drawW = imgW * ratio;
-          const drawH = imgH * ratio;
-          const x = (pageW - drawW) / 2;
-          const y = (pageH - drawH) / 2;
-          pdf.addImage(canvas.toDataURL("image/jpeg", 0.96), "JPEG", x, y, drawW, drawH);
+          canvases.forEach((canvas, idx) => {
+            if(idx > 0) pdf.addPage();
+            pdf.addImage(canvas.toDataURL("image/jpeg", 0.96), "JPEG", 0, 0, 210, 297);
+          });
           pdf.save(`柚子樂器成果展節目單_${sceneLabel}.pdf`);
         }
         showToast(`已開始下載 ${sceneLabel}`);
