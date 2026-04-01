@@ -356,8 +356,8 @@
     <div class="modeHint" id="modeHint"></div>
 
     <form id="f" novalidate>
-      <div class="agree">
-        <label><input type="checkbox" id="agree"> 我已閱讀並同意填表須知，且確認資料與音檔皆可直接作為成果展節目與後續整理使用。</label>
+      <div class="agree" style="display:none;">
+        <label><input type="checkbox" id="agree" checked> 我已閱讀並同意填表須知，且確認資料與音檔皆可直接作為成果展節目與後續整理使用。</label>
       </div>
 
       <label class="req">場次</label>
@@ -536,7 +536,8 @@
 
   modeHint.textContent = isEditMode
     ? "目前為【修改模式】— 可直接修改資料、替換音檔或取消本次報名。"
-    : "請先閱讀並勾選填表須知，再填寫報名資料。";
+    : "請直接填寫報名資料，送出後系統會寄送可再次修改的連結。";
+  agree.checked = true;
 
   if(isEditMode) btnCancel.style.display = "";
 
@@ -767,11 +768,7 @@
 
   function validateRequired(){
     clearFieldErrors();
-
-    if(!agree.checked){
-      alert("請先勾選「我已閱讀並同意填表須知」。");
-      return false;
-    }
+    agree.checked = true;
 
     var firstBad = null;
     function need(el, text){
@@ -848,10 +845,11 @@
 
   function buildPayloadFromForm(){
     syncPerformerHidden();
+    agree.checked = true;
     var data = {};
     var fd = new FormData(f);
     fd.forEach(function(v, k){ data[k] = v; });
-    data["我已閱讀並同意填表須知"] = agree.checked ? "是" : "";
+    data["我已閱讀並同意填表須知"] = "是";
     data["團名"] = groupNameInput.value.trim();
     data["表演者名單"] = performerListHidden.value;
     data["表演者姓名/團名"] = performerDisplayHidden.value;
