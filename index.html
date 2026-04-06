@@ -377,6 +377,7 @@
       .row{ grid-template-columns:1fr; }
       h1{ font-size:26px; }
       .performerRow{ grid-template-columns:1fr; }
+      .searchActionRow{grid-template-columns:1fr;}
     }
   </style>
 </head>
@@ -474,10 +475,13 @@
       <input name="指導老師姓名" placeholder="例：黃明廷">
 
       <label>希望安排在誰附近（選填）</label>
-      <input name="希望與誰排在一起" id="preferredWithInput" placeholder="可直接輸入，或用下方搜尋後點選帶入">
-      <div class="hint">可輸入姓氏、名字或團名搜尋；只會搜尋同場次已報名名單。系統會優先安排在對方前後差 3 位的位置（中間隔 2 組）；只會搜尋同場次，輸入姓氏也可以找。</div>
       <div class="searchBox">
-        <input type="text" id="preferredWithSearch" placeholder="搜尋同場次已報名姓名／團名，例如：王">
+        <div class="searchActionRow">
+          <input name="希望與誰排在一起" id="preferredWithInput" placeholder="請輸入姓氏、名字或團名後按搜尋，例如：王">
+          <button type="button" class="searchBtn" id="preferredWithSearchBtn">搜尋</button>
+        </div>
+        <div class="hint">可輸入姓氏、名字或團名搜尋；只會搜尋同場次已報名名單。系統會優先安排在對方前後差 3 位的位置（中間隔 2 組）。</div>
+        <div id="preferredWithStatus" class="searchStatus">搜尋中…<div class="searchProgress"><div class="searchProgressFill"></div></div></div>
         <div id="preferredWithResults" class="searchResultBox"></div>
       </div>
 
@@ -664,8 +668,9 @@
   var performerDisplayHidden = document.getElementById("performerDisplayHidden");
   var performanceArea = document.getElementById("performanceArea");
   var preferredWithInput = document.getElementById("preferredWithInput");
-  var preferredWithSearch = document.getElementById("preferredWithSearch");
+  var preferredWithSearchBtn = document.getElementById("preferredWithSearchBtn");
   var preferredWithResults = document.getElementById("preferredWithResults");
+  var preferredWithStatus = document.getElementById("preferredWithStatus");
 
   modeHint.textContent = isEditMode
     ? "目前為【修改模式】— 可直接修改資料、替換音檔或取消本次報名。"
@@ -1047,12 +1052,23 @@
 
 
 
+  function setPreferredSearchLoading(isLoading, text){
+    preferredWithSearchBtn.disabled = !!isLoading;
+    preferredWithSearchBtn.textContent = isLoading ? "搜尋中" : "搜尋";
+    preferredWithStatus.classList.toggle("show", !!isLoading || !!text);
+    preferredWithStatus.innerHTML = isLoading
+      ? '搜尋中…<div class="searchProgress"><div class="searchProgressFill"></div></div>'
+      : (text || "");
+  }
+
   function renderPreferredResults(items){
     preferredWithResults.innerHTML = "";
     if(!items || !items.length){
       preferredWithResults.style.display = "none";
+      setPreferredSearchLoading(false, '查無符合名單，請換個關鍵字或直接手動輸入。');
       return;
     }
+    setPreferredSearchLoading(false, '請點選下方要安排附近的姓名／團名');
     items.forEach(function(item){
       var btn = document.createElement("button");
       btn.type = "button";
@@ -1060,8 +1076,8 @@
       btn.textContent = item.label || item.value || "";
       btn.addEventListener("click", function(){
         preferredWithInput.value = item.value || "";
-        preferredWithSearch.value = item.value || "";
         preferredWithResults.style.display = "none";
+        setPreferredSearchLoading(false, '✅ 已帶入：' + (item.value || ''));
       });
       preferredWithResults.appendChild(btn);
     });
@@ -1070,33 +1086,41 @@
 
   async function searchPreferredCandidates(keyword){
     var session = document.getElementById("sessionField").value.trim();
-    if(!session || !keyword || keyword.trim().length < 1){
-      renderPreferredResults([]);
+    if(!session){
+      preferredWithResults.style.display = "none";
+      setPreferredSearchLoading(false, '請先選擇場次，再搜尋同場次名單。');
       return;
     }
+    if(!keyword || keyword.trim().length < 1){
+      preferredWithResults.style.display = "none";
+      setPreferredSearchLoading(false, '請先輸入姓氏、名字或團名再搜尋。');
+      return;
+    }
+    setPreferredSearchLoading(true, '');
     try{
       var j = await jsonp(SCRIPT_URL + "?mode=searchPerformers&session=" + encodeURIComponent(session) + "&keyword=" + encodeURIComponent(keyword.trim()));
       renderPreferredResults((j && j.items) || []);
     }catch(e){
-      renderPreferredResults([]);
+      preferredWithResults.style.display = "none";
+      setPreferredSearchLoading(false, '搜尋失敗，請稍後再試。');
     }
   }
 
-  var preferredSearchTimer = null;
-  preferredWithSearch.addEventListener("input", function(){
-    clearTimeout(preferredSearchTimer);
-    var v = preferredWithSearch.value || "";
-    preferredSearchTimer = setTimeout(function(){ searchPreferredCandidates(v); }, 180);
+  preferredWithSearchBtn.addEventListener("click", function(){
+    searchPreferredCandidates(preferredWithInput.value || "");
   });
-  preferredWithSearch.addEventListener("focus", function(){
-    if((preferredWithSearch.value || "").trim()) searchPreferredCandidates(preferredWithSearch.value);
+  preferredWithInput.addEventListener("keydown", function(ev){
+    if(ev.key === "Enter"){
+      ev.preventDefault();
+      searchPreferredCandidates(preferredWithInput.value || "");
+    }
   });
   document.getElementById("sessionField").addEventListener("change", function(){
-    preferredWithSearch.value = "";
     preferredWithResults.style.display = "none";
+    setPreferredSearchLoading(false, '');
   });
   document.addEventListener("click", function(ev){
-    if(!preferredWithResults.contains(ev.target) && ev.target !== preferredWithSearch){
+    if(!preferredWithResults.contains(ev.target) && ev.target !== preferredWithInput && ev.target !== preferredWithSearchBtn){
       preferredWithResults.style.display = "none";
     }
   });
@@ -1125,7 +1149,6 @@
       if(!names.length) names = [""];
       names.forEach(function(n){ createPerformerRow(n); });
       syncPerformerHidden();
-      preferredWithSearch.value = String(map["希望與誰排在一起"] || "").trim();
 
       var slots = data.slots || {};
       [1,2,3].forEach(function(s){
