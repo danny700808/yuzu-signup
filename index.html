@@ -140,6 +140,18 @@
       line-height:1.7;
       margin-top:6px;
     }
+    .searchBox{position:relative;margin-top:8px;}
+    .searchResultBox{
+      display:none; position:absolute; left:0; right:0; top:100%; z-index:12;
+      background:#fff; border:1px solid #dbe6e1; border-radius:14px; box-shadow:0 14px 28px rgba(20,60,40,.12);
+      margin-top:6px; max-height:220px; overflow:auto;
+    }
+    .searchResultBtn{
+      width:100%; border:none; background:#fff; text-align:left; cursor:pointer; padding:11px 12px; color:var(--text);
+      border-bottom:1px solid #eef3f0;
+    }
+    .searchResultBtn:last-child{border-bottom:none;}
+    .searchResultBtn:hover{background:#f7fbf9;}
     .performerList{
       display:flex;
       flex-direction:column;
@@ -380,7 +392,7 @@
         <li>每一筆報名最多可填 <b>3 首表演</b>。</li>
         <li>每一首表演都可以 <b>獨立附 MP3 音檔</b>，也可以不附。</li>
         <li>表演者名單請一位一位新增，節目單會依你填的名字逐一列出。</li>
-        <li>如希望和特定對象安排得相近，可填寫「希望與誰相近安排」。</li>
+        <li>如希望和特定對象安排在附近，可用下方搜尋或手動輸入。</li>
         <li>設備需求請一項一項填寫，方便老師與工作人員快速整理。</li>
         <li>設備需求補充或其他需求，請統一寫在同一個補充欄位。</li>
         <li>送出後，系統會寄一封可回到修改頁的信，之後仍可修改或取消。</li>
@@ -461,9 +473,13 @@
       <label>指導老師姓名（選填，會顯示在節目單上）</label>
       <input name="指導老師姓名" placeholder="例：黃明廷">
 
-      <label>希望與誰相近安排（選填）</label>
-      <input name="希望與誰排在一起" placeholder="例：王小明／柚子樂器木吉他社">
-      <div class="hint">填想安排在相近位置的對象名稱即可；系統會盡量安排在相近組別。</div>
+      <label>希望安排在誰附近（選填）</label>
+      <input name="希望與誰排在一起" id="preferredWithInput" placeholder="可直接輸入，或用下方搜尋後點選帶入">
+      <div class="hint">可輸入姓氏、名字或團名搜尋；只會搜尋同場次已報名名單。系統會優先安排在對方前後差 3 位的位置（中間隔 2 組）；只會搜尋同場次，輸入姓氏也可以找。</div>
+      <div class="searchBox">
+        <input type="text" id="preferredWithSearch" placeholder="搜尋同場次已報名姓名／團名，例如：王">
+        <div id="preferredWithResults" class="searchResultBox"></div>
+      </div>
 
       <div class="sectionTitle">特殊次序偏好</div>
       <div class="hint">沒有需求就不要勾選，兩個選項只能擇一。</div>
@@ -647,6 +663,9 @@
   var performerListHidden = document.getElementById("performerListHidden");
   var performerDisplayHidden = document.getElementById("performerDisplayHidden");
   var performanceArea = document.getElementById("performanceArea");
+  var preferredWithInput = document.getElementById("preferredWithInput");
+  var preferredWithSearch = document.getElementById("preferredWithSearch");
+  var preferredWithResults = document.getElementById("preferredWithResults");
 
   modeHint.textContent = isEditMode
     ? "目前為【修改模式】— 可直接修改資料、替換音檔或取消本次報名。"
@@ -1026,6 +1045,61 @@
     return data;
   }
 
+
+
+  function renderPreferredResults(items){
+    preferredWithResults.innerHTML = "";
+    if(!items || !items.length){
+      preferredWithResults.style.display = "none";
+      return;
+    }
+    items.forEach(function(item){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "searchResultBtn";
+      btn.textContent = item.label || item.value || "";
+      btn.addEventListener("click", function(){
+        preferredWithInput.value = item.value || "";
+        preferredWithSearch.value = item.value || "";
+        preferredWithResults.style.display = "none";
+      });
+      preferredWithResults.appendChild(btn);
+    });
+    preferredWithResults.style.display = "block";
+  }
+
+  async function searchPreferredCandidates(keyword){
+    var session = document.getElementById("sessionField").value.trim();
+    if(!session || !keyword || keyword.trim().length < 1){
+      renderPreferredResults([]);
+      return;
+    }
+    try{
+      var j = await jsonp(SCRIPT_URL + "?mode=searchPerformers&session=" + encodeURIComponent(session) + "&keyword=" + encodeURIComponent(keyword.trim()));
+      renderPreferredResults((j && j.items) || []);
+    }catch(e){
+      renderPreferredResults([]);
+    }
+  }
+
+  var preferredSearchTimer = null;
+  preferredWithSearch.addEventListener("input", function(){
+    clearTimeout(preferredSearchTimer);
+    var v = preferredWithSearch.value || "";
+    preferredSearchTimer = setTimeout(function(){ searchPreferredCandidates(v); }, 180);
+  });
+  preferredWithSearch.addEventListener("focus", function(){
+    if((preferredWithSearch.value || "").trim()) searchPreferredCandidates(preferredWithSearch.value);
+  });
+  document.getElementById("sessionField").addEventListener("change", function(){
+    preferredWithSearch.value = "";
+    preferredWithResults.style.display = "none";
+  });
+  document.addEventListener("click", function(ev){
+    if(!preferredWithResults.contains(ev.target) && ev.target !== preferredWithSearch){
+      preferredWithResults.style.display = "none";
+    }
+  });
   async function loadExisting(){
     if(!isEditMode) return;
     try{
@@ -1051,6 +1125,7 @@
       if(!names.length) names = [""];
       names.forEach(function(n){ createPerformerRow(n); });
       syncPerformerHidden();
+      preferredWithSearch.value = String(map["希望與誰排在一起"] || "").trim();
 
       var slots = data.slots || {};
       [1,2,3].forEach(function(s){
