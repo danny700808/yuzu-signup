@@ -134,6 +134,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
+  var ADMIN_CLEAR_CONFIRM_TEXT = "YUZU-CLEAR-ALL";
   var state = { password:"", session:"", items:[] };
   var adminPanel = document.getElementById("adminPanel");
   var listEl = document.getElementById("list");
@@ -316,8 +317,8 @@
       msg("請先輸入管理者密碼。", "err");
       return;
     }
-    var step1 = window.prompt(deleteCloud ? "最後確認：請輸入 youZI111 才會清空資料並刪除雲端音檔" : "最後確認：請輸入 youZI111 才會清空所有報名資料");
-    if(step1 !== "youZI111"){
+    var step1 = window.prompt(deleteCloud ? ("最後確認：請輸入 " + ADMIN_CLEAR_CONFIRM_TEXT + " 才會清空資料並刪除雲端音檔") : ("最後確認：請輸入 " + ADMIN_CLEAR_CONFIRM_TEXT + " 才會清空所有報名資料"));
+    if(step1 !== ADMIN_CLEAR_CONFIRM_TEXT){
       msg("已取消：確認文字不正確或未輸入。", "err");
       return;
     }
@@ -332,7 +333,7 @@
       var url = SCRIPT_URL
         + "?mode=adminClearAll"
         + "&password=" + encodeURIComponent(password)
-        + "&confirmText=" + encodeURIComponent("youZI111")
+        + "&confirmText=" + encodeURIComponent(ADMIN_CLEAR_CONFIRM_TEXT)
         + "&deleteCloud=" + (deleteCloud ? "1" : "0");
       var j = await jsonp(url);
       if(!j || !j.ok) throw new Error((j && j.error) || "清空失敗");
