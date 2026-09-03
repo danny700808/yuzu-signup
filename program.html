@@ -746,7 +746,7 @@
       <div class="metaGrid">
         <div class="metaCard">
           <div class="metaLabel">活動日期</div>
-          <div class="metaValue" id="eventDate">2026 年 3 月 29 日（星期日）</div>
+          <div class="metaValue" id="eventDate">2026 年 11 月 8 日（星期日）</div>
         </div>
         <div class="metaCard">
           <div class="metaLabel">活動地點</div>
@@ -808,7 +808,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
-    let EVENT_DATE = "2026 年 3 月 29 日（星期日）";
+    let EVENT_DATE = "2026 年 11 月 8 日（星期日）";
     let EVENT_LOCATION = "豐原太平洋百貨";
     let EVENT_TIMES = {
       afternoon: "13:00–16:00",
@@ -818,9 +818,11 @@
     let aftData = [];
     let eveData = [];
 
-    function esc(s){
-      s = String(s ?? "");
-      return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function createTextElement(tagName, className, text){
+      const element = document.createElement(tagName);
+      if(className) element.className = className;
+      element.textContent = String(text ?? "");
+      return element;
     }
 
     function showToast(msg){
@@ -851,35 +853,40 @@
     }
 
     function songText(it){
+      it = it && typeof it === "object" ? it : {};
       const songs = Array.isArray(it.songs) ? it.songs.filter(Boolean) : [];
       if(songs.length) return songs.map((s, i) => `${i + 1}. ${s}`).join("\n");
       return String(it.song || "");
     }
 
-    function cardHtml(it, idx){
-      const instructor = it.instructor ? `<div class="instructor">指導老師：${esc(normalizeTeacherName(it.instructor))}</div>` : "";
-      const joinTag = it.teacherJoinText ? `<div class="joinTag">${esc(it.teacherJoinText)}</div>` : "";
-      return `
-        <article class="card">
-          <div class="cardTop">
-            <div class="num">${idx + 1}</div>
-            ${joinTag}
-          </div>
-          <div class="performerLabel">表演者</div>
-          <div class="performer">${esc(it.name || "")}</div>
-          <div class="songLabel">表演曲目</div>
-          <div class="song">${esc(songText(it))}</div>
-          ${instructor}
-        </article>
-      `;
+    function cardNode(it, idx){
+      it = it && typeof it === "object" ? it : {};
+      const card = document.createElement("article");
+      card.className = "card";
+      const top = document.createElement("div");
+      top.className = "cardTop";
+      top.appendChild(createTextElement("div", "num", idx + 1));
+      if(it.teacherJoinText){
+        top.appendChild(createTextElement("div", "joinTag", it.teacherJoinText));
+      }
+      card.appendChild(top);
+      card.appendChild(createTextElement("div", "performerLabel", "表演者"));
+      card.appendChild(createTextElement("div", "performer", it.name || ""));
+      card.appendChild(createTextElement("div", "songLabel", "表演曲目"));
+      card.appendChild(createTextElement("div", "song", songText(it)));
+      if(it.instructor){
+        card.appendChild(createTextElement("div", "instructor", "指導老師：" + normalizeTeacherName(it.instructor)));
+      }
+      return card;
     }
 
     function renderGrid(el, list){
+      el.replaceChildren();
       if(!list || !list.length){
-        el.innerHTML = `<div class="empty">目前尚無節目資料</div>`;
+        el.appendChild(createTextElement("div", "empty", "目前尚無節目資料"));
         return;
       }
-      el.innerHTML = list.map((it, idx) => cardHtml(it, idx)).join("");
+      list.forEach((it, idx) => el.appendChild(cardNode(it, idx)));
     }
 
     function pickExportLayout(count){
@@ -903,67 +910,86 @@
       inner.style.transform = `scale(${scale.toFixed(4)})`;
     }
 
-    function buildExportHtml(sceneKey, list){
-      const cfg = pickExportLayout((list || []).length || 1);
+    function buildExportNode(sceneKey, list){
+      const items = Array.isArray(list) ? list : [];
+      const cfg = pickExportLayout(items.length || 1);
       const isAfternoon = sceneKey === "afternoon";
       const sceneTitle = isAfternoon ? "下午場節目單" : "晚上場節目單";
       const sceneTime = EVENT_TIMES[sceneKey];
       const sceneClass = isAfternoon ? "afternoon" : "evening";
-      const itemsHtml = (list || []).map((it, idx) => {
-        const instructor = it.instructor ? `<div class="exportInstructor" style="font-size:${cfg.instructor}px;">指導老師：${esc(normalizeTeacherName(it.instructor))}</div>` : "";
-        const join = it.teacherJoinText ? `<div class="exportJoin">${esc(it.teacherJoinText)}</div>` : "";
-        return `
-          <div class="exportItem" style="padding:${cfg.pad}px;">
-            <div class="exportItemTop">
-              <div class="exportNum" style="font-size:${Math.max(cfg.performer - 8, 14)}px;">${idx + 1}</div>
-              ${join}
-            </div>
-            <div class="exportPerformer" style="font-size:${cfg.performer}px;">${esc(it.name || "")}</div>
-            <div class="exportSong" style="font-size:${cfg.song}px;">${esc(songText(it))}</div>
-            ${instructor}
-          </div>
-        `;
-      }).join("");
+      const sheet = document.createElement("div");
+      sheet.className = "exportSheet " + sceneClass;
+      const inner = document.createElement("div");
+      inner.className = "exportInner";
+      sheet.appendChild(inner);
 
-      return `
-        <div class="exportSheet ${sceneClass}">
-          <div class="exportInner">
-            <div class="exportHeader ${sceneClass}">
-              <div class="exportBand"></div>
-              <h1 class="exportTitle">柚子樂器音樂成果展節目單</h1>
+      const header = document.createElement("div");
+      header.className = "exportHeader " + sceneClass;
+      header.appendChild(createTextElement("div", "exportBand", ""));
+      header.appendChild(createTextElement("h1", "exportTitle", "柚子樂器音樂成果展節目單"));
+      const meta = document.createElement("div");
+      meta.className = "exportMeta";
+      [
+        ["活動日期", EVENT_DATE],
+        ["活動地點", EVENT_LOCATION],
+        ["活動時間", sceneTitle.replace("節目單", "") + " " + sceneTime]
+      ].forEach(([label, value]) => {
+        const box = document.createElement("div");
+        box.className = "exportMetaBox";
+        box.appendChild(createTextElement("div", "exportMetaLabel", label));
+        box.appendChild(createTextElement("div", "exportMetaValue", value));
+        meta.appendChild(box);
+      });
+      header.appendChild(meta);
+      inner.appendChild(header);
 
-              <div class="exportMeta">
-                <div class="exportMetaBox">
-                  <div class="exportMetaLabel">活動日期</div>
-                  <div class="exportMetaValue">${esc(EVENT_DATE)}</div>
-                </div>
-                <div class="exportMetaBox">
-                  <div class="exportMetaLabel">活動地點</div>
-                  <div class="exportMetaValue">${esc(EVENT_LOCATION)}</div>
-                </div>
-                <div class="exportMetaBox">
-                  <div class="exportMetaLabel">活動時間</div>
-                  <div class="exportMetaValue">${sceneTitle.replace("節目單","")} ${esc(sceneTime)}</div>
-                </div>
-              </div>
-            </div>
+      const scene = document.createElement("div");
+      scene.className = "exportScene";
+      scene.appendChild(createTextElement("h2", "exportSceneTitle", sceneTitle));
+      scene.appendChild(createTextElement("div", "exportSceneTime", sceneTime));
+      inner.appendChild(scene);
 
-            <div class="exportScene">
-              <h2 class="exportSceneTitle">${sceneTitle}</h2>
-              <div class="exportSceneTime">${sceneTime}</div>
-            </div>
-
-            <div class="exportGrid" style="grid-template-columns:repeat(${cfg.cols}, minmax(0, 1fr)); gap:${cfg.gap}px;">
-              ${itemsHtml || `<div class="exportItem" style="padding:${cfg.pad}px;">目前尚無節目資料</div>`}
-            </div>
-          </div>
-        </div>
-      `;
+      const grid = document.createElement("div");
+      grid.className = "exportGrid";
+      grid.style.gridTemplateColumns = `repeat(${cfg.cols}, minmax(0, 1fr))`;
+      grid.style.gap = cfg.gap + "px";
+      if(!items.length){
+        const empty = createTextElement("div", "exportItem", "目前尚無節目資料");
+        empty.style.padding = cfg.pad + "px";
+        grid.appendChild(empty);
+      }
+      items.forEach((rawItem, idx) => {
+        const it = rawItem && typeof rawItem === "object" ? rawItem : {};
+        const item = document.createElement("div");
+        item.className = "exportItem";
+        item.style.padding = cfg.pad + "px";
+        const top = document.createElement("div");
+        top.className = "exportItemTop";
+        const number = createTextElement("div", "exportNum", idx + 1);
+        number.style.fontSize = Math.max(cfg.performer - 8, 14) + "px";
+        top.appendChild(number);
+        if(it.teacherJoinText) top.appendChild(createTextElement("div", "exportJoin", it.teacherJoinText));
+        item.appendChild(top);
+        const performer = createTextElement("div", "exportPerformer", it.name || "");
+        performer.style.fontSize = cfg.performer + "px";
+        item.appendChild(performer);
+        const song = createTextElement("div", "exportSong", songText(it));
+        song.style.fontSize = cfg.song + "px";
+        item.appendChild(song);
+        if(it.instructor){
+          const instructor = createTextElement("div", "exportInstructor", "指導老師：" + normalizeTeacherName(it.instructor));
+          instructor.style.fontSize = cfg.instructor + "px";
+          item.appendChild(instructor);
+        }
+        grid.appendChild(item);
+      });
+      inner.appendChild(grid);
+      return sheet;
     }
 
     async function renderExportCanvas(sceneKey, list){
       const stage = document.getElementById("exportStage");
-      stage.innerHTML = buildExportHtml(sceneKey, list);
+      stage.replaceChildren(buildExportNode(sceneKey, list));
       await new Promise(r => setTimeout(r, 140));
       const node = stage.firstElementChild;
       fitExportNode(node);
@@ -1019,12 +1045,16 @@
     }
 
     function applyEventMeta(meta){
-      if(!meta) return;
-      EVENT_DATE = meta.dateDisplay || EVENT_DATE;
-      EVENT_LOCATION = meta.location || EVENT_LOCATION;
+      if(!meta || typeof meta !== "object") return;
+      const cleanMetaValue = (value, fallback) => {
+        const text = value == null ? "" : String(value).trim();
+        return text || fallback;
+      };
+      EVENT_DATE = cleanMetaValue(meta.dateDisplay || meta.date, EVENT_DATE);
+      EVENT_LOCATION = cleanMetaValue(meta.location, EVENT_LOCATION);
       EVENT_TIMES = {
-        afternoon: meta.afternoonTime || EVENT_TIMES.afternoon,
-        evening: meta.eveningTime || EVENT_TIMES.evening
+        afternoon: cleanMetaValue(meta.afternoonTime, EVENT_TIMES.afternoon),
+        evening: cleanMetaValue(meta.eveningTime, EVENT_TIMES.evening)
       };
       const dateEl = document.getElementById("eventDate");
       const locEl = document.getElementById("eventLocation");
@@ -1033,7 +1063,13 @@
       const eveEl = document.getElementById("eveningTime");
       if(dateEl) dateEl.textContent = EVENT_DATE;
       if(locEl) locEl.textContent = EVENT_LOCATION;
-      if(timesEl) timesEl.innerHTML = `下午場 ${esc(EVENT_TIMES.afternoon)}<br>晚上場 ${esc(EVENT_TIMES.evening)}`;
+      if(timesEl){
+        timesEl.replaceChildren(
+          document.createTextNode("下午場 " + EVENT_TIMES.afternoon),
+          document.createElement("br"),
+          document.createTextNode("晚上場 " + EVENT_TIMES.evening)
+        );
+      }
       if(aftEl) aftEl.textContent = EVENT_TIMES.afternoon;
       if(eveEl) eveEl.textContent = EVENT_TIMES.evening;
     }
@@ -1049,8 +1085,10 @@
         renderGrid(document.getElementById("eveGrid"), eveData);
       }catch(err){
         console.error(err);
-        document.getElementById("aftGrid").innerHTML = `<div class="empty">節目資料載入失敗</div>`;
-        document.getElementById("eveGrid").innerHTML = `<div class="empty">節目資料載入失敗</div>`;
+        ["aftGrid", "eveGrid"].forEach(id => {
+          const grid = document.getElementById(id);
+          grid.replaceChildren(createTextElement("div", "empty", "節目資料載入失敗"));
+        });
       }
     }
 

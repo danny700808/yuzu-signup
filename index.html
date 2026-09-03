@@ -66,6 +66,31 @@
       color:#32506f;
       font-weight:700;
     }
+    .eventInfo{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin-top:14px;
+    }
+    .eventInfoItem{
+      padding:12px 14px;
+      border:1px solid #dbeee6;
+      border-radius:14px;
+      background:#f8fcfa;
+    }
+    .eventInfoLabel{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .eventInfoValue{
+      display:block;
+      line-height:1.55;
+      font-size:14px;
+      font-weight:900;
+    }
     .row{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -120,6 +145,10 @@
     .agree input{
       width:auto;
       margin-top:2px;
+    }
+    .agree.fieldErr{
+      border-color:#e35d5d;
+      background:#fff7f7;
     }
     .quotaText{
       margin-top:8px;
@@ -313,6 +342,11 @@
       color:#245444;
       box-shadow:none;
     }
+    a.btn{
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+    }
     #msg{
       margin-top:14px;
       min-height:24px;
@@ -375,6 +409,7 @@
     .aClose{ background:#eef4f1; color:#23483c; }
     @media (max-width:720px){
       .row{ grid-template-columns:1fr; }
+      .eventInfo{ grid-template-columns:1fr; }
       h1{ font-size:26px; }
       .performerRow{ grid-template-columns:1fr; }
       .searchActionRow{grid-template-columns:1fr;}
@@ -396,15 +431,30 @@
         <li>如希望和特定對象安排在附近，可用下方搜尋或手動輸入。</li>
         <li>設備需求請一項一項填寫，方便老師與工作人員快速整理。</li>
         <li>設備需求補充或其他需求，請統一寫在同一個補充欄位。</li>
-        <li>送出後，系統會寄一封可回到修改頁的信，之後仍可修改或取消。</li>
+        <li>送出後，系統會嘗試寄送一封可回到修改頁的信；完成頁也會提供修改連結，請先自行保存。</li>
       </ul>
     </div>
 
     <div class="modeHint" id="modeHint"></div>
 
+    <div class="eventInfo" aria-label="活動資訊" aria-live="polite">
+      <div class="eventInfoItem">
+        <span class="eventInfoLabel">活動日期</span>
+        <strong class="eventInfoValue" id="eventDate">2026 年 11 月 8 日（星期日）</strong>
+      </div>
+      <div class="eventInfoItem">
+        <span class="eventInfoLabel">活動地點</span>
+        <strong class="eventInfoValue" id="eventLocation">豐原太平洋百貨</strong>
+      </div>
+      <div class="eventInfoItem">
+        <span class="eventInfoLabel">活動時間</span>
+        <strong class="eventInfoValue" id="eventTimes">下午場 13:00–16:00 / 晚上場 17:30–20:30</strong>
+      </div>
+    </div>
+
     <form id="f" novalidate>
-      <div class="agree" style="display:none;">
-        <label><input type="checkbox" id="agree" checked> 我已閱讀並同意填表須知，且確認資料與音檔皆可直接作為成果展節目與後續整理使用。</label>
+      <div class="agree" id="agreeWrap">
+        <label><input type="checkbox" id="agree"> 我已閱讀並同意填表須知，且確認資料與音檔皆可直接作為成果展節目與後續整理使用。</label>
       </div>
 
       <label class="req">場次</label>
@@ -481,7 +531,7 @@
           <button type="button" class="searchBtn" id="preferredWithSearchBtn">搜尋</button>
         </div>
         <div class="hint">可輸入姓氏、名字或團名搜尋；只會搜尋同場次已報名名單。系統會優先安排在對方前後差 3 位的位置（中間隔 2 組）。</div>
-        <div id="preferredWithStatus" class="searchStatus">搜尋中…<div class="searchProgress"><div class="searchProgressFill"></div></div></div>
+        <div id="preferredWithStatus" class="searchStatus"></div>
         <div id="preferredWithResults" class="searchResultBox"></div>
       </div>
 
@@ -616,6 +666,7 @@
   <div class="doneOnly" id="doneCard">
     <h2 class="doneTitle">✅ 已完成</h2>
     <div class="doneBody" id="doneBody"></div>
+    <a class="btn secondary" id="doneEditLink" href="index.html" style="display:none; margin-top:14px;">開啟修改資料頁（請收藏連結）</a>
     <div class="doneActions">
       <button class="btn" id="btnGoProgram" type="button">查看表演名單</button>
       <button class="btn" id="btnBackForm" type="button">回到報名表（新增下一位）</button>
@@ -640,6 +691,9 @@
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
   var OFFICIAL_URL = "https://www.mingtinghuang.com/";
   var LINE_URL = "https://lin.ee/ABY1yil";
+  var EVENT_DATE = "2026 年 11 月 8 日（星期日）";
+  var EVENT_LOCATION = "豐原太平洋百貨";
+  var EVENT_TIMES = { afternoon:"13:00–16:00", evening:"17:30–20:30" };
 
   function programUrl(){ try{ return new URL("program.html", location.href).href; }catch(e){ return "program.html"; } }
 
@@ -654,6 +708,7 @@
   var quotaText = document.getElementById("quotaText");
   var doneCard = document.getElementById("doneCard");
   var doneBody = document.getElementById("doneBody");
+  var doneEditLink = document.getElementById("doneEditLink");
   var modeHint = document.getElementById("modeHint");
   var fullMask = document.getElementById("fullMask");
   var btnMain = document.getElementById("btnMain");
@@ -674,8 +729,7 @@
 
   modeHint.textContent = isEditMode
     ? "目前為【修改模式】— 可直接修改資料、替換音檔或取消本次報名。"
-    : "請直接填寫報名資料，送出後系統會寄送可再次修改的連結。";
-  agree.checked = true;
+    : "請直接填寫報名資料；完成後請先保存畫面上的修改連結。";
 
   if(isEditMode) btnCancel.style.display = "";
 
@@ -731,12 +785,41 @@
     try{
       var q = await jsonp(SCRIPT_URL + "?mode=quota");
       if(!q || !q.ok){ quotaText.textContent = "目前無法讀取剩餘名額"; return; }
-      quotaText.innerHTML =
-        "下午場剩餘：<b>" + q.afternoonRemain + "</b> 組<br>" +
-        "晚上場剩餘：<b>" + q.eveningRemain + "</b> 組";
+      applyEventMeta(q.event || q.eventMeta || q);
+      quotaText.replaceChildren();
+      appendQuotaLine("下午場剩餘：", q.afternoonRemain, " 組");
+      appendQuotaLine("晚上場剩餘：", q.eveningRemain, " 組");
     }catch(e){
       quotaText.textContent = "目前無法讀取剩餘名額";
     }
+  }
+
+  function cleanDisplayValue(value, fallback){
+    if(value == null) return fallback;
+    var text = String(value).trim();
+    return text || fallback;
+  }
+
+  function applyEventMeta(meta){
+    meta = meta && typeof meta === "object" ? meta : {};
+    EVENT_DATE = cleanDisplayValue(meta.dateDisplay || meta.date, EVENT_DATE);
+    EVENT_LOCATION = cleanDisplayValue(meta.location, EVENT_LOCATION);
+    EVENT_TIMES.afternoon = cleanDisplayValue(meta.afternoonTime, EVENT_TIMES.afternoon);
+    EVENT_TIMES.evening = cleanDisplayValue(meta.eveningTime, EVENT_TIMES.evening);
+    document.getElementById("eventDate").textContent = EVENT_DATE;
+    document.getElementById("eventLocation").textContent = EVENT_LOCATION;
+    document.getElementById("eventTimes").textContent =
+      "下午場 " + EVENT_TIMES.afternoon + " / 晚上場 " + EVENT_TIMES.evening;
+  }
+
+  function appendQuotaLine(label, value, suffix){
+    var line = document.createElement("div");
+    var amount = document.createElement("b");
+    line.appendChild(document.createTextNode(label));
+    amount.textContent = cleanDisplayValue(value, "—");
+    line.appendChild(amount);
+    line.appendChild(document.createTextNode(suffix));
+    quotaText.appendChild(line);
   }
   loadQuota();
   document.getElementById("sessionField").addEventListener("change", loadQuota);
@@ -748,17 +831,83 @@
   };
   var deleteMark = {1:false,2:false,3:false};
 
-  function esc(s){
-    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
-      return ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" })[c];
-    });
+  function buildEditUrl(regId, token){
+    regId = String(regId == null ? "" : regId).trim();
+    token = String(token == null ? "" : token).trim();
+    if(!regId || !token) return "";
+    try{
+      var url = new URL("index.html", location.href);
+      url.search = "";
+      url.hash = "";
+      url.searchParams.set("regId", regId);
+      url.searchParams.set("token", token);
+      return url.href;
+    }catch(e){
+      return "index.html?regId=" + encodeURIComponent(regId) + "&token=" + encodeURIComponent(token);
+    }
   }
 
-  function showDoneOnly(text){
+  function getResponseValue(response, keys){
+    var sources = [response, response && response.data, response && response.registration];
+    for(var i=0;i<sources.length;i++){
+      var source = sources[i];
+      if(!source || typeof source !== "object") continue;
+      for(var k=0;k<keys.length;k++){
+        if(source[keys[k]] != null && String(source[keys[k]]).trim()) return source[keys[k]];
+      }
+    }
+    return "";
+  }
+
+  function extractWarnings(response){
+    var raw = response && (response.warnings != null ? response.warnings : response.warning);
+    if(raw == null || raw === "") return [];
+    var list = Array.isArray(raw) ? raw : [raw];
+    return list.map(function(item){
+      if(item && typeof item === "object" && item.message != null) return String(item.message).trim();
+      return String(item).trim();
+    }).filter(Boolean);
+  }
+
+  function responseEditUrl(response){
+    var regId = getResponseValue(response, ["regId", "registrationId", "id"]);
+    var token = getResponseValue(response, ["token", "editToken"]);
+    if(isEditMode){
+      regId = regId || qRegId;
+      token = token || qToken;
+    }
+    return buildEditUrl(regId, token);
+  }
+
+  function showDoneOnly(text, editUrl){
     document.getElementById("mainCard").style.display = "none";
     doneCard.style.display = "block";
     doneBody.textContent = text || "";
+    doneEditLink.style.display = editUrl ? "inline-flex" : "none";
+    doneEditLink.href = editUrl || "index.html";
     doneCard.scrollIntoView({ behavior:"smooth", block:"start" });
+  }
+
+  function renderSubmissionSuccess(response){
+    var warnings = extractWarnings(response);
+    var editUrl = responseEditUrl(response);
+    var lines = [isEditMode ? "✅ 資料已更新。" : "✅ 報名已完成。"];
+
+    if(response && response.mailSent === true && !warnings.length){
+      lines.push("確認信已寄出；你也可以保存下方修改連結。");
+    }else if(response && response.mailSent === false){
+      lines.push("⚠️ 確認信尚未成功寄出，請立即保存下方修改連結。");
+    }else if(warnings.length){
+      lines.push("⚠️ 系統有提醒，請先保存下方修改連結。");
+    }else{
+      lines.push("請保存下方修改連結；確認信寄送狀態請以實際收件為準。");
+    }
+
+    warnings.forEach(function(warning){ lines.push("提醒：" + warning); });
+    if(!editUrl && !isEditMode){
+      lines.push("系統未能提供修改連結；如未收到確認信，請聯絡主辦單位。");
+    }
+    showDoneOnly(lines.join("\n"), editUrl);
   }
 
   function fmtMB(b){
@@ -779,12 +928,19 @@
   function createPerformerRow(value){
     var row = document.createElement("div");
     row.className = "performerRow";
-    row.innerHTML =
-      '<input type="text" class="performerInput" placeholder="例：王小明" value="' + esc(value || "") + '">' +
-      '<button type="button" class="smallBtn danger">刪除</button>';
-    row.querySelector("button").addEventListener("click", function(){
+    var input = document.createElement("input");
+    input.type = "text";
+    input.className = "performerInput";
+    input.placeholder = "例：王小明";
+    input.value = String(value == null ? "" : value);
+    var removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "smallBtn danger";
+    removeButton.textContent = "刪除";
+    row.append(input, removeButton);
+    removeButton.addEventListener("click", function(){
       if(performerListWrap.querySelectorAll(".performerRow").length <= 1){
-        row.querySelector("input").value = "";
+        input.value = "";
         return;
       }
       row.remove();
@@ -860,17 +1016,38 @@
     el.textContent = text || "";
   }
 
+  function safeExistingAudioUrl(raw){
+    try{
+      var url = new URL(String(raw == null ? "" : raw).trim());
+      var isDefaultHttpsPort = !url.port || url.port === "443";
+      if(url.protocol !== "https:" || url.hostname.toLowerCase() !== "res.cloudinary.com" || !isDefaultHttpsPort || url.username || url.password){
+        return "";
+      }
+      return url.href;
+    }catch(e){
+      return "";
+    }
+  }
+
   function renderSlot(slot){
     var view = document.getElementById("view" + slot);
     var del = document.getElementById("del" + slot);
 
     if(slotState[slot].exists){
-      view.style.display = "";
       del.style.display = "";
-      view.onclick = function(){ window.open(slotState[slot].url, "_blank"); };
+      var audioUrl = safeExistingAudioUrl(slotState[slot].url);
+      view.style.display = audioUrl ? "" : "none";
+      view.onclick = audioUrl ? function(){
+        var opened = window.open(audioUrl, "_blank", "noopener,noreferrer");
+        if(opened) opened.opener = null;
+      } : null;
+      if(!audioUrl){
+        setSlotMsg(slot, "舊音檔連結不是允許的安全來源，請替換音檔或標記刪除。", true);
+      }
     }else{
       view.style.display = "none";
       del.style.display = "none";
+      view.onclick = null;
     }
 
     del.classList.toggle("on", !!deleteMark[slot]);
@@ -899,9 +1076,26 @@
     return ok ? "" : "只接受 MP3（.mp3）";
   }
 
+  function isValidEmail(value){
+    value = String(value || "").trim();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+  }
+
+  function isValidTaiwanPhone(value){
+    var raw = String(value || "").trim();
+    if(!/^[+()\-\s\d]+$/.test(raw)) return false;
+    var digits = raw.replace(/\D/g, "");
+    if(/^886/.test(digits)) digits = "0" + digits.slice(3);
+    if(digits.length < 8 || digits.length > 10) return false;
+    return /^09\d{8}$/.test(digits) || /^0[2-8]\d{7,8}$/.test(digits) || /^\d{8}$/.test(digits);
+  }
+
+  function isPositiveInteger(value){
+    return /^[1-9]\d*$/.test(String(value || "").trim());
+  }
+
   function validateRequired(){
     clearFieldErrors();
-    agree.checked = true;
 
     var firstBad = null;
     function need(el, text){
@@ -919,6 +1113,30 @@
     need(f.elements.namedItem("聯絡人信箱"), "請填寫聯絡人信箱");
     need(f.elements.namedItem("老師是否一同表演"), "請選擇老師是否一同表演");
     need(document.getElementById("song1"), "請填寫第 1 首表演歌名");
+
+    var countField = f.elements.namedItem("舞台總表演人數");
+    if(String(countField.value || "").trim() && !isPositiveInteger(countField.value)){
+      markError(countField, "表演人數請填大於 0 的整數");
+      if(!firstBad) firstBad = countField;
+    }
+
+    var phoneField = f.elements.namedItem("聯絡電話");
+    if(String(phoneField.value || "").trim() && !isValidTaiwanPhone(phoneField.value)){
+      markError(phoneField, "請填寫有效的台灣電話（至少 8 位數）");
+      if(!firstBad) firstBad = phoneField;
+    }
+
+    var emailField = f.elements.namedItem("聯絡人信箱");
+    if(String(emailField.value || "").trim() && !isValidEmail(emailField.value)){
+      markError(emailField, "請填寫有效的 Email 信箱");
+      if(!firstBad) firstBad = emailField;
+    }
+
+    if(!agree.checked){
+      var agreeWrap = document.getElementById("agreeWrap");
+      markError(agreeWrap, "送出前請閱讀並勾選同意填表須知");
+      if(!firstBad) firstBad = agree;
+    }
 
     var names = syncPerformerHidden();
     if(!names.length){
@@ -950,9 +1168,9 @@
     return true;
   }
 
-  async function uploadCloudinary(slot, file, percentStart, percentEnd){
+  function uploadCloudinary(slot, file, percentStart, percentEnd){
     if(!cloudConfig.cloudName || !cloudConfig.uploadPreset){
-      throw new Error("Cloudinary 尚未設定 cloudName / uploadPreset");
+      return Promise.reject(new Error("Cloudinary 尚未設定 cloudName / uploadPreset"));
     }
 
     setProgress(percentStart, "正在上傳第 " + slot + " 首音檔…");
@@ -961,31 +1179,46 @@
     formData.append("file", file);
     formData.append("upload_preset", cloudConfig.uploadPreset);
 
-    var resp = await fetch("https://api.cloudinary.com/v1_1/" + encodeURIComponent(cloudConfig.cloudName) + "/auto/upload", {
-      method:"POST",
-      body: formData
+    return new Promise(function(resolve, reject){
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "https://api.cloudinary.com/v1_1/" + encodeURIComponent(cloudConfig.cloudName) + "/auto/upload");
+      xhr.timeout = 180000;
+      xhr.upload.onprogress = function(event){
+        if(!event.lengthComputable || !event.total) return;
+        var uploadRatio = Math.max(0, Math.min(1, event.loaded / event.total));
+        var filePercent = Math.round(uploadRatio * 100);
+        var overallPercent = percentStart + ((percentEnd - percentStart) * uploadRatio);
+        setProgress(overallPercent, "正在上傳第 " + slot + " 首音檔（" + filePercent + "%）…");
+        setSlotMsg(slot, "上傳音檔中… " + filePercent + "%");
+      };
+      xhr.onload = function(){
+        var j = null;
+        try{ j = JSON.parse(xhr.responseText || "null"); }catch(e){}
+        if(xhr.status < 200 || xhr.status >= 300 || !j || !j.secure_url){
+          reject(new Error((j && j.error && j.error.message) || "Cloudinary 上傳失敗"));
+          return;
+        }
+        setProgress(percentEnd, "第 " + slot + " 首音檔上傳完成");
+        setSlotMsg(slot, "✅ 音檔已上傳");
+        resolve({
+          url: j.secure_url || "",
+          name: (j.original_filename ? (j.original_filename + (file.name.toLowerCase().endsWith(".mp3") ? ".mp3" : "")) : file.name) || file.name || "",
+          publicId: j.public_id || ""
+        });
+      };
+      xhr.onerror = function(){ reject(new Error("Cloudinary 上傳失敗，請檢查網路後重試")); };
+      xhr.ontimeout = function(){ reject(new Error("音檔上傳逾時，請檢查網路後重試")); };
+      xhr.onabort = function(){ reject(new Error("音檔上傳已取消")); };
+      xhr.send(formData);
     });
-    var j = await resp.json();
-    if(!resp.ok || !j || !j.secure_url){
-      throw new Error((j && (j.error && j.error.message)) || "Cloudinary 上傳失敗");
-    }
-
-    setProgress(percentEnd, "第 " + slot + " 首音檔上傳完成");
-    setSlotMsg(slot, "✅ 音檔已上傳");
-    return {
-      url: j.secure_url || "",
-      name: (j.original_filename ? (j.original_filename + (file.name.toLowerCase().endsWith(".mp3") ? ".mp3" : "")) : file.name) || file.name || "",
-      publicId: j.public_id || ""
-    };
   }
 
   function buildPayloadFromForm(){
     syncPerformerHidden();
-    agree.checked = true;
     var data = {};
     var fd = new FormData(f);
     fd.forEach(function(v, k){ data[k] = v; });
-    data["我已閱讀並同意填表須知"] = "是";
+    data["我已閱讀並同意填表須知"] = agree.checked ? "是" : "否";
     data["團名"] = groupNameInput.value.trim();
     data["表演者名單"] = performerListHidden.value;
     data["表演者姓名/團名"] = performerDisplayHidden.value;
@@ -1020,8 +1253,8 @@
 
       if(file){
         var idx = uploadSlots.indexOf(s);
-        var start = 15 + (idx / Math.max(uploadSlots.length,1)) * 55;
-        var end = 15 + ((idx + 1) / Math.max(uploadSlots.length,1)) * 55;
+        var start = 35 + (idx / Math.max(uploadSlots.length,1)) * 40;
+        var end = 35 + ((idx + 1) / Math.max(uploadSlots.length,1)) * 40;
         var uploaded = await uploadCloudinary(s, file, start, end);
         data["音檔" + s + "連結"] = uploaded.url;
         data["音檔" + s + "檔名"] = uploaded.name;
@@ -1056,13 +1289,22 @@
     preferredWithSearchBtn.disabled = !!isLoading;
     preferredWithSearchBtn.textContent = isLoading ? "搜尋中" : "搜尋";
     preferredWithStatus.classList.toggle("show", !!isLoading || !!text);
-    preferredWithStatus.innerHTML = isLoading
-      ? '搜尋中…<div class="searchProgress"><div class="searchProgressFill"></div></div>'
-      : (text || "");
+    preferredWithStatus.replaceChildren();
+    if(isLoading){
+      preferredWithStatus.appendChild(document.createTextNode("搜尋中…"));
+      var progress = document.createElement("div");
+      progress.className = "searchProgress";
+      var fill = document.createElement("div");
+      fill.className = "searchProgressFill";
+      progress.appendChild(fill);
+      preferredWithStatus.appendChild(progress);
+    }else{
+      preferredWithStatus.textContent = text || "";
+    }
   }
 
   function renderPreferredResults(items){
-    preferredWithResults.innerHTML = "";
+    preferredWithResults.replaceChildren();
     if(!items || !items.length){
       preferredWithResults.style.display = "none";
       setPreferredSearchLoading(false, '查無符合名單，請換個關鍵字或直接手動輸入。');
@@ -1130,7 +1372,6 @@
       var data = await jsonp(SCRIPT_URL + "?mode=read&regId=" + encodeURIComponent(qRegId) + "&token=" + encodeURIComponent(qToken));
       if(!data || !data.ok) throw new Error((data && data.error) || "載入失敗");
 
-      agree.checked = true;
       var map = data.data || {};
       Object.keys(map).forEach(function(k){
         if(k === "團名"){ groupNameInput.value = map[k] || ""; return; }
@@ -1141,7 +1382,7 @@
         else el.value = (map[k] == null ? "" : String(map[k]));
       });
 
-      performerListWrap.innerHTML = "";
+      performerListWrap.replaceChildren();
       var names = String(map["表演者名單"] || "").split(/\r?\n+/).map(function(x){ return x.trim(); }).filter(Boolean);
       if(!names.length){
         names = String(map["表演者姓名/團名"] || "").split(/\r?\n+/).map(function(x){ return x.trim(); }).filter(Boolean);
@@ -1238,19 +1479,18 @@
         msg.className = "err";
         msg.textContent = "送出失敗：" + (j.error || "unknown");
         if((j.error || "").indexOf("名額已滿") !== -1) showFullModal();
+        resetProgress();
         return;
       }
 
       setProgress(92, "正在完成最後確認…");
       await new Promise(function(resolve){ setTimeout(resolve, 220); });
       setProgress(100, "完成");
-      showDoneOnly(isEditMode
-        ? "✅ 資料已更新。\n如需再次修改，請回到信件中的修改連結。"
-        : "✅ 報名已完成。\n系統會寄送一封確認信到你填寫的信箱，之後可由信中的連結回到修改頁。"
-      );
+      renderSubmissionSuccess(j);
     }catch(e){
       msg.className = "err";
       msg.textContent = "送出失敗：" + e.message;
+      resetProgress();
     }finally{
       btnMain.disabled = false;
     }

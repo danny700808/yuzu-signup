@@ -107,7 +107,7 @@
         <button class="btn secondary" id="btnExcelPrint" type="button">直接列印 A4</button>
         <button class="btn secondary" id="btnAudioZip" type="button">下載全部音檔 ZIP</button>
         <button class="btn danger" id="btnClearData" type="button">一鍵清空報名資料</button>
-        <button class="btn danger" id="btnClearAll" type="button">清空資料＋刪除雲端音檔</button>
+        <button class="btn danger" id="btnClearAll" type="button" disabled title="成果展與主系統共用雲端空間，為避免誤刪其他資料，暫停自動刪除。">雲端音檔清理（安全暫停）</button>
       </div>
       <div class="infoBox">
         <div style="font-weight:900;">排序與衝突規則</div>
@@ -135,6 +135,7 @@
 <script>
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
   var ADMIN_CLEAR_CONFIRM_TEXT = "YUZU-CLEAR-ALL";
+  var AUDIO_DOWNLOAD_CONCURRENCY = 3;
   var state = { password:"", session:"", items:[] };
   var adminPanel = document.getElementById("adminPanel");
   var listEl = document.getElementById("list");
@@ -180,6 +181,22 @@
     s = String(s == null ? "" : s).trim();
     if(!s) return "未命名";
     return s.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, " ").trim();
+  }
+
+  function safeAudioUrl(raw){
+    try{
+      var url = new URL(String(raw == null ? "" : raw).trim());
+      var isCloudinary = url.hostname.toLowerCase() === "res.cloudinary.com";
+      var isDefaultHttpsPort = !url.port || url.port === "443";
+      if(url.protocol !== "https:" || !isCloudinary || !isDefaultHttpsPort || url.username || url.password) return "";
+      return url.href;
+    }catch(e){
+      return "";
+    }
+  }
+
+  function formatMegabytes(bytes){
+    return (Number(bytes || 0) / 1024 / 1024).toFixed(2);
   }
 
   function sessionFolder(session){
@@ -270,11 +287,14 @@
       msg("ZIP 套件尚未載入完成，請稍後再試。", "err");
       return;
     }
+    var button = document.getElementById("btnAudioZip");
+    if(button.disabled) return;
+    button.disabled = true;
     msg("正在整理音檔 ZIP，請稍候…", "sub");
     try{
       var zip = new JSZip();
       var used = {};
-      var total = 0;
+      var jobs = [];
       for(var i=0;i<state.items.length;i++){
         var it = state.items[i];
         var folderName = sessionFolder(it.session);
@@ -295,23 +315,79 @@
             seq++;
           }
           used[key] = true;
-          var resp = await fetch(a.url);
-          if(!resp.ok) throw new Error("抓取音檔失敗：" + fileName);
-          var buf = await resp.arrayBuffer();
-          folder.file(fileName, buf);
-          total++;
+          jobs.push({
+            folder: folder,
+            fileName: fileName,
+            url: safeAudioUrl(a.url)
+          });
         }
       }
-      if(!total) throw new Error("目前沒有可下載的音檔。");
+      if(!jobs.length) throw new Error("目前沒有可下載的音檔。");
+
+      var nextIndex = 0;
+      var completed = 0;
+      var successCount = 0;
+      var downloadedBytes = 0;
+      var failures = [];
+
+      async function worker(){
+        while(nextIndex < jobs.length){
+          var job = jobs[nextIndex++];
+          try{
+            if(!job.url) throw new Error("網址不是允許的 Cloudinary HTTPS 來源");
+            var resp = await fetch(job.url);
+            if(!resp.ok) throw new Error("HTTP " + resp.status);
+            var buf = await resp.arrayBuffer();
+            job.folder.file(job.fileName, buf);
+            successCount++;
+            downloadedBytes += buf.byteLength;
+          }catch(e){
+            failures.push(job.fileName + "（" + ((e && e.message) || "未知錯誤") + "）");
+          }finally{
+            completed++;
+            msg(
+              "正在下載音檔：" + completed + "/" + jobs.length
+                + "，已取得 " + formatMegabytes(downloadedBytes) + " MB"
+                + (failures.length ? "，失敗 " + failures.length + " 首" : ""),
+              "sub"
+            );
+          }
+        }
+      }
+
+      var workers = [];
+      var workerCount = Math.min(AUDIO_DOWNLOAD_CONCURRENCY, jobs.length);
+      for(var w=0;w<workerCount;w++) workers.push(worker());
+      await Promise.all(workers);
+
+      if(!successCount){
+        throw new Error("所有音檔皆下載失敗（" + failures.length + " 首）。\n" + failures.join("\n"));
+      }
+
+      msg(
+        "正在建立 ZIP：已完成 " + completed + "/" + jobs.length
+          + "，共 " + formatMegabytes(downloadedBytes) + " MB。",
+        "sub"
+      );
       var blob = await zip.generateAsync({ type:"blob" });
       downloadBlob("柚子樂器_全部音檔.zip", blob);
-      msg("✅ 已產生 ZIP，共 " + total + " 首音檔。", "ok");
+      var resultText = (failures.length ? "⚠️" : "✅")
+        + " 已產生 ZIP，成功 " + successCount + "/" + jobs.length + " 首，共 "
+        + formatMegabytes(downloadedBytes) + " MB；失敗 " + failures.length + " 首。";
+      if(failures.length) resultText += "\n失敗檔案：\n" + failures.join("\n");
+      msg(resultText, failures.length ? "err" : "ok");
     }catch(e){
       msg("下載 ZIP 失敗：" + e.message, "err");
+    }finally{
+      button.disabled = false;
     }
   }
 
   async function clearAll(deleteCloud){
+    if(deleteCloud){
+      msg("為避免影響共用雲端空間，音檔自動刪除目前已安全暫停；報名資料仍可使用左側按鈕清空。", "err");
+      return;
+    }
     var password = document.getElementById("pwd").value.trim();
     if(!password){
       msg("請先輸入管理者密碼。", "err");
@@ -369,9 +445,15 @@
 
     items.forEach(function(it){
       var audioHtml = (it.audioFiles || []).map(function(a){
+        var audioUrl = safeAudioUrl(a.url);
+        var audioLink = !a.url
+          ? '<span class="sub">未附音檔</span>'
+          : (audioUrl
+              ? ('<a href="' + esc(audioUrl) + '" target="_blank" rel="noopener noreferrer">' + esc(a.name || audioUrl) + '</a>')
+              : '<span class="err">音檔網址無效或非允許來源</span>');
         return '<div class="audioRow">'
           + '<div><b>第 ' + esc(a.slot) + ' 首</b>｜' + esc(a.song || '') + '</div>'
-          + '<div style="margin-top:6px;">' + (a.url ? ('<a href="' + esc(a.url) + '" target="_blank">' + esc(a.name || a.url) + '</a>') : '<span class="sub">未附音檔</span>') + '</div>'
+          + '<div style="margin-top:6px;">' + audioLink + '</div>'
           + '</div>';
       }).join('');
       if(!audioHtml) audioHtml = '<div class="audioRow">未附音檔</div>';
