@@ -1086,13 +1086,14 @@
   }
 
   function clearFieldErrors(){
-    Array.from(f.querySelectorAll(".fieldErr")).forEach(function(el){ el.classList.remove("fieldErr"); });
+    Array.from(f.querySelectorAll(".fieldErr")).forEach(function(el){ el.classList.remove("fieldErr"); el.removeAttribute("aria-invalid"); });
     Array.from(f.querySelectorAll(".fieldHint")).forEach(function(el){ el.remove(); });
   }
 
   function markError(el, text){
     if(!el) return;
     el.classList.add("fieldErr");
+    el.setAttribute("aria-invalid", "true");
     var hint = document.createElement("div");
     hint.className = "fieldHint";
     hint.textContent = text;
@@ -1182,6 +1183,7 @@
       var mp3Err = validateMp3(file);
       if(mp3Err){
         setSlotMsg(s, mp3Err, true);
+        markError(document.querySelector('[data-pick="' + s + '"]'), mp3Err);
         if(!firstBad) firstBad = document.getElementById("song" + s);
       }else{
         setSlotMsg(s, "");
@@ -1193,7 +1195,14 @@
     }
 
     if(firstBad){
-      firstBad.scrollIntoView({ behavior:"smooth", block:"center" });
+      // Follow the displayed form order, including consent and performer fields.
+      var firstMarked = f.querySelector(".fieldErr");
+      if(firstMarked){
+        firstBad = firstMarked.matches("input,select,textarea,button")
+          ? firstMarked : (firstMarked.querySelector("input,select,textarea,button") || firstMarked);
+      }
+      try{ firstBad.focus({ preventScroll:true }); }catch(e){ firstBad.focus(); }
+      firstBad.scrollIntoView({ behavior:"instant", block:"center" });
       return false;
     }
     return true;
