@@ -520,52 +520,6 @@
       <label>指導老師姓名（選填，會顯示在節目單上）</label>
       <input name="指導老師姓名" placeholder="例：黃明廷">
 
-      <label>希望安排在誰附近（選填）</label>
-      <div class="searchBox">
-        <div class="searchActionRow">
-          <input name="希望與誰排在一起" id="preferredWithInput" placeholder="請輸入姓氏、名字或團名後按搜尋，例如：王">
-          <button type="button" class="searchBtn" id="preferredWithSearchBtn">搜尋</button>
-        </div>
-        <div class="hint">可輸入姓氏、名字或團名搜尋；只會搜尋同場次已報名名單。系統會優先安排在對方前後差 3 位的位置（中間隔 2 組）。</div>
-        <div id="preferredWithStatus" class="searchStatus"></div>
-        <div id="preferredWithResults" class="searchResultBox"></div>
-      </div>
-
-      <div class="sectionTitle">特殊次序偏好</div>
-      <div class="hint">沒有需求就不要勾選，兩個選項只能擇一。</div>
-      <div class="row">
-        <label style="margin:10px 0 0; font-weight:800;"><input type="checkbox" id="prefFront" name="希望靠前10組" value="是" style="width:auto; margin-right:8px;"> 希望靠前 10 組</label>
-        <label style="margin:10px 0 0; font-weight:800;"><input type="checkbox" id="prefBack" name="希望靠後10組" value="是" style="width:auto; margin-right:8px;"> 希望靠後 10 組</label>
-      </div>
-
-      <div class="sectionTitle">設備需求</div>
-      <div class="hint">請一項一項填寫，方便現場快速整理。沒有可留空。</div>
-      <div class="row">
-        <div>
-          <label>設備需求 1</label>
-          <input name="設備需求1" placeholder="例：無線麥克風 1 支">
-        </div>
-        <div>
-          <label>設備需求 2</label>
-          <input name="設備需求2" placeholder="例：譜架 1 支">
-        </div>
-      </div>
-      <div class="row">
-        <div>
-          <label>設備需求 3</label>
-          <input name="設備需求3" placeholder="例：Keyboard DI 1 組">
-        </div>
-        <div>
-          <label>設備需求 4</label>
-          <input name="設備需求4" placeholder="例：吉他架 1 個">
-        </div>
-      </div>
-      <label>設備需求 5</label>
-      <input name="設備需求5" placeholder="例：爵士鼓椅 1 張">
-
-      <label>設備需求補充／其他需求</label>
-      <textarea name="設備需求補充" placeholder="設備需求補充或其他需求都寫在這裡…"></textarea>
-
       <div class="sectionTitle">表演曲目與伴奏音檔</div>
       <div class="hint">請填寫第 1 首表演曲目。如需表演更多曲目，可按下方按鈕新增，最多 3 首。每首可各自上傳 1 個 MP3；不需要伴奏則免上傳。</div>
 
@@ -643,6 +597,52 @@
 
 
       <div class="miniActions" style="margin:14px 0"><button type="button" class="fileBtn" id="addSong">＋新增第 2 首</button><button type="button" class="miniBtn danger" id="removeSong" hidden>移除最後一首</button></div>
+      <div class="sectionTitle">設備需求</div>
+      <div class="hint">請一項一項填寫，方便現場快速整理。沒有可留空。</div>
+      <div class="row">
+        <div>
+          <label>設備需求 1</label>
+          <input name="設備需求1" placeholder="例：無線麥克風 1 支">
+        </div>
+        <div>
+          <label>設備需求 2</label>
+          <input name="設備需求2" placeholder="例：譜架 1 支">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>設備需求 3</label>
+          <input name="設備需求3" placeholder="例：Keyboard DI 1 組">
+        </div>
+        <div>
+          <label>設備需求 4</label>
+          <input name="設備需求4" placeholder="例：吉他架 1 個">
+        </div>
+      </div>
+      <label>設備需求 5</label>
+      <input name="設備需求5" placeholder="例：爵士鼓椅 1 張">
+
+      <label>設備需求補充／其他需求</label>
+      <textarea name="設備需求補充" placeholder="設備需求補充或其他需求都寫在這裡…"></textarea>
+
+      <div class="sectionTitle">次序偏好（選填）</div>
+      <div class="hint">沒有需求就不要勾選，兩個選項只能擇一。</div>
+      <div class="row">
+        <label style="margin:10px 0 0; font-weight:800;"><input type="checkbox" id="prefFront" name="希望靠前10組" value="是" style="width:auto; margin-right:8px;"> 希望靠前 10 組</label>
+        <label style="margin:10px 0 0; font-weight:800;"><input type="checkbox" id="prefBack" name="希望靠後10組" value="是" style="width:auto; margin-right:8px;"> 希望靠後 10 組</label>
+      </div>
+
+      <label>希望安排在誰附近（選填）</label>
+      <div class="searchBox">
+        <div class="searchActionRow">
+          <input name="希望與誰排在一起" id="preferredWithInput" placeholder="請輸入姓氏、名字或團名後按搜尋，例如：王">
+          <button type="button" class="searchBtn" id="preferredWithSearchBtn">搜尋</button>
+        </div>
+        <div class="hint">可輸入姓氏、名字或團名搜尋；只會搜尋同場次已報名名單。系統會優先安排在對方前後差 3 位的位置（中間隔 2 組）。</div>
+        <div id="preferredWithStatus" class="searchStatus"></div>
+        <div id="preferredWithResults" class="searchResultBox"></div>
+      </div>
+
       <div class="progressWrap" id="submitProgressWrap">
         <div class="progressTop">
           <span id="submitProgressText">準備送出…</span>
