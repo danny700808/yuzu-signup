@@ -765,6 +765,31 @@
       .card{ padding:12px; border-radius:14px; }
       .performer{ font-size:18px; font-weight:700; }
       .song{ font-size:15px; line-height:1.5; }
+      /* Separate event information from each session on portrait screens. */
+      .hero{ padding:12px; background:#f5faf7; border:1px solid #d8e7df; box-shadow:none; }
+      .hero::before, .hero::after{ display:none; }
+      .title{ font-size:20px; line-height:1.35; }
+      .metaGrid{ margin-top:8px; gap:4px; }
+      .metaCard{ padding:7px 9px; border-radius:8px; }
+      .metaLabel{ font-size:12px; }
+      .metaValue{ font-size:13px; line-height:1.5; }
+      .heroActions{ padding-top:8px; border-top:1px solid #d8e7df; }
+      .heroActions a[href="#afternoonSection"]{ background:#e0f1e9; color:#175e45; border-color:#9bc7b3; }
+      .heroActions a[href="#eveningSection"]{ background:#eee5f8; color:#61358a; border-color:#c8b0dd; }
+      .section{ margin-top:22px; border-radius:12px; box-shadow:none; }
+      .sectionHead.aft{ background:#206c50; color:#fff; }
+      .sectionHead.eve{ background:#61358a; color:#fff; }
+      .sectionHead{ padding:12px; }
+      .sectionTitleWrap{ width:100%; display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; }
+      .sectionTitle{ margin:0; font-size:19px; line-height:1.4; }
+      .sectionTime{ margin:0; font-size:13px; color:inherit; }
+      .grid{ padding:8px; gap:8px; }
+      .card{ padding:10px; border-radius:10px; }
+      .num{ min-width:28px; height:28px; font-size:15px; padding:0 8px; }
+      .performerLabel, .songLabel{ margin-top:5px; font-size:11px; letter-spacing:0; }
+      .performer{ font-size:16px; margin-top:2px; line-height:1.4; }
+      .song{ font-size:14px; margin-top:2px; line-height:1.45; }
+      .instructor{ margin-top:6px; padding:3px 6px; font-size:12px; }
       .exportSheet{ width:1080px; }
     }
   </style>
