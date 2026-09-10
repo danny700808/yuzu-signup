@@ -136,7 +136,8 @@
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoYSfoCMhRb2ldlGNLjHas7we5PHEjeAmxgxPUiYy-yuV4cFgPlqTR6nPc-PC8-c/exec";
   var ADMIN_CLEAR_CONFIRM_TEXT = "YUZU-CLEAR-ALL";
   var AUDIO_DOWNLOAD_CONCURRENCY = 3;
-  var state = { password:"", session:"", items:[] };
+  var state = { password:"", session:"", items:[], loaded:false };
+  var loadVersion = 0;
   var adminPanel = document.getElementById("adminPanel");
   var listEl = document.getElementById("list");
 
@@ -395,7 +396,7 @@
     }
     var step1 = window.prompt(deleteCloud ? ("最後確認：請輸入 " + ADMIN_CLEAR_CONFIRM_TEXT + " 才會清空資料並刪除雲端音檔") : ("最後確認：請輸入 " + ADMIN_CLEAR_CONFIRM_TEXT + " 才會清空所有報名資料"));
     if(step1 !== ADMIN_CLEAR_CONFIRM_TEXT){
-      msg("已取消：確認文字不正確或未輸入。", "err");
+      msg("已取消清空報名資料：未輸入正確的確認文字，資料未變更。", "sub");
       return;
     }
     var step2 = window.confirm(deleteCloud ? "這個動作會清空工作表，並嘗試刪除 Cloudinary 音檔。確定繼續？" : "這個動作會清空工作表第 2 列以下所有報名資料。確定繼續？");
@@ -481,6 +482,7 @@
   }
 
   async function loadData(){
+    var version = ++loadVersion;
     var password = document.getElementById("pwd").value.trim();
     var session = document.getElementById("sessionFilter").value.trim();
     if(!password){
@@ -488,32 +490,45 @@
       return;
     }
 
+    state.loaded = false;
+    state.items = [];
+    adminPanel.classList.add("hidden");
+    listEl.classList.add("hidden");
     state.password = password;
     state.session = session;
     msg("載入中…", "sub");
     try{
       var url = SCRIPT_URL + "?mode=adminExport&password=" + encodeURIComponent(password) + "&session=" + encodeURIComponent(session);
       var j = await jsonp(url);
+      if(version !== loadVersion) return;
       if(!j || !j.ok) throw new Error((j && j.error) || "載入失敗");
-      state.items = j.items || [];
+      state.loaded = true;
+      state.items = Array.isArray(j.items) ? j.items : [];
       render(state.items);
-      msg("✅ 管理資料已載入。", "ok");
+      msg(state.items.length ? "✅ 管理資料已載入。" : "已成功進入；目前選擇的場次沒有報名資料。", state.items.length ? "ok" : "sub");
     }catch(e){
+      if(version !== loadVersion) return;
+      state.loaded = false;
       state.items = [];
-      render([]);
+      adminPanel.classList.add("hidden");
+      listEl.classList.add("hidden");
       msg("載入失敗：" + e.message, "err");
     }
   }
 
   function needItems(){
     if(!state.items.length){
-      msg("請先載入管理資料後再下載。", "err");
+      msg(state.loaded ? "目前選擇的場次沒有報名資料，無法列印或下載。請改選其他場次。" : "請先輸入密碼並按「進入」，成功載入資料後才能列印或下載。", "err");
       return false;
     }
     return true;
   }
 
   document.getElementById("btnLoad").addEventListener("click", loadData);
+  document.getElementById("pwd").addEventListener("keydown", function(event){
+    if(event.key === "Enter"){ event.preventDefault(); loadData(); }
+  });
+  document.getElementById("sessionFilter").addEventListener("change", loadData);
   document.getElementById("btnExcelPreview").addEventListener("click", function(){ openA4Page(false); });
   document.getElementById("btnExcelPrint").addEventListener("click", function(){ openA4Page(true); });
   document.getElementById("btnAudioZip").addEventListener("click", downloadAudioZip);
