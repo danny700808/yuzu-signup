@@ -414,6 +414,7 @@
       .performerRow{ grid-template-columns:1fr; }
       .searchActionRow{grid-template-columns:1fr;}
     }
+      [hidden]{ display:none !important; }
   </style>
 </head>
 <body>
@@ -571,17 +572,17 @@
       <textarea name="設備需求補充" placeholder="設備需求補充或其他需求都寫在這裡…"></textarea>
 
       <div class="sectionTitle">表演曲目與伴奏音檔</div>
-      <div class="hint">第 1 首必填；第 2、3 首可自由決定要不要填。每首都可各自上傳 1 個 MP3 音檔。</div>
+      <div class="hint">請填寫第 1 首表演曲目。如需表演更多曲目，可按下方按鈕新增，最多 3 首。每首可各自上傳 1 個 MP3；不需要伴奏則免上傳。</div>
 
       
       <div id="performanceArea">
-        <div class="performanceCard">
+        <div class="performanceCard" id="performance1">
           <div class="performanceHead">
             <div class="performanceTitle">第 1 首表演</div>
             <div class="muted">必填</div>
           </div>
           <label class="req">表演歌名 / 名稱</label>
-          <input type="text" name="表演歌名/名稱" id="song1" placeholder="例：浪流連">
+          <input type="text" name="表演歌名/名稱" id="song1" required placeholder="例：浪流連">
           <div class="audioBox">
             <div style="font-weight:900;">伴奏音檔（MP3，單檔 ≤ 20MB，可不附）</div>
             <div class="hint">這一首如果需要伴奏，就直接在這裡上傳。</div>
@@ -598,7 +599,7 @@
           </div>
         </div>
 
-        <div class="performanceCard">
+        <div class="performanceCard" id="performance2" hidden>
           <div class="performanceHead">
             <div class="performanceTitle">第 2 首表演</div>
             <div class="muted">選填</div>
@@ -621,7 +622,7 @@
           </div>
         </div>
 
-        <div class="performanceCard">
+        <div class="performanceCard" id="performance3" hidden>
           <div class="performanceHead">
             <div class="performanceTitle">第 3 首表演</div>
             <div class="muted">選填</div>
@@ -646,6 +647,7 @@
       </div>
 
 
+      <div class="miniActions" style="margin:14px 0"><button type="button" class="fileBtn" id="addSong">＋新增第 2 首</button><button type="button" class="miniBtn danger" id="removeSong" hidden>移除最後一首</button></div>
       <div class="progressWrap" id="submitProgressWrap">
         <div class="progressTop">
           <span id="submitProgressText">準備送出…</span>
@@ -976,8 +978,41 @@
   groupNameInput.addEventListener("input", syncPerformerHidden);
   performerListWrap.addEventListener("input", syncPerformerHidden);
 
+  var songCount = 1;
+  function syncSongCards(){
+    [1,2,3].forEach(function(n){
+      document.getElementById("performance" + n).hidden = n > songCount;
+    });
+    document.getElementById("addSong").hidden = songCount >= 3;
+    document.getElementById("addSong").textContent = "＋新增第 " + (songCount + 1) + " 首";
+    document.getElementById("removeSong").hidden = songCount <= 1;
+  }
+  document.getElementById("addSong").addEventListener("click", function(){
+    if(songCount >= 3) return;
+    songCount++;
+    syncSongCards();
+    document.getElementById("song" + songCount).focus();
+  });
+  document.getElementById("removeSong").addEventListener("click", function(){
+    if(songCount <= 1) return;
+    var n = songCount;
+    var song = document.getElementById("song" + n);
+    var file = document.getElementById("file" + n);
+    if((song.value.trim() || file.files.length || slotState[n].exists) &&
+       !confirm("確定移除第 " + n + " 首及其伴奏音檔？儲存送出後才會更新報名資料。")) return;
+    song.value = "";
+    file.value = "";
+    deleteMark[n] = true;
+    document.getElementById("name" + n).textContent = "尚未選取檔案";
+    setSlotMsg(n, "");
+    renderSlot(n);
+    songCount--;
+    syncSongCards();
+  });
+  syncSongCards();
+
   function bindPerformanceCards(){
-    document.querySelectorAll(".fileBtn").forEach(function(btn){
+    document.querySelectorAll("[data-pick]").forEach(function(btn){
       btn.addEventListener("click", function(){
         var slot = btn.getAttribute("data-pick");
         var input = document.getElementById("file" + slot);
@@ -1407,6 +1442,11 @@
         renderSlot(s);
       });
 
+      songCount = 1;
+      [2,3].forEach(function(n){
+        if(document.getElementById("song" + n).value.trim() || slotState[n].exists) songCount = n;
+      });
+      syncSongCards();
       syncPref();
       msg.className = "ok";
       msg.textContent = "✅ 已載入資料（修改模式）— 你可以直接改資料並送出。";

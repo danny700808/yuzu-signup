@@ -724,15 +724,28 @@
       .sectionHead::after{ left:16px; right:16px; }
       .sectionTitle{ font-size:24px; }
       .grid{
-        padding:14px;
-        grid-template-columns:repeat(2,minmax(0,1fr));
-        gap:12px;
+        padding:12px;
+        grid-template-columns:minmax(0,1fr);
+        gap:10px;
       }
       .card{ min-height:auto; padding:14px 14px 13px; border-radius:20px; }
       .num{ min-width:42px; height:42px; font-size:19px; padding:0 10px; border-radius:16px; }
-      .performer{ font-size:20px; margin-top:14px; line-height:1.22; }
+      .performer{ font-size:20px; margin-top:3px; line-height:1.4; }
       .song{ font-size:15px; line-height:1.45; }
       .joinTag{ max-width:78%; font-size:11px; padding:7px 10px; }
+      .sectionActions, .heroActions a[href="admin.html"]{ display:none; }
+      .hero{ padding:16px; }
+      .title{ font-size:24px; line-height:1.35; }
+      .sectionHead{ padding:12px 16px; }
+      .sectionTitle{ font-size:22px; }
+      .sectionKicker{ display:none; }
+      .cardTop{ gap:8px; align-items:center; }
+      .num{ min-width:34px; height:34px; font-size:17px; flex-shrink:0; border-radius:10px; }
+      .joinTag{ min-width:0; max-width:calc(100% - 44px); overflow-wrap:anywhere; padding:6px 8px; }
+      .performerLabel, .songLabel{ margin-top:8px; }
+      .song{ margin-top:3px; font-weight:600; }
+      .performer, .song, .instructor{ min-width:0; max-width:100%; overflow-wrap:anywhere; }
+      .instructor{ margin-top:8px; padding:5px 8px; min-height:0; font-weight:600; }
       .exportSheet{ width:1080px; }
     }
   </style>
