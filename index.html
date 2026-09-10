@@ -421,18 +421,13 @@
 <div class="wrap">
   <div class="card" id="mainCard">
     <h1>柚子樂器成果展報名表</h1>
-    <div class="sub">現在已改成：一次填資料、一次把最多 3 首表演一起送出。每一首都可以各自決定要不要附伴奏音檔。</div>
 
     <div class="notice">
       <div style="font-weight:1000;">填表提醒</div>
       <ul>
-        <li>每一筆報名最多可填 <b>3 首表演</b>。</li>
-        <li>每一首表演都可以 <b>獨立附 MP3 音檔</b>，也可以不附。</li>
-        <li>表演者名單請一位一位新增，節目單會依你填的名字逐一列出。</li>
-        <li>如希望和特定對象安排在附近，可用下方搜尋或手動輸入。</li>
-        <li>設備需求請一項一項填寫，方便老師與工作人員快速整理。</li>
-        <li>設備需求補充或其他需求，請統一寫在同一個補充欄位。</li>
-        <li>送出後，系統會嘗試寄送一封可回到修改頁的信；完成頁也會提供修改連結，請先自行保存。</li>
+        <li>每筆報名最多 <b>3 首曲目</b>，第 1 首必填。</li>
+        <li>需要伴奏時，每首可上傳 <b>1 個 MP3 音檔</b>。</li>
+        <li>請確認表演者姓名與曲目正確，將用於節目單。</li>
       </ul>
     </div>
 
@@ -730,8 +725,9 @@
   var preferredWithStatus = document.getElementById("preferredWithStatus");
 
   modeHint.textContent = isEditMode
-    ? "目前為【修改模式】— 可直接修改資料、替換音檔或取消本次報名。"
-    : "請直接填寫報名資料；完成後請先保存畫面上的修改連結。";
+    ? "修改報名資料"
+    : "";
+  modeHint.hidden = !isEditMode;
 
   if(isEditMode) btnCancel.style.display = "";
 
@@ -1205,7 +1201,7 @@
 
   function uploadCloudinary(slot, file, percentStart, percentEnd){
     if(!cloudConfig.cloudName || !cloudConfig.uploadPreset){
-      return Promise.reject(new Error("Cloudinary 尚未設定 cloudName / uploadPreset"));
+      return Promise.reject(new Error("音檔上傳暫時無法使用，請稍後再試或聯絡柚子樂器。"));
     }
 
     setProgress(percentStart, "正在上傳第 " + slot + " 首音檔…");
@@ -1230,7 +1226,7 @@
         var j = null;
         try{ j = JSON.parse(xhr.responseText || "null"); }catch(e){}
         if(xhr.status < 200 || xhr.status >= 300 || !j || !j.secure_url){
-          reject(new Error((j && j.error && j.error.message) || "Cloudinary 上傳失敗"));
+          reject(new Error((j && j.error && j.error.message) || "音檔上傳失敗"));
           return;
         }
         setProgress(percentEnd, "第 " + slot + " 首音檔上傳完成");
@@ -1241,7 +1237,7 @@
           publicId: j.public_id || ""
         });
       };
-      xhr.onerror = function(){ reject(new Error("Cloudinary 上傳失敗，請檢查網路後重試")); };
+      xhr.onerror = function(){ reject(new Error("音檔上傳失敗，請檢查網路後重試")); };
       xhr.ontimeout = function(){ reject(new Error("音檔上傳逾時，請檢查網路後重試")); };
       xhr.onabort = function(){ reject(new Error("音檔上傳已取消")); };
       xhr.send(formData);
@@ -1270,7 +1266,7 @@
     if(needCloudinary){
       await loadConfig();
       if(!cloudConfig.cloudName || !cloudConfig.uploadPreset){
-        throw new Error("Cloudinary 尚未設定，請先在 Apps Script 填入 CLOUDINARY_CLOUD_NAME 與 CLOUDINARY_UPLOAD_PRESET");
+        throw new Error("音檔上傳暫時無法使用，請稍後再試或聯絡柚子樂器。");
       }
     }
 
@@ -1449,7 +1445,7 @@
       syncSongCards();
       syncPref();
       msg.className = "ok";
-      msg.textContent = "✅ 已載入資料（修改模式）— 你可以直接改資料並送出。";
+      msg.textContent = "報名資料已載入，修改完成後請按送出。";
     }catch(e){
       msg.className = "err";
       msg.textContent = "載入修改資料失敗：" + e.message;
