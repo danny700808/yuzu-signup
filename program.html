@@ -1136,7 +1136,14 @@
         const data = await jsonp(`${SCRIPT_URL}?mode=program`);
         if(!data || !data.ok) throw new Error((data && data.error) || "load failed");
         applyEventMeta(data.event || {});
-        aftData = Array.isArray(data.afternoon) ? data.afternoon : [];
+        aftData = (Array.isArray(data.afternoon) ? data.afternoon : []).map(item => {
+          if(item.name !== "梁予馨" || item.instructor !== "徐嘉優") return item;
+          return {
+            ...item,
+            teacherJoin: true,
+            teacherJoinText: "徐嘉優老師（彈鋼琴）一同表演"
+          };
+        });
         eveData = Array.isArray(data.evening) ? data.evening : [];
         renderGrid(document.getElementById("aftGrid"), aftData);
         renderGrid(document.getElementById("eveGrid"), eveData);
