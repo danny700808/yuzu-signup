@@ -112,10 +112,11 @@
       <div class="infoBox">
         <div style="font-weight:900;">排序與衝突規則</div>
         <div class="sub" style="margin-top:6px;">
-          1. 若有填寫「希望安排在誰附近」，系統會盡量安排在對方前後 1～3 組內。<br>
+          1. 附近安排支援多個對象，盡量安排在前後相差 1～3 位；條件允許時優先相差 3 位。<br>
           2. 若「附近安排」和「靠前 / 靠後」衝突，以附近安排優先。<br>
-          3. 同級衝突時，以先報名者為主；另一方偏好降為參考。<br>
-          4. A4 清單可選擇「查看」或「直接列印」，都會用目前節目排序輸出。
+          3. 同級衝突以先報名者優先。前／後 10 組需求超額時無法全部滿足，未滿足需求會在各組下方提示。<br>
+          4. 「第4組～第7組」等明確順位範圍會納入排序；指定時間、找不到或同名對象需人工確認。<br>
+          5. 節目表、A4 清單與音檔下載皆使用同一排序；組次由各場次第 1 組開始。
         </div>
       </div>
 
@@ -460,6 +461,7 @@
       if(!audioHtml) audioHtml = '<div class="audioRow">未附音檔</div>';
 
       var equipText = (it.equipmentList || []).join("、") || "無";
+      var scheduleHtml = renderScheduleDetails(it);
       var card = document.createElement("div");
       card.className = "item";
       card.innerHTML = ''
@@ -473,12 +475,30 @@
         + '<div class="pillRow">'
           + '<span class="pill">老師一起：' + esc(it.teacherJoin ? '是' : '否') + '</span>'
         + '</div>'
+        + scheduleHtml
         + '<div class="secTitle">設備需求</div>'
         + '<div class="textBlock">' + esc(equipText) + (it.equipmentExtra ? ('\n補充／其他需求：' + esc(it.equipmentExtra)) : '') + '</div>'
         + '<div class="secTitle">音檔</div>'
         + '<div class="audioList">' + audioHtml + '</div>';
       list.appendChild(card);
     });
+  }
+
+  function renderScheduleDetails(it){
+    var lines = [];
+    if(it.front) lines.push('希望前 10 組');
+    if(it.back) lines.push('希望後 10 組');
+    if(it.preferredWith) lines.push('填寫的附近／順位需求：' + it.preferredWith);
+    (it.nearbyAssignments || []).forEach(function(pair){
+      lines.push('附近安排：' + pair.name + '（同場次第 ' + pair.order + ' 組，相差 ' + pair.distance + ' 位）');
+    });
+    if(it.rankPreference && it.rankPreference.satisfied){
+      lines.push('已符合第 ' + it.rankPreference.min + '～' + it.rankPreference.max + ' 組的需求');
+    }
+    if(!lines.length && !(it.scheduleWarnings || []).length) return '';
+    return '<div class="secTitle">排序需求與結果</div>'
+      + '<div class="textBlock">' + esc(lines.join('\n')) + '</div>'
+      + (it.scheduleWarnings || []).map(function(w){ return '<div class="err" style="margin-top:6px;">需確認：' + esc(w) + '</div>'; }).join('');
   }
 
   async function loadData(){

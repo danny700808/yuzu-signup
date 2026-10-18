@@ -90,6 +90,17 @@ const indexHtml = readHtml('index.html');
 const programHtml = readHtml('program.html');
 const adminHtml = readHtml('admin.html');
 
+test('schedule diagnostics escape names and notes before rendering', () => {
+  const render = Function('esc', 'return (' + extractFunction(adminHtml, 'renderScheduleDetails') + ');')(
+    value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+  );
+  const html = render({preferredWith:'<script>bad</script>',nearbyAssignments:[{name:'<img onerror=bad>',order:2,distance:3}],scheduleWarnings:['<svg onload=bad>']});
+  assert.ok(html.includes('&lt;script&gt;'));
+  assert.ok(html.includes('相差 3 位'));
+  assert.ok(html.includes('需確認：'));
+  assert.doesNotMatch(html, /<(?:script|img|svg)\b/i);
+});
+
 test('event fallbacks show 2026/11/8 and contain no stale event date', () => {
   assert.match(
     indexHtml,
