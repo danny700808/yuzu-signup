@@ -71,3 +71,24 @@ test('explicit ordinal range notes remain satisfied alongside nearby requests',(
   assert.ok(distance(result,'P0','P1')<=3);
   assert.equal(result.find(x=>x.name==='P0').scheduleWarnings.length,0);
 });
+
+test('three same-type performances are followed by two other types before returning',()=>{
+  const types=['鼓','鼓','鼓','鋼琴','鼓','鼓','鼓','鋼琴','小提琴','吉他'];
+  const list=types.map((type,i)=>entry('P'+i,i,{type}));
+  list[0].preferredWith='第1組～第1組';
+  const result=sort(list);
+  assert.equal(result[0].name,'P0');
+  assert.equal(new Set(names(result)).size,list.length);
+  result.forEach((item,i)=>{
+    if(i>=3) assert.ok(![1,2,3].every(d=>result[i-d].type===item.type));
+    if(i>=4 && result[i-1].type!==item.type) {
+      assert.ok(![2,3,4].every(d=>result[i-d].type===item.type));
+    }
+  });
+  assert.deepEqual(names(sort(list)),names(result));
+});
+
+test('a session with no alternative type retains entries without inventing performances',()=>{
+  const list=Array.from({length:6},(_,i)=>entry('P'+i,i,{type:'鼓'}));
+  assert.deepEqual(names(sort(list)),names(list));
+});

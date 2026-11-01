@@ -74,8 +74,9 @@ function sortProgramSection_(list) {
   var components = {};
   entries.forEach(function(_, i) { var r = root(i); (components[r] || (components[r] = [])).push(i); });
 
+  var applyBreakRule = false;
   function score(arr) {
-    var pos = [], out = [], outside = 0, gap = 0, streak = 0, previous = '', repeats = 0, movement = 0;
+    var pos = [], out = [], outside = 0, gap = 0, streak = 0, previous = '', repeats = 0, shortBreaks = 0, movement = 0;
     arr.forEach(function(id, i) { pos[id] = i; });
     // Lexicographic priority: earlier nearby requests, earlier front/back requests,
     // distance outside requested zones, gap preference, variety, minimum movement.
@@ -101,14 +102,23 @@ function sortProgramSection_(list) {
       streak = type && type === previous ? streak + 1 : 1;
       previous = type;
       if (streak > 3) repeats++;
+      // After three of one type, allow two other performances before it returns.
+      if (i >= 4 && type && entries[arr[i - 1]].type !== type &&
+          entries[arr[i - 2]].type === type &&
+          entries[arr[i - 3]].type === type &&
+          entries[arr[i - 4]].type === type) shortBreaks++;
       movement += Math.abs(i - baseline[id]);
     });
-    return out.concat([outside, gap, repeats, movement]);
+    return out.concat([outside, gap, repeats, applyBreakRule ? shortBreaks : 0, movement]);
   }
   function better(a, b) {
     for (var k = 0; k < a.length; k++) { if (a[k] !== b[k]) return a[k] < b[k]; }
     return false;
   }
+  for (var phase = 0; phase < 2; phase++) {
+  applyBreakRule = phase === 1;
+  // Keep the established order as the starting point for the variety adjustment.
+  if (applyBreakRule) order.forEach(function(id, i) { baseline[id] = i; });
   var currentScore = score(order);
   // Strict improvement prevents oscillation and starvation. Bound runtime on Apps Script.
   for (var round = 0; round < Math.max(20, n * 2); round++) {
@@ -139,6 +149,7 @@ function sortProgramSection_(list) {
     });
     if (best === order) break;
     order = best; currentScore = bestScore;
+  }
   }
 
   var positions = [], frontCount = front.length, backCount = back.length;
